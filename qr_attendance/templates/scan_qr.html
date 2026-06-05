@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QR Scanner · Creator Club</title>
+    <!-- Bootstrap + Icons + Animate -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- SheetJS & jsPDF for exports -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- QR decoder -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #c41e3a;
+            --primary-dark: #a01830;
+            --primary-soft: #e03e5a;
+            --accent: #1a1a1a;
+            --danger: #e74a3b;
+            --success: #1cc88a;
+            --warning: #f6c23e;
+            --info: #36b9cc;
+            --light-bg: #f8f9fc;
+            --dark: #5a5c69;
+        }
+
+        body {
+            background: linear-gradient(145deg, #edf2fb 0%, #dde7f5 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== MOBILE HEADER (glass) ===== */
+        .mobile-header {
+            display: none;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0.8rem 1.2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            border-bottom: 1px solid rgba(196, 30, 58, 0.15);
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary);
+            padding: 0 0.5rem;
+        }
+
+        .mobile-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .mobile-title {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+            transition: margin 0.3s;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* back button – sleek pill */
+        .back-btn {
+            background: white;
+            border: none;
+            padding: 0.6rem 1.8rem;
+            border-radius: 60px;
+            font-weight: 600;
+            color: #1e293b;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(196, 30, 58, 0.15);
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 16px 24px -8px rgba(196, 30, 58, 0.5);
+        }
+
+        .back-btn:hover svg {
+            transform: translateX(-4px);
+            fill: white;
+        }
+
+        .back-btn svg {
+            transition: all 0.2s;
+        }
+
+        /* date badge */
+        .date-badge {
+            background: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(196, 30, 58, 0.1);
+        }
+
+        .date-badge i {
+            color: var(--primary);
+        }
+
+        /* cards – glassmorphic */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -10px rgba(60, 75, 125, 0.1);
+            transition: all 0.25s;
+            margin-bottom: 1.8rem;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 28px 45px -12px rgba(196, 30, 58, 0.2);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            padding: 1.2rem 2rem;
+            color: white;
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header i {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.4rem;
+            border-radius: 14px;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* form elements */
+        .form-label {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: var(--primary);
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 60px;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #d9e1ef;
+            background: white;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.2);
+            outline: none;
+        }
+
+        /* scanner container */
+        .scanner-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            margin: 1.5rem auto;
+            border-radius: 32px;
+            overflow: hidden;
+            background: #1a1a1a;
+            aspect-ratio: 4/3;
+            box-shadow: 0 25px 40px -15px rgba(0, 0, 0, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        #qrVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        #qrOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+            border-radius: 28px;
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% {
+                border-color: var(--primary);
+                opacity: 1;
+            }
+
+            50% {
+                border-color: rgba(196, 30, 58, 0.5);
+                opacity: 0.8;
+            }
+
+            100% {
+                border-color: var(--primary);
+                opacity: 1;
+            }
+        }
+
+        .camera-hint {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .camera-hint i {
+            color: var(--primary);
+            animation: softPulse 2s infinite;
+        }
+
+        @keyframes softPulse {
+            0% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+
+            100% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+        }
+
+        #teamInfo {
+            background: white;
+            border-radius: 28px;
+            padding: 1.8rem;
+            border: 1px solid #d9e1ef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        #teamName {
+            color: #1a1a1a;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        #membersList {
+            max-height: 260px;
+            overflow-y: auto;
+            border-radius: 20px;
+            background: white;
+            border: 1px solid #d9e1ef;
+            margin-bottom: 1.2rem;
+        }
+
+        .list-group-item {
+            border: none;
+            border-bottom: 1px solid #d9e1ef;
+            padding: 1rem 1.5rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .list-group-item:hover {
+            background: rgba(196, 30, 58, 0.03);
+        }
+
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* buttons */
+        .btn-outline-primary {
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            transition: all 0.2s;
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(196, 30, 58, 0.3);
+        }
+
+        .btn-outline-secondary {
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            border: 2px solid #d9e1ef;
+            color: #1e293b;
+            transition: all 0.2s;
+            background: transparent;
+        }
+
+        .btn-outline-secondary:hover {
+            background: #1a1a1a;
+            color: white;
+            border-color: #1a1a1a;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(115deg, #1a1a1a, #2a2a2a);
+            border: none;
+            border-radius: 60px;
+            padding: 1rem 2rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 16px 24px -10px rgba(30, 58, 138, 0.3);
+            margin-top: 0.8rem;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(115deg, #c41e3a, #a01830);
+            transform: translateY(-3px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* scan result alert */
+        #scanResult {
+            border-radius: 60px;
+            padding: 1rem 1.8rem;
+            font-weight: 500;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 1rem;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #1cc88a, #169b6b);
+            color: white;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #e74a3b, #c0392b);
+            color: white;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #f6c23e, #daa520);
+            color: #1e293b;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #36b9cc, #258391);
+            color: white;
+        }
+
+
+
+        /* tabs */
+        .nav-tabs {
+            border-bottom: none;
+            gap: 8px;
+            padding: 0;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.2s;
+            backdrop-filter: blur(4px);
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 8px 16px rgba(196, 30, 58, 0.3);
+        }
+
+        .nav-tabs .nav-link i {
+            margin-right: 6px;
+        }
+
+        /* filter bar */
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 60px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .filter-input {
+            flex: 1 1 200px;
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid #d9e1ef;
+        }
+
+        .filter-select {
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid #d9e1ef;
+        }
+
+        .date-filter {
+            min-width: 150px;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 0.8rem;
+            margin-left: auto;
+        }
+
+        .btn-excel,
+        .btn-pdf {
+            border-radius: 60px;
+            padding: 0.7rem 1.5rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-excel {
+            background: #1d6f42;
+        }
+
+        .btn-excel:hover {
+            background: #155d35;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(29, 111, 66, 0.3);
+        }
+
+        .btn-pdf {
+            background: #d13b2f;
+        }
+
+        .btn-pdf:hover {
+            background: #b32d22;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(209, 59, 47, 0.3);
+        }
+
+        /* daily stats cards */
+        .daily-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid #d9e1ef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-date {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-numbers {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .count {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .stat-item .label {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        /* table */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: #f1f5fb;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: none;
+            white-space: nowrap;
+            padding: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .table thead th:first-child {
+            border-radius: 20px 0 0 20px;
+        }
+
+        .table thead th:last-child {
+            border-radius: 0 20px 20px 0;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #d9e1ef;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(196, 30, 58, 0.03);
+        }
+
+        .badge {
+            border-radius: 60px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .badge-success {
+            background: rgba(28, 200, 138, 0.1);
+            color: #1cc88a;
+        }
+
+        .badge-warning {
+            background: rgba(246, 194, 62, 0.1);
+            color: #f6c23e;
+        }
+
+        .badge-primary {
+            background: rgba(196, 30, 58, 0.1);
+            color: var(--primary);
+        }
+
+        .badge.bg-primary {
+            background: var(--primary) !important;
+        }
+
+        /* sortable headers */
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .sortable:hover {
+            color: var(--primary);
+        }
+
+        .sortable::after {
+            content: ' ⇅';
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+
+        .sortable.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+
+        .sortable.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
+        }
+
+        /* animations */
+        .animate-delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .animate-delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .animate-delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        /* responsive */
+        @media (max-width: 992px) {
+
+
+            .mobile-header {
+                display: flex;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 5rem 1.2rem 1.5rem;
+            }
+
+            .filter-container {
+                flex-direction: column;
+            }
+
+            .export-buttons {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .btn-excel,
+            .btn-pdf {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .scanner-wrapper {
+                max-width: 100%;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 0.7rem 1.2rem;
+            }
+
+            .nav-tabs .nav-link span {
+                display: none;
+            }
+
+            .nav-tabs .nav-link i {
+                margin-right: 0;
+            }
+
+            .daily-stats {
+                grid-template-columns: 1fr;
+            }
+
+
+        }
+
+        @media (max-width: 576px) {
+            .back-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .card-header {
+                font-size: 1.1rem;
+                padding: 1rem 1.2rem;
+            }
+
+            .card-body {
+                padding: 1.2rem;
+            }
+
+            .form-select,
+            .form-control {
+                padding: 0.7rem 1.2rem;
+            }
+
+            .date-badge {
+                width: 100%;
+                justify-content: center;
+            }
+
+            #teamInfo {
+                padding: 1.2rem;
+            }
+
+            #teamName {
+                font-size: 1.2rem;
+            }
+
+            .list-group-item {
+                padding: 0.8rem 1rem;
+            }
+
+            .btn-outline-primary,
+            .btn-outline-secondary {
+                padding: 0.6rem 1rem;
+            }
+
+            .filter-container {
+                padding: 0.8rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-numbers {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+
+        }
+
+        @media (max-width: 380px) {
+
+            .card-header h3,
+            .card-header {
+                font-size: 1rem;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 0.6rem 1rem;
+            }
+
+            .stat-numbers {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5fb;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- mobile header -->
+    <div class="mobile-header">
+        <button class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="mobile-title">QR Scanner</span>
+        <img src="{{ url_for('static', filename='images/logo/cc.png') }}" alt="Logo" class="mobile-logo">
+    </div>
+
+    <!-- overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- sidebar (glass) -->
+    {% include '_sidebar.html' %}
+
+    <div class="main-content">
+        <!-- Back button -->
+        {% if session.get('role') == 'super_admin' or session.get('username') == 'AD2025' %}
+        <button onclick="window.location.href='/admin'" class="back-btn animate__animated animate__fadeInLeft">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+            </svg>
+            <span>Dashboard</span>
+        </button>
+        {% endif %}
+
+        <!-- Date Display (IST) -->
+        <div class="date-badge animate__animated animate__fadeInDown">
+            <i class="fas fa-calendar-alt"></i>
+            <span id="currentDateIST">{{ today_date }}</span>
+            <span class="badge bg-primary ms-2">IST</span>
+        </div>
+
+        <!-- QR Scanner card -->
+        <div class="glass-card animate__animated animate__fadeInDown">
+            <div class="card-header">
+                <i class="fas fa-qrcode"></i> QR Code Scanner <small class="ms-2" style="opacity: 0.7;">(1
+                    scan/day)</small>
+            </div>
+            <div class="card-body">
+                <!-- Scan type selection -->
+                <div class="mb-4">
+                    <label for="scanType" class="form-label">
+                        <i class="fas fa-tag"></i> Scan Type
+                    </label>
+                    <select class="form-select" id="scanType" required>
+                        <option value="" selected disabled>Choose scan type</option>
+                        <option value="entry">🚪 Entry Validation (Once per day)</option>
+                        <option value="breakfast">🍳 Breakfast (Once per day)</option>
+                        <option value="lunch">🍱 Lunch (Once per day)</option>
+                        <option value="dinner">🌙 Dinner (Once per day)</option>
+                    </select>
+                </div>
+
+                <!-- scanner -->
+                <div class="scanner-wrapper">
+                    <video id="qrVideo" playsinline></video>
+                    <div id="qrOverlay"></div>
+                </div>
+                <div class="camera-hint">
+                    <i class="fas fa-camera"></i> Point camera at team QR code
+                </div>
+                <div id="cameraError" class="alert alert-danger mt-3" style="display: none;"></div>
+
+                <!-- hidden scan form (appears after scan) -->
+                <form id="scanForm" method="POST" style="display: none;">
+                    <input type="hidden" name="qr_data" id="qrData">
+                    <input type="hidden" name="scan_type" id="formScanType">
+
+                    <div id="teamInfo" class="mb-4">
+                        <h4 id="teamName" class="h5 mb-3"></h4>
+                        <div id="membersList" class="list-group mb-3"></div>
+
+                        <div class="d-flex gap-3">
+                            <button type="button" class="btn btn-outline-primary flex-grow-1" id="selectAllBtn">
+                                <i class="fas fa-check-circle me-2"></i> Select All
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary flex-grow-1" id="deselectAllBtn">
+                                <i class="fas fa-times-circle me-2"></i> Clear
+                            </button>
+                        </div>
+
+                        <div class="alert alert-info mt-3 mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <small>Each member can be scanned only once per day for this type</small>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span>Submit Scan</span>
+                    </button>
+                </form>
+
+                <div id="scanResult" class="alert mt-4" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- logs card with tabs -->
+        <div class="glass-card animate__animated animate__fadeInUp">
+            <div class="card-header">
+                <ul class="nav nav-tabs" id="scanLogTabs" role="tablist" style="border-bottom: none; margin-bottom: 0;">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="entry-tab" data-bs-toggle="tab"
+                            data-bs-target="#entry-tab-pane" type="button">
+                            <i class="fas fa-door-open"></i><span class="d-none d-sm-inline ms-2">Entry</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="breakfast-tab" data-bs-toggle="tab"
+                            data-bs-target="#breakfast-tab-pane" type="button">
+                            <i class="fas fa-coffee"></i><span class="d-none d-sm-inline ms-2">Breakfast</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="lunch-tab" data-bs-toggle="tab" data-bs-target="#lunch-tab-pane"
+                            type="button">
+                            <i class="fas fa-utensils"></i><span class="d-none d-sm-inline ms-2">Lunch</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="dinner-tab" data-bs-toggle="tab" data-bs-target="#dinner-tab-pane"
+                            type="button">
+                            <i class="fas fa-moon"></i><span class="d-none d-sm-inline ms-2">Dinner</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-body">
+                <!-- Filter Bar -->
+                <div class="filter-container">
+                    <input type="date" class="filter-input date-filter" id="dateFilter" placeholder="Filter by date">
+                    <input type="text" class="filter-input" id="teamFilter" placeholder="🔍 Filter by team name/ID...">
+                    <input type="text" class="filter-input" id="memberFilter" placeholder="🔍 Filter by member name...">
+                    <div class="export-buttons">
+                        <button class="btn-excel" id="exportAllExcel">
+                            <i class="fas fa-file-excel"></i><span class="d-none d-sm-inline ms-2">Excel</span>
+                        </button>
+                        {% if session.get('role') == 'super_admin' %}
+                        <button class="btn-pdf" id="exportAllPDF">
+                            <i class="fas fa-file-pdf"></i><span class="d-none d-sm-inline ms-2">PDF</span>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Daily Stats Summary -->
+                <div class="daily-stats" id="dailyStats"></div>
+
+                <div class="alert alert-light border-0 shadow-sm mt-3 mb-3 d-flex align-items-center" style="border-radius: 16px; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px);">
+                    <i class="fas fa-info-circle text-primary me-3 fs-5"></i>
+                    <span class="small text-muted"><strong>Tip:</strong> Tap on any log entry row below to view detailed information including the scanning administrator, device used, and verified GPS location.</span>
+                </div>
+
+                <div class="tab-content" id="scanLogTabContent">
+                    <!-- entry tab pane -->
+                    <div class="tab-pane fade show active" id="entry-tab-pane" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="entryLogTable">
+                                <thead>
+                                    <tr>
+                                        <th class="sortable" data-sort="date">Date</th>
+                                        <th class="sortable" data-sort="time">Time</th>
+                                        <th class="sortable" data-sort="team">Team</th>
+                                        <th class="sortable" data-sort="member">Member</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- breakfast -->
+                    <div class="tab-pane fade" id="breakfast-tab-pane" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="breakfastLogTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Team</th>
+                                        <th>Member</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- lunch -->
+                    <div class="tab-pane fade" id="lunch-tab-pane" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="lunchLogTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Team</th>
+                                        <th>Member</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- dinner -->
+                    <div class="tab-pane fade" id="dinner-tab-pane" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="dinnerLogTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Team</th>
+                                        <th>Member</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        (function () {
+
+
+            // get csrf
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+            // DOM elements
+            const video = document.getElementById('qrVideo');
+            const scanTypeSelect = document.getElementById('scanType');
+            const scanForm = document.getElementById('scanForm');
+            const qrDataInput = document.getElementById('qrData');
+            const formScanType = document.getElementById('formScanType');
+            const teamName = document.getElementById('teamName');
+            const membersList = document.getElementById('membersList');
+            const scanResult = document.getElementById('scanResult');
+            const cameraError = document.getElementById('cameraError');
+
+            // Filter elements
+            const dateFilter = document.getElementById('dateFilter');
+            const teamFilter = document.getElementById('teamFilter');
+            const memberFilter = document.getElementById('memberFilter');
+            const dailyStats = document.getElementById('dailyStats');
+
+            let scannerActive = false;
+            let stream = null;
+            let currentTeam = null;
+            let cachedLocation = null;
+
+            // Set today's date in date filter
+            const today = new Date().toISOString().split('T')[0];
+            if (dateFilter) dateFilter.value = today;
+
+            // load logs placeholder (real data from backend)
+            let scanLogData = [];
+
+            // ---------- geolocation helper ----------
+            function checkLocationPermission() {
+                return new Promise((resolve, reject) => {
+                    if (!navigator.geolocation) {
+                        reject(new Error("Geolocation is not supported by this browser."));
+                        return;
+                    }
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            cachedLocation = {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                                accuracy: position.coords.accuracy
+                            };
+                            resolve(cachedLocation);
+                        },
+                        (error) => {
+                            reject(error);
+                        },
+                        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+                    );
+                });
+            }
+
+            function showToast(message, type = 'success') {
+                Swal.fire({
+                    text: message,
+                    icon: type,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: type === 'success' ? 'linear-gradient(135deg, #1cc88a, #169b6b)' :
+                        type === 'error' ? 'linear-gradient(135deg, #e74a3b, #c0392b)' :
+                            'linear-gradient(135deg, #f6c23e, #daa520)',
+                    color: 'white'
+                });
+            }
+
+            // ---------- scanner ----------
+            function initScanner() {
+                if (scannerActive) return;
+                cameraError.style.display = 'none';
+
+                showToast('Initializing camera...', 'info');
+
+                navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                })
+                    .then(s => {
+                        stream = s;
+                        video.srcObject = s;
+                        video.play();
+                        scannerActive = true;
+                        requestAnimationFrame(scanQR);
+                        showToast('Camera ready', 'success');
+                    })
+                    .catch(e => {
+                        cameraError.innerText = 'Camera access denied or not available. Please check permissions.';
+                        cameraError.style.display = 'block';
+                        showToast('Camera access failed', 'error');
+                    });
+            }
+
+            function stopScanner() {
+                if (stream) {
+                    stream.getTracks().forEach(t => t.stop());
+                    stream = null;
+                }
+                scannerActive = false;
+            }
+
+            function scanQR() {
+                if (!scannerActive || video.readyState < 2) {
+                    requestAnimationFrame(scanQR);
+                    return;
+                }
+
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, canvas.width, canvas.height, {
+                        inversionAttempts: "dontInvert"
+                    });
+
+                    if (code) {
+                        try {
+                            const data = JSON.parse(code.data);
+                            if (data.team_id && data.team_name && data.members) {
+                                handleScan(data);
+                            } else {
+                                throw new Error('Invalid QR format');
+                            }
+                        } catch (parseError) {
+                            showMsg('Invalid QR code format', 'danger');
+                        }
+                    }
+                } catch (scanError) {
+                    console.error('Scan error:', scanError);
+                }
+
+                requestAnimationFrame(scanQR);
+            }
+
+            function handleScan(qr) {
+                if (!scanTypeSelect.value) {
+                    showMsg('Please select scan type first', 'warning');
+                    return;
+                }
+
+                // Vibrate on successful scan if supported
+                if (navigator.vibrate) {
+                    navigator.vibrate(200);
+                }
+
+                stopScanner();
+                currentTeam = qr;
+                qrDataInput.value = JSON.stringify(qr);
+                formScanType.value = scanTypeSelect.value;
+                teamName.innerHTML = `<i class="fas fa-users me-2"></i>${qr.team_name}`;
+
+                membersList.innerHTML = '';
+                qr.members.forEach((member, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'list-group-item';
+                    div.innerHTML = `
+                        <input type="checkbox" class="form-check-input me-3" name="members" value="${member.id}" id="m${member.id}" checked>
+                        <label for="m${member.id}" class="form-check-label flex-grow-1">
+                            <strong>${member.name}</strong>
+                            ${member.role ? `<br><small class="text-muted">${member.role}</small>` : ''}
+                        </label>
+                    `;
+                    membersList.appendChild(div);
+                });
+
+                scanForm.style.display = 'block';
+                showMsg(`Team ${qr.team_name} scanned successfully`, 'success');
+
+                // Auto-scroll to form
+                scanForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            function selectAll() {
+                document.querySelectorAll('#membersList input[type="checkbox"]').forEach(cb => cb.checked = true);
+                showMsg('All members selected', 'success');
+            }
+
+            function deselectAll() {
+                document.querySelectorAll('#membersList input[type="checkbox"]').forEach(cb => cb.checked = false);
+                showMsg('All members cleared', 'info');
+            }
+
+            document.getElementById('selectAllBtn')?.addEventListener('click', selectAll);
+            document.getElementById('deselectAllBtn')?.addEventListener('click', deselectAll);
+
+            scanForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const selected = Array.from(document.querySelectorAll('#membersList input[name="members"]:checked')).map(cb => cb.value);
+
+                if (selected.length === 0) {
+                    showMsg('Please select at least one member', 'warning');
+                    return;
+                }
+
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verifying location...';
+                submitBtn.disabled = true;
+
+                // Request/verify location permission before submission
+                checkLocationPermission()
+                    .then((location) => {
+                        const formData = {
+                            qr_data: qrDataInput.value,
+                            scan_type: formScanType.value,
+                            member_ids: selected,
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                            accuracy: location.accuracy
+                        };
+
+                        console.log('Sending scan to server:', formData);
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+
+                        // Send to server
+                        fetch('/admin/scan', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfToken
+                            },
+                            body: JSON.stringify(formData)
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Server response:', data);
+
+                                if (data.success) {
+                                    showMsg(`✓ ${data.message}`, 'success');
+
+                                    // Reset form
+                                    scanForm.style.display = 'none';
+                                    scanTypeSelect.value = '';
+
+                                    // Refresh logs
+                                    loadScanLogs();
+
+                                    // Restart scanner after 1 second
+                                    setTimeout(() => {
+                                        initScanner();
+                                    }, 1000);
+                                } else if (data.code === 'ALREADY_SCANNED_TODAY') {
+                                    showMsg(`⚠️ ${data.message}`, 'warning');
+
+                                    // Show details
+                                    if (data.details && data.details.already_scanned) {
+                                        const names = data.details.already_scanned.map(m => m.name).join(', ');
+                                        Swal.fire({
+                                            title: 'Already Scanned Today',
+                                            html: `
+                                            <p>The following members have already been scanned today for ${scanTypeSelect.options[scanTypeSelect.selectedIndex].text}:</p>
+                                            <div class="alert alert-warning">${names}</div>
+                                            <p class="text-muted">Date: ${data.details.date}</p>
+                                        `,
+                                            icon: 'warning'
+                                        });
+                                    }
+
+                                    // Reset form
+                                    scanForm.style.display = 'none';
+
+                                    // Restart scanner
+                                    setTimeout(() => {
+                                        initScanner();
+                                    }, 1000);
+                                } else {
+                                    showMsg(`Error: ${data.message || 'Scan failed'}`, 'danger');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Fetch error:', error);
+                                showMsg(`Error: ${error.message}`, 'danger');
+                            })
+                            .finally(() => {
+                                submitBtn.innerHTML = originalText;
+                                submitBtn.disabled = false;
+                            });
+                    })
+                    .catch((locationErr) => {
+                        console.error('Location error:', locationErr);
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        Swal.fire({
+                            title: 'Verified Location Required',
+                            text: 'Scanning failed: Geolocation must be enabled and active to record scans.',
+                            icon: 'error'
+                        });
+                    });
+            });
+
+            scanTypeSelect.addEventListener('change', function () {
+                if (this.value) {
+                    showToast('Checking location services...', 'info');
+                    checkLocationPermission()
+                        .then(() => {
+                            initScanner();
+                            scanForm.style.display = 'none';
+                            showMsg(`Scanner ready for ${this.options[this.selectedIndex].text}`, 'info');
+                        })
+                        .catch((err) => {
+                            this.value = ''; // Reset selection
+                            stopScanner();
+                            Swal.fire({
+                                title: 'Location Permission Required',
+                                text: 'You must grant location permissions to use the QR scanner. Please enable location services in your browser.',
+                                icon: 'warning',
+                                confirmButtonColor: '#c41e3a'
+                            });
+                        });
+                } else {
+                    stopScanner();
+                }
+            });
+
+            function showMsg(message, type) {
+                scanResult.className = `alert alert-${type} mt-3 animate__animated animate__fadeIn`;
+                scanResult.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : 'info-circle'} me-2"></i>${message}`;
+                scanResult.style.display = 'block';
+
+                setTimeout(() => {
+                    scanResult.classList.add('animate__fadeOut');
+                    setTimeout(() => {
+                        scanResult.style.display = 'none';
+                        scanResult.classList.remove('animate__fadeOut');
+                    }, 500);
+                }, 3500);
+            }
+
+            // ===== LOAD SCAN LOGS =====
+            function loadScanLogs() {
+                let url = '/get_scan_log';
+                const params = new URLSearchParams();
+
+                if (dateFilter?.value) params.append('date', dateFilter.value);
+                if (teamFilter?.value) params.append('team', teamFilter.value);
+                if (memberFilter?.value) params.append('member', memberFilter.value);
+
+                if (params.toString()) url += '?' + params.toString();
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (Array.isArray(data.entries)) {
+                            scanLogData = data.entries;
+                            renderLogs('entry', data.entries.filter(entry => entry.scan_type === 'entry'));
+                            renderLogs('breakfast', data.entries.filter(entry => entry.scan_type === 'breakfast'));
+                            renderLogs('lunch', data.entries.filter(entry => entry.scan_type === 'lunch'));
+                            renderLogs('dinner', data.entries.filter(entry => entry.scan_type === 'dinner'));
+
+                            // Render daily stats
+                            renderDailyStats(data.daily_stats || {});
+                        }
+                    })
+                    .catch(error => console.error('Error loading logs:', error));
+            }
+
+            function renderDailyStats(stats) {
+                if (!dailyStats) return;
+
+                const dates = Object.keys(stats).sort().reverse().slice(0, 5);
+
+                if (dates.length === 0) {
+                    dailyStats.innerHTML = '<div class="text-center text-muted py-3">No scan data available</div>';
+                    return;
+                }
+
+                dailyStats.innerHTML = dates.map(date => {
+                    const dayStats = stats[date];
+                    return `
+                        <div class="stat-card">
+                            <div class="stat-date">${formatDate(date)}</div>
+                            <div class="stat-numbers">
+                                <div class="stat-item">
+                                    <div class="count">${dayStats.total || 0}</div>
+                                    <div class="label">Total</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="count">${dayStats.entry || 0}</div>
+                                    <div class="label">Entry</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="count">${dayStats.breakfast || 0}</div>
+                                    <div class="label">Breakfast</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="count">${dayStats.lunch || 0}</div>
+                                    <div class="label">Lunch</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="count">${dayStats.dinner || 0}</div>
+                                    <div class="label">Dinner</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            function formatDate(dateStr) {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            }
+
+            function showLogDetails(entry) {
+                const mapLink = (entry.latitude && entry.longitude) 
+                    ? `https://www.google.com/maps?q=${entry.latitude},${entry.longitude}` 
+                    : null;
+                
+                const locationHtml = mapLink 
+                    ? `<a href="${mapLink}" target="_blank" class="btn btn-sm btn-outline-danger mt-2 w-100" style="border-radius: 20px;">
+                        <i class="fas fa-map-marker-alt me-2"></i>View on Google Maps (${entry.latitude.toFixed(5)}, ${entry.longitude.toFixed(5)})
+                       </a>`
+                    : '<span class="text-muted"><i class="fas fa-map-marker-alt me-2"></i>Not Available</span>';
+
+                Swal.fire({
+                    title: 'Scan Details',
+                    html: `
+                        <div class="text-start p-2" style="font-size: 0.95rem; line-height: 1.6;">
+                            <div class="mb-2"><strong>Member Name:</strong> ${entry.member_name}</div>
+                            <div class="mb-2"><strong>Team:</strong> ${entry.team_name} <small class="text-muted">(${entry.team_id})</small></div>
+                            <div class="mb-2"><strong>Scan Type:</strong> <span class="badge bg-primary text-uppercase">${entry.scan_type}</span></div>
+                            <div class="mb-2"><strong>Time:</strong> ${entry.timestamp}</div>
+                            <hr style="margin: 0.5rem 0; opacity: 0.15;">
+                            <div class="mb-2"><strong>Scanner (Admin):</strong> <span class="text-dark font-monospace">${entry.scanner_id || 'unknown'}</span></div>
+                            <div class="mb-2"><strong>Device:</strong> <span class="text-dark font-monospace">${entry.device || 'Unknown Device'}</span></div>
+                            <div class="mb-2"><strong>Location:</strong> ${locationHtml}</div>
+                        </div>
+                    `,
+                    icon: 'info',
+                    confirmButtonText: 'Close',
+                    confirmButtonColor: '#c41e3a',
+                    background: '#ffffff',
+                    customClass: {
+                        popup: 'glass-modal'
+                    }
+                });
+            }
+
+            function renderLogs(type, data) {
+                const table = document.getElementById(`${type}LogTable`);
+                if (!table) return;
+
+                const tbody = table.querySelector('tbody');
+                tbody.innerHTML = '';
+
+                data.slice(0, 50).forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.style.cursor = 'pointer';
+                    row.title = 'Click to view scan details (Scanner, Device, Location)';
+                    row.innerHTML = `
+                        <td>${formatDate(entry.date) || 'N/A'}</td>
+                        <td><i class="far fa-clock me-2 text-muted"></i>${entry.timestamp ? entry.timestamp.split(' ')[1] : 'N/A'}</td>
+                        <td><strong>${entry.team_name || 'N/A'}</strong><br><small class="text-muted">${entry.team_id || ''}</small></td>
+                        <td>${entry.member_name || 'N/A'}</td>
+                        <td><span class="badge badge-success">Success</span></td>
+                    `;
+                    row.addEventListener('click', () => {
+                        showLogDetails(entry);
+                    });
+                    tbody.appendChild(row);
+                });
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4"><i class="fas fa-inbox fa-2x text-muted mb-2"></i><br><span class="text-muted">No logs found</span></td></tr>';
+                }
+            }
+
+            // ===== FILTER HANDLERS =====
+            if (dateFilter) {
+                dateFilter.addEventListener('change', loadScanLogs);
+            }
+
+            if (teamFilter) {
+                teamFilter.addEventListener('input', debounce(loadScanLogs, 500));
+            }
+
+            if (memberFilter) {
+                memberFilter.addEventListener('input', debounce(loadScanLogs, 500));
+            }
+
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            // ===== EXPORT FUNCTIONS =====
+            function exportToExcel() {
+                const activeTab = document.querySelector('.tab-pane.active');
+                const type = activeTab ? activeTab.id.replace('-tab-pane', '') : 'all';
+                const data = type === 'all' ? scanLogData : scanLogData.filter(entry => entry.scan_type === type);
+
+                const wsData = [
+                    ['Date', 'Time', 'Team ID', 'Team Name', 'Member ID', 'Member Name', 'Scan Type', 'Scanner ID', 'Device', 'Latitude', 'Longitude', 'Status']
+                ];
+
+                data.forEach(entry => {
+                    wsData.push([
+                        entry.date || '',
+                        entry.timestamp || '',
+                        entry.team_id || '',
+                        entry.team_name || '',
+                        entry.member_id || '',
+                        entry.member_name || '',
+                        entry.scan_type || '',
+                        entry.scanner_id || 'unknown',
+                        entry.device || 'Unknown Device',
+                        entry.latitude || '',
+                        entry.longitude || '',
+                        entry.status || 'Success'
+                    ]);
+                });
+
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+                XLSX.utils.book_append_sheet(wb, ws, 'scan_logs');
+                XLSX.writeFile(wb, `scan_logs_${new Date().toISOString().slice(0, 10)}.xlsx`);
+
+                showToast(`Exported ${data.length} logs to Excel`, 'success');
+            }
+
+            function exportToPDF() {
+                const activeTab = document.querySelector('.tab-pane.active');
+                const type = activeTab ? activeTab.id.replace('-tab-pane', '') : 'all';
+                const data = type === 'all' ? scanLogData : scanLogData.filter(entry => entry.scan_type === type);
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm'
+                });
+
+                doc.setFontSize(16);
+                doc.setTextColor(196, 30, 58);
+                doc.text(`${type.toUpperCase()} SCAN LOGS`, 140, 10, { align: 'center' });
+
+                doc.setFontSize(8);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Generated on: ${new Date().toLocaleString()}`, 270, 10, { align: 'right' });
+
+                const headers = [['Date', 'Time', 'Team', 'Member', 'Type', 'Scanner', 'Device', 'Latitude', 'Longitude', 'Status']];
+                const rows = data.map(entry => [
+                    entry.date || '',
+                    entry.timestamp ? entry.timestamp.split(' ')[1] : '',
+                    entry.team_name || '',
+                    entry.member_name || '',
+                    entry.scan_type || '',
+                    entry.scanner_id || 'unknown',
+                    entry.device || 'Unknown Device',
+                    entry.latitude || '',
+                    entry.longitude || '',
+                    entry.status || 'Success'
+                ]);
+
+                doc.autoTable({
+                    head: headers,
+                    body: rows,
+                    startY: 20,
+                    styles: { fontSize: 7 },
+                    headStyles: { fillColor: [196, 30, 58] }
+                });
+
+                doc.save(`${type}_logs_${new Date().toISOString().slice(0, 10)}.pdf`);
+                showToast(`Exported ${data.length} logs to PDF`, 'success');
+            }
+
+            document.getElementById('exportAllExcel')?.addEventListener('click', exportToExcel);
+            document.getElementById('exportAllPDF')?.addEventListener('click', exportToPDF);
+
+            // ===== SORT FUNCTIONALITY =====
+            document.querySelectorAll('.sortable').forEach(header => {
+                header.addEventListener('click', function () {
+                    const table = this.closest('table');
+                    const tbody = table.querySelector('tbody');
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+                    const index = Array.from(this.parentNode.children).indexOf(this);
+
+                    rows.sort((a, b) => {
+                        const aVal = a.children[index]?.textContent || '';
+                        const bVal = b.children[index]?.textContent || '';
+                        return aVal.localeCompare(bVal);
+                    });
+
+                    if (this.classList.contains('sort-asc')) {
+                        rows.reverse();
+                        this.classList.remove('sort-asc');
+                        this.classList.add('sort-desc');
+                    } else {
+                        this.classList.add('sort-asc');
+                        this.classList.remove('sort-desc');
+                    }
+
+                    tbody.innerHTML = '';
+                    rows.forEach(row => tbody.appendChild(row));
+                });
+            });
+
+            // ===== INITIALIZATION =====
+            loadScanLogs();
+
+            // Refresh logs every 30 seconds
+            setInterval(loadScanLogs, 30000);
+        })();
+    </script>
+</body>
+
+</html>

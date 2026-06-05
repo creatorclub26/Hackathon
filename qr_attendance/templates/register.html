@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Registration - Creator Club</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png"
+        href="https://res.cloudinary.com/dvfqvqbkn/image/upload/v1752482876/cc_lbohfd.png">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header/Navbar - Matching SAMISTI style */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -1px;
+        }
+
+        .club-badge {
+            background: #c41e3a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            color: #1a1a1a;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #c41e3a;
+            transform: translateY(-3px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            max-width: 1200px;
+            margin: 100px auto 0;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .tagline {
+            color: #c41e3a;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        /* Registration Container */
+        .registration-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .registration-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            animation: slideUp 0.5s ease;
+            border: none;
+        }
+
+        .registration-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .team-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1a1a1a;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title i {
+            color: #c41e3a;
+            font-size: 1.5rem;
+        }
+
+        .member-card {
+            background: white;
+            border: 2px solid #eaeaea;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.3s ease;
+            position: relative;
+        }
+
+        .member-card:hover:not(.locked) {
+            border-color: #c41e3a;
+            box-shadow: 0 5px 15px rgba(196, 30, 58, 0.1);
+        }
+
+        .member-card.verified {
+            border-color: #28a745;
+            background: #f0fdf4;
+        }
+
+        /* Locked state for members 2-4 */
+        .member-card.locked {
+            opacity: 0.55;
+            pointer-events: none;
+            user-select: none;
+            border-color: #d1d5db;
+            background: #f9fafb;
+        }
+
+        .member-card.locked::after {
+            content: '\f023  Verify Team Lead first';
+            font-family: 'Font Awesome 6 Free', sans-serif;
+            font-weight: 900;
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            color: #6b7280;
+            background: rgba(249, 250, 251, 0.6);
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+
+        /* (Reservation / blocked states removed) */
+
+        .member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .member-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .member-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-required {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-optional {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        .badge-verified {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .verification-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: #f3f4f6;
+            margin-top: 0.5rem;
+        }
+
+        .status-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-icon.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-icon.verified {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .student-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: none;
+            border-left: 4px solid #28a745;
+        }
+
+        .student-details.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .detail-row {
+            display: flex;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            min-width: 100px;
+            color: #6b7280;
+        }
+
+        .detail-value {
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #eaeaea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #c41e3a;
+            box-shadow: 0 0 0 0.25rem rgba(196, 30, 58, 0.25);
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc2626;
+        }
+
+        .invalid-feedback {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .btn-verify {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-verify:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-verify:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-verify i {
+            color: #c41e3a;
+        }
+
+        .btn-submit {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .btn-submit:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-submit:disabled {
+            background: #a0aec0;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .btn-submit i {
+            color: #c41e3a;
+        }
+
+        .alert {
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            animation: slideDown 0.3s ease;
+            border: none;
+        }
+
+        .alert-danger {
+            background: rgba(196, 30, 58, 0.1);
+            color: #c41e3a;
+            border-left: 4px solid #c41e3a;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+            padding: 0 1rem;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .step-number.active {
+            background: #c41e3a;
+            color: white;
+        }
+
+        .step-number.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .step-label.active {
+            color: #c41e3a;
+            font-weight: 500;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+
+        /* Back to Home Link */
+        .back-home {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .back-home a {
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-home a:hover {
+            color: #c41e3a;
+            transform: translateX(-5px);
+        }
+
+        /* Footer - Matching SAMISTI style */
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+            width: 100%;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            height: auto;
+            max-height: 50px;
+            width: auto;
+            max-width: 200px;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+
+        .footer-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .copyright {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .main-title {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .logo-container {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-section {
+                margin-top: 120px;
+                padding: 2rem 1.5rem;
+            }
+
+            .registration-container {
+                padding: 1rem;
+            }
+
+            .registration-card {
+                padding: 1.5rem;
+            }
+
+            .page-title h1 {
+                font-size: 2rem;
+            }
+
+            .member-card {
+                padding: 1rem;
+            }
+
+            .detail-row {
+                flex-direction: column;
+            }
+
+            .detail-label {
+                min-width: auto;
+                margin-bottom: 0.25rem;
+            }
+
+            .member-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .club-badge {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+
+            .social-links {
+                gap: 15px;
+            }
+
+            .social-links a {
+                font-size: 1.1rem;
+            }
+
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .hero-section {
+                margin-top: 140px;
+                padding: 2rem 1rem;
+            }
+
+            .registration-card {
+                padding: 1.2rem;
+            }
+
+            .page-title h1 {
+                font-size: 1.8rem;
+            }
+
+            .page-title p {
+                font-size: 1rem;
+            }
+
+            .team-section {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+
+            .member-title {
+                font-size: 1rem;
+            }
+
+            .form-label {
+                font-size: 0.9rem;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 0.6rem 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .btn-verify {
+                padding: 0.4rem 1.2rem;
+                font-size: 0.85rem;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .btn-submit {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .progress-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .progress-step {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .step-number {
+                margin: 0;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hero-section {
+                margin-top: 160px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header - Matching SAMISTI style -->
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo">CREATOR CLUB</div>
+            <div class="club-badge">SEC</div>
+        </div>
+        <div class="social-links">
+            <a href="https://instagram.com/creator_club_official" target="_blank" title="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="mailto:creator_club@sphoorthyengg.ac.in" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <p class="tagline animate__fadeInDown">{{ homepage_config.hero_title | replace(' Registration', '') }}</p>
+        <h1 class="main-title animate__fadeIn">REGISTER YOUR TEAM</h1>
+    </section>
+
+    <!-- Registration Container -->
+    <div class="registration-container">
+        <!-- Registration Card -->
+        <div class="registration-card">
+            <div class="page-title">
+                <h1>Team Registration</h1>
+                <p>Register your team with 3-4 members</p>
+            </div>
+
+
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+                <i class="fas fa-{{ 'exclamation-circle' if category == 'error' else 'check-circle' }} me-2"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <!-- Registration Form -->
+            <form method="POST" id="registrationForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+                <!-- Team Name Section -->
+                <div class="team-section">
+                    <div class="section-title">
+                        <i class="fas fa-users"></i>
+                        Team Information
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="team_name">
+                            Team Name <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-control {% if 'team_name' in errors %}is-invalid{% endif %}"
+                            id="team_name" name="team_name" required
+                            value="{{ form_data.team_name if form_data else '' }}" oninput="checkTeamName(this)">
+                        <div class="invalid-feedback" id="team_name_error">
+                            {% if 'team_name' in errors %}
+                            {{ errors.team_name }}
+                            {% else %}
+                            Please enter a team name
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Members Section -->
+                <div class="team-section">
+                    <div class="section-title">
+                        <i class="fas fa-user-friends"></i>
+                        Team Members
+                    </div>
+
+                    <!-- Member 1 (Required) -->
+                    <div class="member-card" id="member1Card">
+                        <div class="member-header">
+                            <span class="member-title">Member 1 (Team Lead) <span class="required">*</span></span>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Roll Number <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="member_1_rollno" name="member_1_rollno"
+                                        value="{{ form_data.member_1_rollno if form_data else '' }}"
+                                        oninput="this.value = this.value.toUpperCase()" placeholder="e.g. 22AB1A0501">
+                                    <div class="invalid-feedback" id="member_1_rollno_error"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Date of Birth <span class="required">*</span></label>
+                                    <input type="date" class="form-control" id="member_1_dob" name="member_1_dob"
+                                        value="{{ form_data.member_1_dob if form_data else '' }}"
+                                        placeholder="DD/MM/YYYY">
+                                    <div class="invalid-feedback" id="member_1_dob_error"></div>
+                                    <small class="help-text">Enter your date of birth to verify identity</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-verify" id="verify_btn_1" onclick="verifyTeamLead()">
+                            <i class="fas fa-check-circle me-2"></i>Verify &amp; Unlock Team
+                        </button>
+
+                        <!-- blocked-alert removed -->
+
+                        <!-- Student Details Display -->
+                        <div class="student-details" id="student_details_1">
+                            <h6 class="mb-3"><i class="fas fa-user-check me-2" style="color: #28a745;"></i>Student
+                                Verified</h6>
+                            <div class="detail-row">
+                                <span class="detail-label">Name:</span>
+                                <span class="detail-value" id="student_name_1"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Branch:</span>
+                                <span class="detail-value" id="student_branch_1"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Year:</span>
+                                <span class="detail-value" id="student_year_1"></span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information (Required only for first member) -->
+                        <div class="row mt-3" id="contact_info_1" style="display: none;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email <span class="required">*</span></label>
+                                    <input type="email" class="form-control" id="member_1_email" name="member_1_email"
+                                        value="{{ form_data.member_1_email if form_data else '' }}">
+                                    <div class="invalid-feedback" id="member_1_email_error"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <span class="required">*</span></label>
+                                    <input type="tel" class="form-control" id="member_1_contact" name="member_1_contact"
+                                        maxlength="10" pattern="\d{10}"
+                                        value="{{ form_data.member_1_contact if form_data else '' }}"
+                                        oninput="this.value = this.value.replace(/\D/g, '')">
+                                    <div class="invalid-feedback" id="member_1_contact_error"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Gender <span class="required">*</span></label>
+                                    <select class="form-control" id="member_1_gender" name="member_1_gender">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 2 (Required) — locked until Member 1 verified -->
+                    <div class="member-card locked" id="member2Card">
+                        <div class="member-header">
+                            <span class="member-title">Member 2 <span class="required">*</span></span>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Roll Number <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="member_2_rollno" name="member_2_rollno"
+                                        value="{{ form_data.member_2_rollno if form_data else '' }}"
+                                        oninput="this.value = this.value.toUpperCase()" onblur="verifyStudent(2)"
+                                        placeholder="e.g. 22AB1A0502">
+                                    <div class="invalid-feedback" id="member_2_rollno_error"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-verify" id="verify_btn_2" onclick="verifyStudent(2)">
+                            <i class="fas fa-check-circle me-2"></i>Verify Student
+                        </button>
+
+
+
+                        <!-- Student Details Display -->
+                        <div class="student-details" id="student_details_2">
+                            <h6 class="mb-3"><i class="fas fa-user-check me-2" style="color: #28a745;"></i>Student
+                                Verified</h6>
+                            <div class="detail-row">
+                                <span class="detail-label">Name:</span>
+                                <span class="detail-value" id="student_name_2"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Branch:</span>
+                                <span class="detail-value" id="student_branch_2"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Year:</span>
+                                <span class="detail-value" id="student_year_2"></span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information for Member 2 -->
+                        <div class="row mt-3" id="contact_info_2" style="display: none;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email <span class="required">*</span></label>
+                                    <input type="email" class="form-control" id="member_2_email" name="member_2_email"
+                                        value="{{ form_data.member_2_email if form_data else '' }}">
+                                    <div class="invalid-feedback" id="member_2_email_error"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <span class="required">*</span></label>
+                                    <input type="tel" class="form-control" id="member_2_contact" name="member_2_contact"
+                                        maxlength="10" pattern="\d{10}"
+                                        value="{{ form_data.member_2_contact if form_data else '' }}"
+                                        oninput="this.value = this.value.replace(/\D/g, '')">
+                                    <div class="invalid-feedback" id="member_2_contact_error"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Gender <span class="required">*</span></label>
+                                    <select class="form-control" id="member_2_gender" name="member_2_gender">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 3 (Required) — locked until Member 1 verified -->
+                    <div class="member-card locked" id="member3Card">
+                        <div class="member-header">
+                            <span class="member-title">Member 3 <span class="required">*</span></span>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Roll Number <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="member_3_rollno" name="member_3_rollno"
+                                        value="{{ form_data.member_3_rollno if form_data else '' }}"
+                                        oninput="this.value = this.value.toUpperCase()" onblur="verifyStudent(3)"
+                                        placeholder="e.g. 22AB1A0503">
+                                    <div class="invalid-feedback" id="member_3_rollno_error"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-verify" id="verify_btn_3" onclick="verifyStudent(3)">
+                            <i class="fas fa-check-circle me-2"></i>Verify Student
+                        </button>
+
+
+
+                        <!-- Student Details Display -->
+                        <div class="student-details" id="student_details_3">
+                            <h6 class="mb-3"><i class="fas fa-user-check me-2" style="color: #28a745;"></i>Student
+                                Verified</h6>
+                            <div class="detail-row">
+                                <span class="detail-label">Name:</span>
+                                <span class="detail-value" id="student_name_3"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Branch:</span>
+                                <span class="detail-value" id="student_branch_3"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Year:</span>
+                                <span class="detail-value" id="student_year_3"></span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information for Member 3 -->
+                        <div class="row mt-3" id="contact_info_3" style="display: none;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email <span class="required">*</span></label>
+                                    <input type="email" class="form-control" id="member_3_email" name="member_3_email"
+                                        value="{{ form_data.member_3_email if form_data else '' }}">
+                                    <div class="invalid-feedback" id="member_3_email_error"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <span class="required">*</span></label>
+                                    <input type="tel" class="form-control" id="member_3_contact" name="member_3_contact"
+                                        maxlength="10" pattern="\d{10}"
+                                        value="{{ form_data.member_3_contact if form_data else '' }}"
+                                        oninput="this.value = this.value.replace(/\D/g, '')">
+                                    <div class="invalid-feedback" id="member_3_contact_error"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Gender <span class="required">*</span></label>
+                                    <select class="form-control" id="member_3_gender" name="member_3_gender">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 4 (Optional) — locked until Member 1 verified -->
+                    <div class="member-card locked" id="member4Card">
+                        <div class="member-header">
+                            <span class="member-title">Member 4</span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Roll Number</label>
+                                    <input type="text" class="form-control" id="member_4_rollno" name="member_4_rollno"
+                                        value="{{ form_data.member_4_rollno if form_data else '' }}"
+                                        oninput="this.value = this.value.toUpperCase(); handleMember4Input(this)"
+                                        onblur="verifyStudent(4)" placeholder="e.g. 22AB1A0504">
+                                    <div class="invalid-feedback" id="member_4_rollno_error"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-verify" id="verify_btn_4" onclick="verifyStudent(4)">
+                            <i class="fas fa-check-circle me-2"></i>Verify Student
+                        </button>
+
+
+
+                        <!-- Student Details Display -->
+                        <div class="student-details" id="student_details_4">
+                            <h6 class="mb-3"><i class="fas fa-user-check me-2" style="color: #28a745;"></i>Student
+                                Verified</h6>
+                            <div class="detail-row">
+                                <span class="detail-label">Name:</span>
+                                <span class="detail-value" id="student_name_4"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Branch:</span>
+                                <span class="detail-value" id="student_branch_4"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Year:</span>
+                                <span class="detail-value" id="student_year_4"></span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information for Member 4 -->
+                        <div class="row mt-3" id="contact_info_4" style="display: none;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="member_4_email" name="member_4_email"
+                                        value="{{ form_data.member_4_email if form_data else '' }}">
+                                    <div class="invalid-feedback" id="member_4_email_error"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="tel" class="form-control" id="member_4_contact" name="member_4_contact"
+                                        maxlength="10" pattern="\d{10}"
+                                        value="{{ form_data.member_4_contact if form_data else '' }}"
+                                        oninput="this.value = this.value.replace(/\D/g, '')">
+                                    <div class="invalid-feedback" id="member_4_contact_error"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Gender</label>
+                                    <select class="form-control" id="member_4_gender" name="member_4_gender">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                    <i class="fas fa-paper-plane me-2"></i>Complete Registration
+                </button>
+
+                <!-- Back to Home Link -->
+                <div class="back-home">
+                    <a href="{{ url_for('index') }}">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Home
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ---------------------------------------------------------------
+        // localStorage persistence key
+        // ---------------------------------------------------------------
+        const LS_KEY = 'hackathon_reg_state';
+
+        // Store verification status for each member
+        const verifiedStatus = {
+            1: false,
+            2: false,
+            3: false,
+            4: false
+        };
+
+        // Store student data for each member
+        const studentData = {
+            1: null,
+            2: null,
+            3: null,
+            4: null
+        };
+
+        // ---------------------------------------------------------------
+        // No reservation / buffer-time system — removed by request
+        // ---------------------------------------------------------------
+        const myReservations = new Set(); // kept as stub so references don't break
+
+        function clearMemberTimers(memberIndex) { /* no-op — timers removed */ }
+
+        function startCountdown(memberIndex, secondsLeft) { /* no-op — timers removed */ }
+
+        function startBlockedPolling(memberIndex, rollno, blockedData) { /* no-op — blocked state removed */ }
+
+        function resetMemberSlot(memberIndex) {
+            const card = safeGetElement(`member${memberIndex}Card`);
+            if (card) card.classList.remove('verified');
+
+            const detailEl = safeGetElement(`student_details_${memberIndex}`);
+            if (detailEl) detailEl.classList.remove('show');
+
+            const contactInfo = safeGetElement(`contact_info_${memberIndex}`);
+            if (contactInfo) contactInfo.style.display = 'none';
+
+            const verifyBtn = safeGetElement(`verify_btn_${memberIndex}`);
+            if (verifyBtn) { verifyBtn.style.display = 'inline-flex'; verifyBtn.disabled = false; }
+
+            checkAllVerified();
+        }
+
+        function releaseMyReservations() { /* no-op — reservations removed */ }
+
+        // ---------------------------------------------------------------
+        // Persistence helpers
+        // ---------------------------------------------------------------
+        function saveState() {
+            const state = {
+                team_name: (safeGetElement('team_name') || {}).value || '',
+                members: {}
+            };
+            for (let i = 1; i <= 4; i++) {
+                const rollno = safeGetElement(`member_${i}_rollno`);
+                const email = safeGetElement(`member_${i}_email`);
+                const contact = safeGetElement(`member_${i}_contact`);
+                const gender = safeGetElement(`member_${i}_gender`);
+                state.members[i] = {
+                    rollno: rollno ? rollno.value : '',
+                    email: email ? email.value : '',
+                    contact: contact ? contact.value : '',
+                    gender: gender ? gender.value : '',
+                    verified: verifiedStatus[i],
+                    student: studentData[i]
+                };
+            }
+            try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { }
+        }
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(LS_KEY);
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) { return null; }
+        }
+
+        function clearState() {
+            try { localStorage.removeItem(LS_KEY); } catch (e) { }
+        }
+
+        function restoreVerifiedUI(i, student) {
+            verifiedStatus[i] = true;
+            studentData[i] = student;
+
+            const memberCard = safeGetElement(`member_${i}Card`);
+            if (memberCard) memberCard.classList.add('verified');
+
+            const nameEl = safeGetElement(`student_name_${i}`);
+            const branchEl = safeGetElement(`student_branch_${i}`);
+            const yearEl = safeGetElement(`student_year_${i}`);
+            const detailEl = safeGetElement(`student_details_${i}`);
+
+            if (nameEl) nameEl.textContent = student.name;
+            if (branchEl) branchEl.textContent = student.branch;
+            if (yearEl) yearEl.textContent = student.year;
+            if (detailEl) detailEl.classList.add('show');
+
+            const contactInfo = safeGetElement(`contact_info_${i}`);
+            if (contactInfo) contactInfo.style.display = 'flex';
+
+            const verifyBtn = safeGetElement(`verify_btn_${i}`);
+            if (verifyBtn) verifyBtn.style.display = 'none';
+
+            // Unlock other members if team lead is restored
+            if (i === 1) {
+                unlockOtherMembers();
+            }
+        }
+
+        // Safe element getter
+        function safeGetElement(id) {
+            return document.getElementById(id);
+        }
+
+        // Add this function to check team name availability in real-time
+        function checkTeamName(input) {
+            if (input) {
+                input.value = input.value.toUpperCase();
+
+                const teamName = input.value.trim();
+                if (teamName.length < 3) return;
+
+                // Show loading indicator
+                const teamNameError = document.getElementById('team_name_error');
+                if (teamNameError) {
+                    teamNameError.textContent = 'Checking availability...';
+                    teamNameError.style.color = '#666';
+                    teamNameError.style.display = 'block';
+                }
+
+                fetch("{{ url_for('check_team_name') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ team_name: teamName })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            input.classList.add('is-invalid');
+                            if (teamNameError) {
+                                teamNameError.textContent = '❌ Team name already exists. Please choose another name.';
+                                teamNameError.style.color = '#dc2626';
+                                teamNameError.style.display = 'block';
+                            }
+                            // Disable submit button if team name exists
+                            const submitBtn = document.getElementById('submitBtn');
+                            if (submitBtn) {
+                                submitBtn.disabled = true;
+                            }
+                        } else {
+                            input.classList.remove('is-invalid');
+                            if (teamNameError) {
+                                teamNameError.textContent = '✓ Team name available';
+                                teamNameError.style.color = '#28a745';
+                                teamNameError.style.display = 'block';
+
+                                // Hide after 3 seconds
+                                setTimeout(() => {
+                                    if (teamNameError) teamNameError.style.display = 'none';
+                                }, 3000);
+                            }
+
+                            // Check if all members are verified to enable submit
+                            checkAllVerified();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking team name:', error);
+                    });
+            }
+        }
+
+        // ---------------------------------------------------------------
+        // Lock / unlock helpers for members 2-4
+        // ---------------------------------------------------------------
+        function unlockOtherMembers() {
+            [2, 3, 4].forEach(function (i) {
+                const card = safeGetElement('member' + i + 'Card');
+                if (card) {
+                    card.classList.remove('locked');
+                    // Forcefully clear any inline styles that may be blocking interactivity
+                    card.style.opacity = '1';
+                    card.style.pointerEvents = 'auto';
+                    card.style.userSelect = 'auto';
+                    // Re-enable all form elements inside
+                    card.querySelectorAll('input, button, select, textarea').forEach(function (el) {
+                        el.disabled = false;
+                        el.style.pointerEvents = '';
+                    });
+                }
+            });
+            console.log('Members 2-4 unlocked');
+        }
+
+        function lockOtherMembers() {
+            [2, 3, 4].forEach(function (i) {
+                const card = safeGetElement(`member_${i}Card`);
+                if (card) {
+                    card.classList.add('locked');
+                    // Visually disable inputs
+                    card.querySelectorAll('input, button, select').forEach(function (el) {
+                        el.disabled = true;
+                    });
+                }
+            });
+        }
+
+        // Check for duplicate roll numbers across all member slots
+        function checkDuplicateMembers(currentMemberIndex, rollno) {
+            let duplicateFound = false;
+            let duplicateMemberIndex = null;
+
+            for (let i = 1; i <= 4; i++) {
+                if (i === currentMemberIndex) continue;
+                const otherRollno = document.getElementById(`member_${i}_rollno`);
+                if (otherRollno && otherRollno.value &&
+                    otherRollno.value.toUpperCase() === rollno.toUpperCase()) {
+                    duplicateFound = true;
+                    duplicateMemberIndex = i;
+                    break;
+                }
+            }
+
+            return { duplicateFound, duplicateMemberIndex };
+        }
+
+        // Verify Team Lead — requires Roll Number + DOB
+        function verifyTeamLead() {
+            const rollnoInput = safeGetElement('member_1_rollno');
+            const dobInput = safeGetElement('member_1_dob');
+
+            const rollno = rollnoInput ? rollnoInput.value.trim().toUpperCase() : '';
+            const dob = dobInput ? dobInput.value.trim() : '';
+
+            // Clear previous errors
+            clearErrors(1);
+            const dobErrorEl = safeGetElement('member_1_dob_error');
+            if (dobErrorEl) { dobErrorEl.textContent = ''; dobErrorEl.style.display = 'none'; }
+            if (dobInput) dobInput.classList.remove('is-invalid');
+
+            if (!rollno) {
+                showError(1, 'rollno', 'Roll number is required');
+                return;
+            }
+            if (rollno.length !== 10) {
+                showError(1, 'rollno', 'Roll number must be 10 characters');
+                return;
+            }
+            if (!dob) {
+                if (dobErrorEl) { dobErrorEl.textContent = 'Date of birth is required'; dobErrorEl.style.display = 'block'; }
+                if (dobInput) dobInput.classList.add('is-invalid');
+                return;
+            }
+
+            // Show loading
+            const verifyBtn = safeGetElement('verify_btn_1');
+            if (verifyBtn) {
+                verifyBtn.disabled = true;
+                verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verifying...';
+            }
+
+            fetch("{{ url_for('check_student') }}", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rollno: rollno, dob: dob, member_index: 1 })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        verifiedStatus[1] = true;
+                        studentData[1] = data.student;
+
+                        const memberCard = safeGetElement('member1Card');
+                        if (memberCard) { memberCard.classList.add('verified'); }
+
+                        const nameEl = safeGetElement('student_name_1');
+                        const branchEl = safeGetElement('student_branch_1');
+                        const yearEl = safeGetElement('student_year_1');
+                        const detailEl = safeGetElement('student_details_1');
+                        if (nameEl) nameEl.textContent = data.student.name;
+                        if (branchEl) branchEl.textContent = data.student.branch;
+                        if (yearEl) yearEl.textContent = data.student.year;
+                        if (detailEl) detailEl.classList.add('show');
+
+                        const contactInfo = safeGetElement('contact_info_1');
+                        if (contactInfo) contactInfo.style.display = 'flex';
+
+                        if (verifyBtn) verifyBtn.style.display = 'none';
+
+                        unlockOtherMembers();
+                        saveState();
+                        checkAllVerified();
+
+                    } else if (data.blocked) {
+                        verifiedStatus[1] = false;
+                        studentData[1] = null;
+                        startBlockedPolling(1, rollno, data);
+                    } else {
+                        verifiedStatus[1] = false;
+                        // Show DOB error if that's the cause
+                        if (data.error === 'Invalid date of birth') {
+                            if (dobErrorEl) { dobErrorEl.textContent = '❌ Date of birth does not match our records'; dobErrorEl.style.display = 'block'; }
+                            if (dobInput) dobInput.classList.add('is-invalid');
+                        } else {
+                            showError(1, 'rollno', data.error || 'Verification failed');
+                        }
+                        if (verifyBtn) verifyBtn.style.display = 'inline-flex';
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    showError(1, 'rollno', 'Network error. Please try again.');
+                    verifiedStatus[1] = false;
+                    if (verifyBtn) verifyBtn.style.display = 'inline-flex';
+                })
+                .finally(() => {
+                    if (verifyBtn && verifyBtn.style.display !== 'none') {
+                        verifyBtn.disabled = false;
+                        verifyBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Verify &amp; Unlock Team';
+                    }
+                });
+        }
+
+        function handleMember4Input(input) {
+            const val = input.value.trim();
+            const verifyBtn = safeGetElement('verify_btn_4');
+            if (val) {
+                if (verifyBtn && !verifiedStatus[4]) {
+                    verifyBtn.style.display = 'inline-flex';
+                }
+            } else {
+                clearErrors(4);
+                clearMemberTimers(4);
+                verifiedStatus[4] = false;
+                studentData[4] = null;
+                const memberCard = safeGetElement('member4Card');
+                if (memberCard) memberCard.classList.remove('verified', 'reserved', 'blocked');
+                const detailsEl = safeGetElement('student_details_4');
+                if (detailsEl) detailsEl.classList.remove('show');
+                const contactInfo = safeGetElement('contact_info_4');
+                if (contactInfo) contactInfo.style.display = 'none';
+                if (verifyBtn) verifyBtn.style.display = 'none';
+                checkAllVerified();
+            }
+        }
+
+        // Verify a student — Roll Number only (for members 2-4)
+        function verifyStudent(memberIndex) {
+            const rollnoInput = safeGetElement(`member_${memberIndex}_rollno`);
+            if (!rollnoInput) {
+                console.error(`Roll number input for member ${memberIndex} not found`);
+                return;
+            }
+
+            const rollno = rollnoInput.value.trim().toUpperCase();
+            clearErrors(memberIndex);
+            clearMemberTimers(memberIndex);
+
+            // Hide any stale blocked/timer banners
+            const timerEl = safeGetElement(`reservation_timer_${memberIndex}`);
+            if (timerEl) timerEl.classList.remove('show');
+            const alertEl = safeGetElement(`blocked_alert_${memberIndex}`);
+            if (alertEl) alertEl.classList.remove('show');
+
+            if (!rollno) {
+                if (memberIndex === 4) {
+                    clearErrors(4);
+                    clearMemberTimers(4);
+                    verifiedStatus[4] = false;
+                    studentData[4] = null;
+                    const memberCard = safeGetElement('member4Card');
+                    if (memberCard) memberCard.classList.remove('verified', 'reserved', 'blocked');
+                    const detailsEl = safeGetElement('student_details_4');
+                    if (detailsEl) detailsEl.classList.remove('show');
+                    const contactInfo = safeGetElement('contact_info_4');
+                    if (contactInfo) contactInfo.style.display = 'none';
+                    const verifyBtn = safeGetElement('verify_btn_4');
+                    if (verifyBtn) verifyBtn.style.display = 'none';
+                    checkAllVerified();
+                    return;
+                }
+                showError(memberIndex, 'rollno', 'Roll number is required');
+                return;
+            }
+
+            if (rollno.length !== 10) {
+                showError(memberIndex, 'rollno', 'Roll number must be 10 characters');
+                return;
+            }
+
+            // Check for duplicate roll numbers within the form
+            const duplicateCheck = checkDuplicateMembers(memberIndex, rollno);
+            if (duplicateCheck.duplicateFound) {
+                showError(memberIndex, 'rollno',
+                    `This roll number is already used for Member ${duplicateCheck.duplicateMemberIndex}`);
+                verifiedStatus[memberIndex] = false;
+                const memberCard = safeGetElement(`member${memberIndex}Card`);
+                if (memberCard) memberCard.classList.remove('verified', 'reserved', 'blocked');
+                const detailsEl = safeGetElement(`student_details_${memberIndex}`);
+                if (detailsEl) detailsEl.classList.remove('show');
+                const contactInfo = safeGetElement(`contact_info_${memberIndex}`);
+                if (contactInfo) contactInfo.style.display = 'none';
+                const verifyBtn = safeGetElement(`verify_btn_${memberIndex}`);
+                if (verifyBtn) verifyBtn.style.display = 'inline-flex';
+                return;
+            }
+
+            // Show loading state
+            const verifyBtn = safeGetElement(`verify_btn_${memberIndex}`);
+            if (verifyBtn) {
+                verifyBtn.disabled = true;
+                verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verifying...';
+            }
+
+            // Show verify button for member 4 if roll number entered
+            if (memberIndex === 4 && verifyBtn) {
+                verifyBtn.style.display = 'inline-flex';
+            }
+
+            // API call — roll number only
+            fetch("{{ url_for('check_student') }}", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    rollno: rollno,
+                    member_index: memberIndex
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // ---- VERIFIED ----
+                        verifiedStatus[memberIndex] = true;
+                        studentData[memberIndex] = data.student;
+
+                        const memberCard = safeGetElement(`member${memberIndex}Card`);
+                        if (memberCard) { memberCard.classList.add('verified'); }
+
+                        const nameEl = safeGetElement(`student_name_${memberIndex}`);
+                        const branchEl = safeGetElement(`student_branch_${memberIndex}`);
+                        const yearEl = safeGetElement(`student_year_${memberIndex}`);
+                        const detailEl = safeGetElement(`student_details_${memberIndex}`);
+
+                        if (nameEl) nameEl.textContent = data.student.name;
+                        if (branchEl) branchEl.textContent = data.student.branch;
+                        if (yearEl) yearEl.textContent = data.student.year;
+                        if (detailEl) detailEl.classList.add('show');
+
+                        const contactInfo = safeGetElement(`contact_info_${memberIndex}`);
+                        if (contactInfo) contactInfo.style.display = 'flex';
+
+                        if (verifyBtn) verifyBtn.style.display = 'none';
+
+                        // Unlock members 2-4 once Team Lead is verified
+                        if (memberIndex === 1) unlockOtherMembers();
+
+                        saveState();
+                        checkAllVerified();
+
+                    } else if (data.blocked) {
+                        // ---- BLOCKED (another team holds this student) ----
+                        verifiedStatus[memberIndex] = false;
+                        studentData[memberIndex] = null;
+                        startBlockedPolling(memberIndex, rollno, data);
+
+                    } else {
+                        // ---- HARD ERROR (already registered, not found, etc.) ----
+                        verifiedStatus[memberIndex] = false;
+
+                        if (data.error === 'Already registered') {
+                            showError(memberIndex, 'rollno',
+                                `Student already registered in team "${data.team_name || 'unknown'}" (ID: ${data.team_id || 'unknown'})`);
+                        } else {
+                            showError(memberIndex, 'rollno', data.error || 'Verification failed');
+                        }
+
+                        if (verifyBtn) verifyBtn.style.display = 'inline-flex';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError(memberIndex, 'rollno', 'Network error. Please try again.');
+                    verifiedStatus[memberIndex] = false;
+                    if (verifyBtn) verifyBtn.style.display = 'inline-flex';
+                })
+                .finally(() => {
+                    if (verifyBtn && verifyBtn.style.display !== 'none') {
+                        verifyBtn.disabled = false;
+                        verifyBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Verify Student';
+                    }
+                });
+        }
+
+
+        function clearErrors(memberIndex) {
+            const rollnoError = safeGetElement(`member_${memberIndex}_rollno_error`);
+            const rollnoInput = safeGetElement(`member_${memberIndex}_rollno`);
+            if (rollnoError) { rollnoError.textContent = ''; rollnoError.style.display = 'none'; }
+            if (rollnoInput) rollnoInput.classList.remove('is-invalid');
+        }
+
+        function showError(memberIndex, field, message) {
+            const errorElement = safeGetElement(`member_${memberIndex}_${field}_error`);
+            const inputElement = safeGetElement(`member_${memberIndex}_${field}`);
+
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+
+            if (inputElement) {
+                inputElement.classList.add('is-invalid');
+            }
+        }
+
+        function checkAllVerified() {
+            // Member 1, 2, 3 are required. Member 4 is optional (but if roll number is entered, it must be verified).
+            const m4Input = safeGetElement('member_4_rollno');
+            const m4Rollno = m4Input ? m4Input.value.trim() : '';
+            const member4Ok = !m4Rollno || verifiedStatus[4];
+            const allRequiredVerified = verifiedStatus[1] && verifiedStatus[2] && verifiedStatus[3] && member4Ok;
+
+            const submitBtn = safeGetElement('submitBtn');
+            if (submitBtn) {
+                submitBtn.disabled = !allRequiredVerified;
+            }
+
+            if (allRequiredVerified) {
+                // Update progress steps
+                const step2 = safeGetElement('step2');
+                const step2Label = safeGetElement('step2Label');
+                const step3 = safeGetElement('step3');
+                const step3Label = safeGetElement('step3Label');
+
+                if (step2) step2.classList.add('completed');
+                if (step2Label) step2Label.classList.add('active');
+                if (step3) step3.classList.add('active');
+                if (step3Label) step3Label.classList.add('active');
+            } else {
+                const step2 = safeGetElement('step2');
+                const step2Label = safeGetElement('step2Label');
+                const step3 = safeGetElement('step3');
+                const step3Label = safeGetElement('step3Label');
+
+                if (step2) step2.classList.remove('completed');
+                if (step2Label) step2Label.classList.remove('active');
+                if (step3) step3.classList.remove('active');
+                if (step3Label) step3Label.classList.remove('active');
+            }
+        }
+
+        // Form validation before submit
+        const registrationForm = safeGetElement('registrationForm');
+        if (registrationForm) {
+            registrationForm.addEventListener('submit', function (e) {
+                // Prevent double submit
+                if (registrationForm.dataset.submitting === 'true') {
+                    e.preventDefault();
+                    return;
+                }
+
+                // Check if all required members are verified
+                const m4Input = safeGetElement('member_4_rollno');
+                const m4Rollno = m4Input ? m4Input.value.trim() : '';
+                const member4Ok = !m4Rollno || verifiedStatus[4];
+                if (!verifiedStatus[1] || !verifiedStatus[2] || !verifiedStatus[3] || !member4Ok) {
+                    e.preventDefault();
+                    alert('Please verify all required members before submitting');
+                    return;
+                }
+
+                // Validate email and contact for verified members
+                for (let i = 1; i <= 4; i++) {
+                    if (i === 4) {
+                        const rollnoEl = safeGetElement('member_4_rollno');
+                        const rollno = rollnoEl ? rollnoEl.value.trim() : '';
+                        if (!rollno) {
+                            continue; // skip validation of email/contact/gender for optional member 4 if empty
+                        }
+                    }
+
+                    const email = safeGetElement(`member_${i}_email`);
+                    const contact = safeGetElement(`member_${i}_contact`);
+                    const gender = safeGetElement(`member_${i}_gender`);
+
+                    if (email && !email.value) {
+                        e.preventDefault();
+                        const emailError = safeGetElement(`member_${i}_email_error`);
+                        if (emailError) {
+                            emailError.textContent = 'Email is required';
+                            emailError.style.display = 'block';
+                        }
+                        email.classList.add('is-invalid');
+                        return;
+                    }
+
+                    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                        e.preventDefault();
+                        const emailError = safeGetElement(`member_${i}_email_error`);
+                        if (emailError) {
+                            emailError.textContent = 'Invalid email format';
+                            emailError.style.display = 'block';
+                        }
+                        email.classList.add('is-invalid');
+                        return;
+                    }
+
+                    if (contact && (!contact.value || contact.value.length !== 10)) {
+                        e.preventDefault();
+                        const contactError = safeGetElement(`member_${i}_contact_error`);
+                        if (contactError) {
+                            contactError.textContent = 'Valid 10-digit contact number required';
+                            contactError.style.display = 'block';
+                        }
+                        contact.classList.add('is-invalid');
+                        return;
+                    }
+
+                    if (gender && !gender.value) {
+                        e.preventDefault();
+                        alert(`Please select gender for Member ${i}`);
+                        return;
+                    }
+                }
+
+                // Mark form as submitting to prevent double submits
+                registrationForm.dataset.submitting = 'true';
+
+                // Clear localStorage on successful submission
+                clearState();
+
+                // Show loading state
+                const submitBtn = safeGetElement('submitBtn');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+                }
+            });
+        }
+
+        // Initialize — restore from localStorage then optionally re-verify
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOM loaded, checking elements...');
+
+            // --- Payment Persistence: Redirect to payment if a pending payment exists ---
+            try {
+                // If server signals session expired, clear the stale pending flag
+                var urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('clear_pending') === '1') {
+                    localStorage.removeItem('hackathon_pending_payment');
+                } else {
+                    var pendingPayment = localStorage.getItem('hackathon_pending_payment');
+                    if (pendingPayment) {
+                        // Redirect to payment page; Flask session persists via cookie
+                        window.location.href = "{{ url_for('payment') }}";
+                        return;
+                    }
+                }
+            } catch (e) { }
+
+            // Hide verify button for optional member 4 initially if empty
+            const m4Input = safeGetElement('member_4_rollno');
+            if (m4Input && !m4Input.value.trim()) {
+                const btn = safeGetElement('verify_btn_4');
+                if (btn) btn.style.display = 'none';
+            }
+
+            {% if form_data %}
+            // Server sent back form_data (e.g. after a validation failure).
+            // Trigger verification for members that already had both fields.
+            {% for i in range(1, 5) %}
+            {% if form_data['member_' ~i ~ '_rollno'] %}
+            setTimeout(() => verifyStudent({{ i }}), 500);
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        // Try to restore a previous incomplete session from localStorage
+        const saved = loadState();
+        if (saved) {
+            // Restore team name
+            const teamNameEl = safeGetElement('team_name');
+            if (teamNameEl && saved.team_name) teamNameEl.value = saved.team_name;
+
+            // Restore member fields and re-verify
+            const verifyDelays = [400, 700, 1000, 1300];
+            for (let i = 1; i <= 4; i++) {
+                const m = saved.members && saved.members[i];
+                if (!m || !m.rollno) continue;
+
+                const rollnoEl = safeGetElement(`member_${i}_rollno`);
+                const emailEl = safeGetElement(`member_${i}_email`);
+                const contactEl = safeGetElement(`member_${i}_contact`);
+                const genderEl = safeGetElement(`member_${i}_gender`);
+
+                if (rollnoEl) rollnoEl.value = m.rollno;
+                if (emailEl) emailEl.value = m.email || '';
+                if (contactEl) contactEl.value = m.contact || '';
+                if (genderEl) genderEl.value = m.gender || '';
+
+                // If previously verified, restore UI without re-hitting server
+                if (m.verified && m.student) {
+                    (function (idx, student) {
+                        setTimeout(() => restoreVerifiedUI(idx, student), verifyDelays[idx - 1]);
+                    })(i, m.student);
+                } else if (m.rollno) {
+                    (function (idx) {
+                        setTimeout(() => verifyStudent(idx), verifyDelays[idx - 1]);
+                    })(i);
+                }
+            }
+
+            // After restoring, re-check submit button state
+            setTimeout(checkAllVerified, 1500);
+        }
+        {% endif %}
+
+        // Auto-save on any input change
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('input', saveState);
+            el.addEventListener('change', saveState);
+        });
+        // Release reservations if user navigates away without submitting
+        window.addEventListener('beforeunload', releaseMyReservations);
+
+        // Also release on form submit (server will re-confirm, no double-release issue)
+        const registrationFormEl = safeGetElement('registrationForm');
+        if (registrationFormEl) {
+            registrationFormEl.addEventListener('submit', function () {
+                // Clear beforeunload so it doesn't fire on intentional submit
+                window.removeEventListener('beforeunload', releaseMyReservations);
+            });
+        }
+        });
+
+        // Admin access shortcuts
+        let konamiIndex = 0;
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+        document.addEventListener('keydown', function (e) {
+            // Ctrl+E for admin
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                window.location.href = "{{ url_for('admin_login') }}";
+            }
+
+            // Konami code
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    window.location.href = "{{ url_for('admin_login') }}";
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+    </script>
+</body>
+
+</html>

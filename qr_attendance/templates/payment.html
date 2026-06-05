@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Team Registration</title>
+    <!-- Favicon -->
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dvfqvqbkn/image/upload/v1752482876/cc_lbohfd.png">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts - Poppins (professional, clean font) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding-top: 100px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header/Navbar - Matching SAMISTI style */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .college-name {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .club-badge {
+            background: #c41e3a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .club-logo {
+            height: 50px;
+            width: auto;
+            transition: all 0.3s ease;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            color: #1a1a1a;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #c41e3a;
+            transform: translateY(-3px);
+        }
+
+        /* Main Content */
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Payment Card */
+        .payment-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            padding: 30px;
+            transition: all 0.3s ease;
+            border: 1px solid #eaeaea;
+            margin-bottom: 20px;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            border-bottom: 2px solid #c41e3a;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .card-header i {
+            color: #c41e3a;
+        }
+
+        /* Team Info Card */
+        .team-info {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            padding: 30px;
+            transition: all 0.3s ease;
+            border: 1px solid #eaeaea;
+            height: 100%;
+        }
+
+        .team-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .team-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .team-info h3 i {
+            color: #c41e3a;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 500;
+        }
+
+        .badge.bg-primary {
+            background: #1a1a1a !important;
+            color: white;
+        }
+
+        .badge.bg-success {
+            background: #c41e3a !important;
+            color: white;
+        }
+
+        .team-info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .team-info li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eaeaea;
+            transition: all 0.3s ease;
+        }
+
+        .team-info li:hover {
+            background: rgba(196, 30, 58, 0.05);
+            padding-left: 10px;
+        }
+
+        .team-info li:last-child {
+            border-bottom: none;
+        }
+
+        .team-info li i {
+            color: #c41e3a;
+        }
+
+        /* Payment Method Tabs */
+        .payment-method-tabs {
+            display: flex;
+            border-bottom: 1px solid #eaeaea;
+            margin-bottom: 25px;
+            gap: 10px;
+        }
+
+        .payment-method-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #666;
+            background: transparent;
+        }
+
+        .payment-method-tab.active {
+            color: #c41e3a;
+            background: rgba(196, 30, 58, 0.1);
+            border-color: #eaeaea;
+            border-bottom-color: white;
+        }
+
+        .payment-method-tab:hover:not(.active) {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .payment-method-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .payment-method-content.active {
+            display: block;
+        }
+
+        /* Verification Message */
+        .verification-message {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            animation: pulse 2s infinite;
+        }
+
+        .verification-message i {
+            color: #ffc107;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .verification-message p {
+            margin: 0;
+            color: #856404;
+            font-weight: 500;
+        }
+
+        .verification-message small {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+        }
+
+        /* QR Code Container */
+        .qr-code-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            display: inline-block;
+            margin: 20px 0;
+            border: 1px dashed #ddd;
+            transition: all 0.3s ease;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .qr-code-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .qr-code {
+            width: 100%;
+            height: auto;
+            border: 1px solid #eee;
+            padding: 10px;
+            background: white;
+        }
+
+        /* Payment Instructions */
+        .payment-instructions {
+            background: rgba(196, 30, 58, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #c41e3a;
+        }
+
+        .payment-instructions h6 {
+            color: #c41e3a;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .payment-instructions ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .payment-instructions li {
+            margin-bottom: 8px;
+            color: #4a4a4a;
+        }
+
+        /* Mobile Payment Options */
+        .payment-options-container {
+            margin: 20px 0;
+        }
+
+        .payment-option {
+            display: block;
+            padding: 15px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+            height: 100%;
+            border: 1px solid #eee;
+        }
+
+        .payment-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .payment-logo {
+            max-height: 40px;
+            width: auto;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .payment-option:hover .payment-logo {
+            transform: scale(1.05);
+        }
+
+        /* Form Elements */
+        .form-label {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label i {
+            color: #c41e3a;
+        }
+
+        .form-control, .form-select {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #eaeaea;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #c41e3a;
+            box-shadow: 0 0 0 0.25rem rgba(196, 30, 58, 0.25);
+        }
+
+        .input-group-text {
+            background: #f8f9fa;
+            border: 1px solid #eaeaea;
+            border-right: none;
+            color: #c41e3a;
+        }
+
+        .input-group .form-control {
+            border-left: none;
+        }
+
+        .input-group .form-control:focus {
+            border-left: none;
+        }
+
+        .text-muted {
+            color: #666 !important;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* File Upload */
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .file-upload-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: #f8f9fa;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .file-upload-button:hover {
+            background: #e9ecef;
+            border-color: #ced4da;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            font-size: 100px;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-name {
+            margin-left: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Preview */
+        .preview-container {
+            margin-top: 15px;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* CTA Button */
+        .btn-pay {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            background: #1a1a1a;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-pay:hover {
+            background: #333;
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn-pay i {
+            color: #c41e3a;
+        }
+
+        .btn-pay.loading .loader {
+            display: inline-block;
+        }
+
+        .btn-pay.loading span {
+            display: none;
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Form Validation */
+        .invalid-feedback {
+            color: #dc3545;
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+
+        /* Floating Contact Button */
+        .floating-contact-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .floating-contact-btn {
+            width: 60px;
+            height: 60px;
+            background: #c41e3a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 50%;
+        }
+
+        .floating-contact-btn:hover {
+            transform: scale(1.1);
+            background: #a01830;
+        }
+
+        .contact-options {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            width: 280px;
+        }
+
+        .contact-options.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .contact-toast {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border: none;
+            overflow: hidden;
+        }
+
+        .contact-toast .toast-header {
+            background: #1a1a1a;
+            color: white;
+            border-bottom: none;
+            padding: 1rem;
+        }
+
+        .contact-toast .toast-body {
+            padding: 1rem;
+        }
+
+        .contact-btn {
+            margin: 5px;
+            width: 100%;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+            border-radius: 50px;
+            padding: 8px 15px;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: #1a1a1a;
+            color: white;
+            padding: 1.5rem;
+            border-bottom: none;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .modal-title {
+            font-weight: 600;
+        }
+
+        .modal-title i {
+            color: #c41e3a;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #eaeaea;
+            padding: 1rem 2rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .developer-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .developer-info p {
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+
+        .developer-info strong {
+            color: white;
+        }
+
+        .footer-dev-logo {
+            height: auto;
+            max-height: 50px;
+            width: auto;
+            max-width: 200px;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+
+        .footer-dev-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .developer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .dev-social-link {
+            color: #ccc;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .dev-social-link:hover {
+            color: #c41e3a;
+            transform: translateY(-3px);
+        }
+
+        .org-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-org-logo {
+            height: auto;
+            max-height: 60px;
+            width: auto;
+            max-width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .footer-org-logo:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        .club-name {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .club-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .club-social-link {
+            color: #ccc;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .club-social-link:hover {
+            color: #c41e3a;
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        /* Thank You Message */
+        #thankYouMessage {
+            display: none;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        #thankYouMessage i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #c41e3a;
+        }
+
+        #thankYouMessage h4 {
+            color: #c41e3a;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate__fadeInDown {
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .animate__fadeIn {
+            animation: fadeIn 1s ease-out;
+        }
+
+        .animate__fadeInUp {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .animate-delay-1 { animation-delay: 0.2s; }
+        .animate-delay-2 { animation-delay: 0.4s; }
+
+        /* Responsive Design */
+        @media (min-width: 992px) {
+            .payment-options-container {
+                display: none;
+            }
+            
+            .desktop-only {
+                display: block;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .desktop-only {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 120px;
+            }
+
+            .header {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .logo-container {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .brand-name {
+                font-size: 1.5rem;
+            }
+
+            .club-logo {
+                height: 40px;
+            }
+
+            .social-links {
+                gap: 15px;
+            }
+
+            .social-links a {
+                font-size: 1.1rem;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            .card-header h2 {
+                font-size: 1.8rem;
+            }
+
+            .payment-card, .team-info {
+                padding: 20px;
+            }
+
+            .payment-method-tabs {
+                flex-direction: column;
+                border-bottom: none;
+            }
+
+            .payment-method-tab {
+                border-radius: 8px;
+                border: 1px solid #eaeaea;
+                margin-bottom: 5px;
+            }
+
+            .payment-method-tab.active {
+                border-bottom: 1px solid #eaeaea;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding-top: 140px;
+                font-size: 15px;
+            }
+
+            .header {
+                padding: 0.8rem 1rem;
+            }
+
+            .brand-name {
+                font-size: 1.2rem;
+            }
+
+            .college-name {
+                font-size: 0.8rem;
+            }
+
+            .club-badge {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+
+            .club-logo {
+                height: 35px;
+            }
+
+            .container {
+                padding: 15px 10px;
+            }
+
+            .card-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .payment-card, .team-info {
+                padding: 15px;
+            }
+
+            .form-control, .form-select {
+                padding: 10px 12px;
+                font-size: 15px;
+            }
+
+            .btn-pay {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .floating-contact-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .contact-options {
+                width: 260px;
+            }
+
+            .org-logos {
+                gap: 15px;
+            }
+
+            .footer-org-logo {
+                max-height: 50px;
+                max-width: 120px;
+            }
+
+            .club-name {
+                font-size: 1.1rem;
+            }
+
+            .developer-info p {
+                font-size: 0.95rem;
+            }
+
+            .copyright {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .org-logos {
+                flex-direction: column;
+            }
+
+            .club-links {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Matching SAMISTI style -->
+    <header class="header animate__fadeInDown">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo/cc.png') }}" 
+                 alt="Creators Club Logo" 
+                 class="club-logo">
+            <div class="brand-section">
+                <div class="brand-name">CREATOR CLUB</div>
+                <div class="college-name">Sphoorthy Engineering College</div>
+            </div>
+            <div class="club-badge">SEC</div>
+        </div>
+        <div class="social-links">
+            <a href="https://instagram.com/creator_club_official" target="_blank" title="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="mailto:creator_club@sphoorthyengg.ac.in" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-6 col-lg-8">
+                <div class="payment-card animate__fadeInUp">
+                    <div class="card-header">
+                        <h2 class="mb-0 text-center"><i class="fas fa-credit-card me-2"></i>Complete Your Registration</h2>
+                    </div>
+                    <div class="card-body">
+                        {% set amount = team.members|length * 200 %}
+                        {% if team.members|length >= 3 %}
+                            {% set amount = 800 %}
+                        {% endif %}
+                        <p class="mb-4 text-center">Please choose your payment method to complete your registration of <strong>₹{{ amount }}</strong>.</p>
+
+                        <!-- Payment Method (Online Only) -->
+                        <div class="payment-method-tabs">
+                            <div class="payment-method-tab active" data-target="online-payment" style="cursor:default;">
+                                <i class="fas fa-mobile-alt me-2"></i>Online Payment
+                            </div>
+                        </div>
+
+                        <form method="POST" action="{{ url_for('payment') }}" enctype="multipart/form-data" id="paymentForm" class="needs-validation" novalidate>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="payment_method" id="payment_method" value="online">
+                            <input type="hidden" name="amount" value="{{ amount }}">
+
+                            <!-- Online Payment Content -->
+                            <div id="online-payment" class="payment-method-content active">
+                                <!-- Verification Message -->
+                                <div class="verification-message">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-clock mt-1"></i>
+                                        <div>
+                                            <p><strong>Note:</strong> Your registration will be completed only after admin verification of your payment.</p>
+                                            <small>You will receive a confirmation email once verified.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Mobile Notice -->
+                                <div class="d-lg-none mb-3">
+                                    <div class="alert alert-info">
+                                        <h6><i class="fas fa-mobile-alt me-2"></i>Mobile Users</h6>
+                                        <p class="mb-0 small">Tap on your preferred payment app below to pay instantly. If you don't have these apps, scan the QR code instead.</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Desktop Notice -->
+                                <div class="desktop-only mb-3">
+                                    <div class="alert alert-info">
+                                        <h6><i class="fas fa-desktop me-2"></i>Desktop Users</h6>
+                                        <p class="mb-0 small">Please scan the QR code below using any UPI payment app on your mobile device.</p>
+                                    </div>
+                                </div>
+
+                                <!-- QR Code Section -->
+                                <div class="text-center my-4">
+    <div class="qr-code-container">
+        <img src="https://i.ibb.co/ND8HF2h/Whats-App-Image-2026-02-15-at-19-48-15.jpg" 
+             alt="UPI QR Code" class="img-fluid qr-code">
+        <p class="small mt-2"><strong>Amount: 
+            {% set amount = team.members|length * 200 %}
+            {% if team.members|length >= 3 %}
+                {% set amount = 800 %}
+            {% endif %}
+            ₹{{ amount }}
+        </strong></p>
+    </div>
+</div>
+                                    
+                                   <div class="payment-instructions text-start">
+    <h6><i class="fas fa-info-circle me-2"></i>Payment Instructions</h6>
+    <ul>
+        <li>Scan the QR code with any UPI app</li>
+        <li>Enter the exact amount: 
+            <strong>₹
+                {% set amount = team.members|length * 200 %}
+                {% if team.members|length >= 3 %}
+                    {% set amount = 800 %}
+                {% endif %}
+                {{ amount }}
+            </strong>
+        </li>
+        <li>Complete the payment</li>
+        <li>Submit your transaction details below</li>
+    </ul>
+</div>
+
+                             <!-- Payment Options Section - Mobile Only -->
+<div class="payment-options-container d-lg-none mb-4">
+    <h6 class="text-center mb-3">Pay with:</h6>
+    <div class="row g-3 justify-content-center">
+        {% set amount = team.members|length * 200 %}
+        {% if team.members|length >= 3 %}
+            {% set amount = 800 %}
+        {% endif %}
+        
+        <!-- PhonePe -->
+        <div class="col-6 col-sm-4">
+            <a href="phonepe://pay?pa=9059160424@ybl&pn=Creators%20Club&am={{ amount }}&cu=INR&tn=Team%20{{ team.team_id }}%20Registration" 
+               class="payment-option">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/PhonePe_Logo.svg/1200px-PhonePe_Logo.svg.png" 
+                     alt="Pay with PhonePe" class="img-fluid payment-logo">
+            </a>
+        </div>
+        
+        <!-- Google Pay -->
+        <div class="col-6 col-sm-4">
+            <a href="tez://upi/pay?pa=laxminivasmorishetty143@oksbi&pn=Creators%20Club&am={{ amount }}&cu=INR&tn=Team%20{{ team.team_id }}%20Registration" 
+               class="payment-option">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/1024px-Google_Pay_Logo.svg.png" 
+                     alt="Pay with Google Pay" class="img-fluid payment-logo">
+            </a>
+        </div>
+        
+        <!-- Paytm -->
+        <div class="col-6 col-sm-4">
+            <a href="paytmmp://pay?pa=9059160424@ptyes&pn=Creators%20Club&am={{ amount }}&cu=INR&tn=Team%20{{ team.team_id }}%20Registration" 
+               class="payment-option">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Paytm_logo.png/1200px-Paytm_logo.png" 
+                     alt="Pay with Paytm" class="img-fluid payment-logo">
+            </a>
+        </div>
+    </div>
+</div>
+                                <!-- Payment details form -->
+                                <div class="mb-4">
+                                    <label for="payment_id" class="form-label"><i class="fas fa-receipt me-2"></i>Payment Transaction ID</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                        <input type="text" class="form-control" id="payment_id" name="payment_id"
+                                               placeholder="Enter transaction ID" required>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter your transaction ID</div>
+                                    <small class="text-muted">Enter the transaction ID from your UPI app after payment</small>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label"><i class="fas fa-image me-2"></i>Payment Screenshot</label>
+                                    <div class="file-upload">
+                                        <label class="file-upload-button btn btn-outline-secondary">
+                                            <i class="fas fa-upload me-2"></i>Choose Image
+                                            <input type="file" class="file-upload-input" id="payment_screenshot" name="payment_screenshot" accept="image/*" required>
+                                        </label>
+                                        <span class="file-upload-name" id="file-name">No file chosen</span>
+                                    </div>
+                                    <div class="invalid-feedback">Please upload a payment screenshot</div>
+                                    <small class="text-muted">Upload a clear screenshot of the successful payment (max 100KB)</small>
+                                    <!-- File size warning -->
+                                    <div id="file-size-warning" style="display:none; margin-top:10px; padding:12px 16px; background:#fff0f0; border:1.5px solid #e53e3e; border-radius:10px; color:#c0392b;">
+                                        <div style="display:flex; align-items:flex-start; gap:10px;">
+                                            <i class="fas fa-exclamation-triangle" style="font-size:1.3rem; margin-top:2px; flex-shrink:0;"></i>
+                                            <div>
+                                                <strong>Image too large!</strong><br>
+                                                <span id="file-size-text"></span><br>
+                                                <span style="font-size:0.85rem;">Please compress your image to below 100 KB before uploading.<br>
+                                                <a href="https://www.iloveimg.com/compress-image/compress-jpg" target="_blank" rel="noopener" style="color:#c0392b; font-weight:600; text-decoration:underline;">
+                                                    <i class="fas fa-external-link-alt me-1"></i>Compress image for free at iLoveIMG
+                                                </a></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="preview-container mt-2" id="preview-container" style="display: none;">
+                                        <p class="small mb-1">Preview:</p>
+                                        <img id="preview-image" class="preview-image" src="#" alt="Preview">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cash Payment Content -->
+                            <!-- Cash payment removed: online payment only -->
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-pay">
+                                    <span><i class="fas fa-check-circle me-2"></i>Complete Registration</span>
+                                    <div class="loader"></div>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-lg-8 mt-4 mt-xl-0">
+                <div class="team-info animate__fadeInUp animate-delay-1">
+                    <h3 class="mb-4 text-center"><i class="fas fa-users me-2"></i>Team Information</h3>
+                    <p><strong>Team ID:</strong> <span class="badge bg-primary">{{ team.team_id }}</span></p>
+                    <p><strong>Team Name:</strong> {{ team.team_name }}</p>
+                    {% set amount = team.members|length * 200 %}
+                    {% if team.members|length >= 3 %}
+                        {% set amount = 800 %}
+                    {% endif %}
+                    <p><strong>Payment Amount:</strong> <span class="badge bg-success">₹{{ amount }}</span></p>
+                    <p class="mb-1"><strong>Members ({{ team.members|length }}):</strong></p>
+                    <ul class="list-unstyled">
+                        {% for member in team.members %}
+                            <li class="mb-2">
+                                <i class="fas fa-user-circle me-2"></i>
+                                {{ member.name }}
+                                <small class="text-muted">({{ member.college }})</small>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No UPI Modal -->
+    <div class="modal fade" id="noUpiModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-question-circle me-2"></i>No UPI App Installed?</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> You can still make the payment using these methods:
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6><i class="fas fa-qrcode me-2 text-primary"></i>Option 1: Scan QR Code</h6>
+                        <p>Use any banking app that supports QR code scanning to make the payment.</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6><i class="fas fa-mobile-alt me-2 text-primary"></i>Option 2: Manual UPI Payment</h6>
+                        <p>Open any banking app and send money to:</p>
+                        <div class="card bg-light p-3">
+                            <p class="mb-1"><strong>UPI ID:</strong>9059160424@ybl</p>
+                            <p class="mb-1"><strong>Name:</strong> Creators Club</p>
+                            {% set amount = team.members|length * 200 %}
+                            {% if team.members|length >= 3 %}
+                                {% set amount = 800 %}
+                            {% endif %}
+                           <p class="small mt-2"><strong>Amount: <span class="payment-amount">₹{{ amount }}</span></strong></p>
+                            <p class="mb-0"><strong>Note:</strong> Team {{ team.team_id }} Registration</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Option 3 Cash Payment removed: online payment only -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Contact Button -->
+    <div class="floating-contact-container">
+        <div class="floating-contact-btn" id="contactButton">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="contact-options" id="contactOptions">
+            <div class="contact-toast">
+                <div class="toast-header">
+                    <strong class="me-auto">Need help?</strong>
+                    <small>We're here</small>
+                    <button type="button" class="btn-close btn-close-white" onclick="closeContactOptions()" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    <button class="btn btn-success contact-btn" 
+                            onclick="window.open('https://wa.me/919059160424?text=Hello%20Creator%20Club,%20I%20have%20a%20question...', '_blank')">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </button>
+                    <button class="btn btn-primary contact-btn" 
+                            onclick="window.location.href='tel:+919059160424'">
+                        <i class="fas fa-phone"></i> Call Us
+                    </button>
+                    <button class="btn btn-outline-primary contact-btn" 
+                            data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                        <i class="fas fa-comment"></i> Feedback
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-comment-dots me-2"></i>Send Feedback</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Feedback Form -->
+                    <form id="feedbackForm" class="needs-validation" novalidate>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        
+                        <div class="mb-3">
+                            <label for="feedbackName" class="form-label"><i class="fas fa-user me-2"></i>Your Name</label>
+                            <input type="text" class="form-control" id="feedbackName" required>
+                            <div class="invalid-feedback">Please provide your name.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="feedbackDesignation" class="form-label"><i class="fas fa-id-card me-2"></i>Your Designation</label>
+                            <select class="form-select" id="feedbackDesignation" required>
+                                <option value="" selected disabled>Select your designation</option>
+                                <option value="Student">Student</option>
+                                <option value="Professor">Professor</option>
+                                <option value="Industry Professional">Industry Professional</option>
+                                <option value="Other">Other (please specify)</option>
+                            </select>
+                            <div class="invalid-feedback">Please select your designation.</div>
+                        </div>
+                        
+                        <div class="mb-3" id="otherProfessionContainer" style="display: none;">
+                            <label for="otherProfession" class="form-label"><i class="fas fa-pen me-2"></i>Please specify</label>
+                            <input type="text" class="form-control" id="otherProfession">
+                            <div class="invalid-feedback">Please specify your profession.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="feedbackMessage" class="form-label"><i class="fas fa-comment me-2"></i>Your Message</label>
+                            <textarea class="form-control" id="feedbackMessage" rows="3" required></textarea>
+                            <div class="invalid-feedback">Please enter your feedback message.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contactInfo" class="form-label"><i class="fas fa-envelope me-2"></i>Contact Info (optional)</label>
+                            <input type="text" class="form-control" id="contactInfo" placeholder="Email/Phone if you want a reply">
+                        </div>
+                    </form>
+                    
+                    <div id="thankYouMessage">
+                        <div>
+                            <i class="fas fa-check-circle"></i>
+                            <h4>Thank You!</h4>
+                            <p class="text-muted">Your feedback has been submitted successfully.</p>
+                            <div class="heart-beat mt-3" style="font-size: 2rem; color: #c41e3a;">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="feedbackFooter">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Close
+                    </button>
+                    <button type="button" class="btn btn-primary" id="submitFeedback">
+                        <i class="fas fa-paper-plane me-1"></i> Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // --- Payment Persistence: Save pending payment to localStorage ---
+      (function() {
+          try {
+              localStorage.setItem('hackathon_pending_payment', '{{ team.team_id }}');
+          } catch(e) {}
+      })();
+
+      document.addEventListener('DOMContentLoaded', function() {
+    // Calculate payment amount
+    const memberCount = {{ team.members|length }};
+    let amount = memberCount * 200;
+    if (memberCount >= 3) {
+        amount = 800;
+    }
+
+     // Update amount displays
+    const amountElements = document.querySelectorAll('.payment-amount');
+    amountElements.forEach(el => {
+        el.textContent = '₹' + amount;
+    });
+    
+    // Update UPI links with correct amount
+    const upiLinks = document.querySelectorAll('[href*="am="]');
+    upiLinks.forEach(link => {
+        let href = link.getAttribute('href');
+        href = href.replace(/am=\d+/, 'am=' + amount);
+        link.setAttribute('href', href);
+    });
+            // Contact button functionality
+            document.getElementById('contactButton').addEventListener('click', function() {
+                document.getElementById('contactOptions').classList.toggle('show');
+            });
+
+            window.closeContactOptions = function() {
+                document.getElementById('contactOptions').classList.remove('show');
+            };
+
+            // Close when clicking outside
+            document.addEventListener('click', function(event) {
+                const container = document.querySelector('.floating-contact-container');
+                if (!container.contains(event.target)) {
+                    document.getElementById('contactOptions').classList.remove('show');
+                }
+            });
+
+            // Payment method tabs
+            const tabs = document.querySelectorAll('.payment-method-tab');
+            const paymentMethodInput = document.getElementById('payment_method');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-method-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.payment-method-content').forEach(c => c.classList.remove('active'));
+
+                    this.classList.add('active');
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                    paymentMethodInput.value = targetId === 'online-payment' ? 'online' : 'cash';
+
+                    resetValidation();
+                });
+            });
+
+            // File upload handling
+            const fileUpload = document.getElementById('payment_screenshot');
+            const fileName = document.getElementById('file-name');
+            const previewContainer = document.getElementById('preview-container');
+            const previewImage = document.getElementById('preview-image');
+
+            const fileSizeWarning = document.getElementById('file-size-warning');
+            const fileSizeText = document.getElementById('file-size-text');
+
+            fileUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                fileSizeWarning.style.display = 'none';
+
+                if (file) {
+                    fileName.textContent = file.name;
+
+                    if (!file.type.startsWith('image/')) {
+                        this.classList.add('is-invalid');
+                        fileName.textContent = 'Only image files are allowed';
+                        previewContainer.style.display = 'none';
+                        return;
+                    }
+
+                    if (file.size > 100 * 1024) {
+                        this.classList.add('is-invalid');
+                        previewContainer.style.display = 'none';
+                        // Show detailed warning with actual file size
+                        var sizeKB = (file.size / 1024).toFixed(1);
+                        var sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                        var displaySize = file.size >= 1024 * 1024 ? sizeMB + ' MB' : sizeKB + ' KB';
+                        fileSizeText.textContent = 'Your image is ' + displaySize + ' — which exceeds the 100 KB limit.';
+                        fileSizeWarning.style.display = 'block';
+                        fileName.textContent = file.name + ' (' + displaySize + ')';
+                        return;
+                    }
+
+                    this.classList.remove('is-invalid');
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        previewContainer.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    fileName.textContent = 'No file chosen';
+                    previewContainer.style.display = 'none';
+                }
+            });
+
+            // Payment ID validation
+            document.getElementById('payment_id').addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('is-invalid');
+                }
+            });
+
+            // Set default date for cash payment
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('cash_received_at').value = today;
+
+            // Form validation
+            const form = document.getElementById('paymentForm');
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                const activeMethod = document.querySelector('.payment-method-tab.active').getAttribute('data-target');
+
+                if (activeMethod === 'online-payment') {
+                    // Validate online payment
+                    const paymentId = document.getElementById('payment_id');
+                    const paymentIdValue = paymentId.value.trim();
+
+                    if (!paymentIdValue) {
+                        paymentId.classList.add('is-invalid');
+                        paymentId.nextElementSibling.textContent = 'Please enter your transaction ID';
+                        isValid = false;
+                    } else {
+                        paymentId.classList.remove('is-invalid');
+                    }
+
+                    const file = fileUpload.files[0];
+                    if (!file) {
+                        fileUpload.classList.add('is-invalid');
+                        isValid = false;
+                    } else if (!file.type.startsWith('image/')) {
+                        fileUpload.classList.add('is-invalid');
+                        fileName.textContent = 'Only image files are allowed';
+                        isValid = false;
+                    } else if (file.size > 100 * 1024) {
+                        fileUpload.classList.add('is-invalid');
+                        fileName.textContent = 'File too large (max 100KB)';
+                        isValid = false;
+                    } else {
+                        fileUpload.classList.remove('is-invalid');
+                    }
+                } else {
+                    // Validate cash payment
+                    const receiverName = document.getElementById('cash_receiver_name');
+                    const receivedDate = document.getElementById('cash_received_at');
+
+                    if (!receiverName.value) {
+                        receiverName.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        receiverName.classList.remove('is-invalid');
+                    }
+
+                    if (!receivedDate.value) {
+                        receivedDate.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        receivedDate.classList.remove('is-invalid');
+                    }
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    const firstInvalid = form.querySelector('.is-invalid');
+                    if (firstInvalid) {
+                        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    submitBtn.classList.add('loading');
+                }
+            });
+
+            // Feedback form handling
+            document.getElementById('feedbackDesignation').addEventListener('change', function() {
+                const otherContainer = document.getElementById('otherProfessionContainer');
+                if (this.value === 'Other') {
+                    otherContainer.style.display = 'block';
+                    document.getElementById('otherProfession').setAttribute('required', 'true');
+                } else {
+                    otherContainer.style.display = 'none';
+                    document.getElementById('otherProfession').removeAttribute('required');
+                }
+            });
+
+            document.getElementById('submitFeedback').addEventListener('click', function() {
+                const form = document.getElementById('feedbackForm');
+                
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    return;
+                }
+                
+                const name = document.getElementById('feedbackName').value.trim();
+                let designation = document.getElementById('feedbackDesignation').value;
+                const message = document.getElementById('feedbackMessage').value.trim();
+                const contactInfo = document.getElementById('contactInfo').value.trim();
+                const currentPage = window.location.href;
+                const csrfToken = document.querySelector('input[name="csrf_token"]')?.value;
+                
+                if (designation === 'Other') {
+                    const otherProfession = document.getElementById('otherProfession').value.trim();
+                    if (!otherProfession) {
+                        alert('Please specify your profession');
+                        return;
+                    }
+                    designation = `Other (${otherProfession})`;
+                }
+                
+                const submitBtn = document.getElementById('submitFeedback');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Submitting...';
+                
+                fetch('/submit_suggestion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken || ''
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        designation: designation,
+                        text: message,
+                        contact_info: contactInfo,
+                        page: currentPage
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        form.style.display = 'none';
+                        document.getElementById('thankYouMessage').style.display = 'block';
+                        document.getElementById('feedbackFooter').style.display = 'none';
+                        
+                        setTimeout(() => {
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
+                            modal.hide();
+                            
+                            form.reset();
+                            form.style.display = 'block';
+                            document.getElementById('thankYouMessage').style.display = 'none';
+                            document.getElementById('feedbackFooter').style.display = 'block';
+                            form.classList.remove('was-validated');
+                            document.getElementById('otherProfessionContainer').style.display = 'none';
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i> Submit';
+                        }, 3000);
+                    } else {
+                        throw new Error(data.message || 'Submission failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error submitting feedback: ' + error.message);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i> Submit';
+                });
+            });
+
+            document.getElementById('feedbackModal').addEventListener('hidden.bs.modal', function() {
+                const form = document.getElementById('feedbackForm');
+                form.reset();
+                form.style.display = 'block';
+                document.getElementById('thankYouMessage').style.display = 'none';
+                document.getElementById('feedbackFooter').style.display = 'block';
+                form.classList.remove('was-validated');
+                document.getElementById('otherProfessionContainer').style.display = 'none';
+                const submitBtn = document.getElementById('submitFeedback');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i> Submit';
+            });
+
+            function resetValidation() {
+                const invalidFields = form.querySelectorAll('.is-invalid');
+                invalidFields.forEach(field => {
+                    field.classList.remove('is-invalid');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

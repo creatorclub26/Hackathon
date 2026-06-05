@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Attendance · Creator Club</title>
+    <!-- Bootstrap 5 + Font Awesome + SweetAlert2 + Animate -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #c41e3a;
+            --primary-dark: #a01830;
+            --primary-soft: #e03e5a;
+            --secondary: #1a1a1a;
+            --secondary-light: #2a2a2a;
+            --success: #1cc88a;
+            --danger: #e74a3b;
+            --warning: #f6c23e;
+            --info: #36b9cc;
+            --light-bg: #f8f9fc;
+            --dark: #1e293b;
+            --gray-100: #f8f9fc;
+            --gray-200: #eaeef5;
+            --gray-300: #dde1e9;
+            --gradient-start: #1a1a1a;
+            --gradient-end: #2a2a2a;
+            --card-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            --hover-shadow: 0 30px 60px -15px rgba(196,30,58,0.3);
+            --glass-bg: rgba(255,255,255,0.85);
+            --glass-border: rgba(255,255,255,0.6);
+        }
+
+        body {
+            background: linear-gradient(145deg, #f8fafc 0%, #eef2f6 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            line-height: 1.6;
+        }
+
+        /* ===== MOBILE HEADER (glass) ===== */
+        .mobile-header {
+            display: none;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0.8rem 1.2rem;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1050;
+            border-bottom: 2px solid var(--primary);
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary);
+            padding: 0 0.5rem;
+        }
+
+        .mobile-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .mobile-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+
+
+        .mobile-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(3px);
+            z-index: 1035;
+            display: none;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            transition: margin 0.3s;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* back button – SAMISTI pill */
+        .back-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 0.7rem 2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            color: var(--dark);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.8rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .back-btn svg {
+            fill: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 30px -10px rgba(196,30,58,0.4);
+            border-color: transparent;
+        }
+
+        .back-btn:hover svg {
+            fill: white;
+            transform: translateX(-4px);
+        }
+
+        /* page title */
+        .page-title {
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-title i {
+            color: var(--primary);
+            background: rgba(196,30,58,0.1);
+            padding: 0.8rem;
+            border-radius: 20px;
+        }
+
+        /* cards – glassmorphic premium */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-4px) scale(1.01);
+            background: rgba(255,255,255,0.95);
+            border-color: rgba(196,30,58,0.3);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            padding: 1.2rem 2rem;
+            color: white;
+            border-bottom: 4px solid var(--primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 40%, rgba(196,30,58,0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .card-header i {
+            background: rgba(255,255,255,0.15);
+            padding: 0.5rem;
+            border-radius: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-header span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* branch filter pills – SAMISTI style */
+        .branch-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .branch-btn {
+            border-radius: 60px;
+            padding: 0.7rem 1.8rem;
+            border: 2px solid var(--gray-200);
+            background: white;
+            color: var(--dark);
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .branch-btn:hover {
+            background: rgba(196,30,58,0.08);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .branch-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 8px 16px -4px rgba(196,30,58,0.4);
+        }
+
+        /* stat cards – premium gradients */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            border-radius: 32px;
+            padding: 1.8rem 1.2rem;
+            color: white;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.2);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.2) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 30px 40px -12px rgba(0,0,0,0.3);
+        }
+
+        .stat-card.total { 
+            background: linear-gradient(135deg, #c41e3a, #a01830);
+        }
+        .stat-card.present { 
+            background: linear-gradient(135deg, #1cc88a, #169b6b);
+        }
+        .stat-card.meal { 
+            background: linear-gradient(135deg, #f6c23e, #daa520);
+        }
+
+        .stat-card i { 
+            font-size: 2.5rem; 
+            margin-bottom: 0.8rem;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
+        }
+        .stat-card .count { 
+            font-size: 2.2rem; 
+            font-weight: 700; 
+            margin-bottom: 0.3rem;
+        }
+        .stat-card .label { 
+            font-size: 1rem; 
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* export form – premium styling */
+        .form-label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: var(--primary);
+        }
+
+        .form-control, .form-select {
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--gray-200);
+            background: white;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(196,30,58,0.15);
+            outline: none;
+        }
+
+        select[multiple] {
+            border-radius: 24px;
+            min-height: 140px;
+            padding: 1rem;
+        }
+
+        select[multiple] option {
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        select[multiple] option:checked {
+            background: var(--primary) linear-gradient(0deg, var(--primary) 0%, var(--primary) 100%);
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            border-radius: 60px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.4s;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: 0;
+        }
+
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary i, .btn-primary span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 30px -10px rgba(196,30,58,0.5);
+        }
+
+        /* table styling – premium */
+        .table-responsive {
+            border-radius: 0 0 40px 40px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background: white;
+        }
+
+        .table {
+            margin-bottom: 0;
+            background: white;
+        }
+
+        .table thead th {
+            background: var(--secondary);
+            color: white;
+            font-weight: 600;
+            border-bottom: none;
+            white-space: nowrap;
+            padding: 1.2rem 1rem;
+            font-size: 0.95rem;
+        }
+
+        .table thead th:first-child {
+            border-radius: 20px 0 0 20px;
+        }
+
+        .table thead th:last-child {
+            border-radius: 0 20px 20px 0;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(196,30,58,0.03);
+        }
+
+        .year-badge {
+            background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .table-success { 
+            background: linear-gradient(145deg, #d4f0e6, #c0e8da) !important;
+            color: #0f6b46;
+            font-weight: 600;
+        }
+        .table-danger { 
+            background: linear-gradient(145deg, #fce4e4, #fad1d1) !important;
+            color: #b33c2e;
+            font-weight: 600;
+        }
+        .table-warning { 
+            background: linear-gradient(145deg, #fff1cf, #ffe9b8) !important;
+            color: #8e6100;
+            font-weight: 600;
+        }
+
+        /* search box */
+        .search-box {
+            max-width: 300px;
+        }
+
+        .search-box .input-group-text {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-right: none;
+            border-radius: 60px 0 0 60px;
+            color: var(--primary);
+        }
+
+        .search-box input {
+            border: 2px solid var(--gray-200);
+            border-left: none;
+            border-radius: 0 60px 60px 0;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: none;
+        }
+
+        /* responsive */
+        @media (max-width: 1200px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+
+            .mobile-header {
+                display: flex;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 5rem 1.5rem 1.5rem;
+            }
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card-body { 
+                padding: 1.5rem; 
+            }
+            .branch-filter { 
+                gap: 0.5rem; 
+            }
+            .branch-btn { 
+                padding: 0.5rem 1.2rem; 
+                font-size: 0.85rem; 
+            }
+            .stat-card { 
+                padding: 1.2rem 0.8rem; 
+            }
+            .stat-card i { 
+                font-size: 2rem; 
+            }
+            .stat-card .count { 
+                font-size: 1.8rem; 
+            }
+            .stat-card .label { 
+                font-size: 0.9rem; 
+            }
+            .table thead th { 
+                padding: 1rem 0.8rem; 
+                font-size: 0.85rem; 
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content { 
+                padding: 5rem 1rem 1rem; 
+            }
+            
+            .back-btn { 
+                width: 100%; 
+                justify-content: center; 
+                margin-bottom: 1.2rem;
+            }
+            
+            .page-title { 
+                font-size: 1.6rem; 
+            }
+            
+            .stats-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .card-header { 
+                font-size: 1rem; 
+                padding: 1rem 1.2rem; 
+            }
+            
+            .card-body { 
+                padding: 1.2rem; 
+            }
+            
+            .table td, .table th { 
+                padding: 0.8rem; 
+                font-size: 0.9rem;
+            }
+            
+            .search-box { 
+                max-width: 100%; 
+                margin-top: 0.5rem;
+            }
+            
+            .btn-primary {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .page-title { 
+                font-size: 1.3rem; 
+            }
+            .branch-btn { 
+                padding: 0.4rem 1rem; 
+                font-size: 0.8rem; 
+            }
+        }
+
+        /* custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* fade-out animation for alerts */
+        .fade-out {
+            animation: fadeRemove 0.3s forwards;
+        }
+
+        @keyframes fadeRemove {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-8px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- mobile header -->
+    <div class="mobile-header">
+        <button class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="mobile-title">Attendance</span>
+        <img src="{{ url_for('static', filename='images/logo/cc.png') }}" alt="Logo" class="mobile-logo">
+    </div>
+
+    <!-- overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- sidebar (glass) -->
+    {% include '_sidebar.html' %}
+
+    <!-- main content -->
+    <div class="main-content">
+        <!-- back to dashboard -->
+        <button onclick="window.location.href='/admin'" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            <span>Dashboard</span>
+        </button>
+
+        <h1 class="page-title">
+            <i class="fas fa-clipboard-check"></i> 
+            Hackathon Attendance
+        </h1>
+
+        <!-- branch filter card -->
+        <div class="glass-card">
+            <div class="card-header">
+                <i class="fas fa-filter"></i>
+                <span>Filter by branch</span>
+            </div>
+            <div class="card-body">
+                <div class="branch-filter">
+                    <button type="button" class="branch-btn {% if branch_filter == 'all' %}active{% endif %}" data-branch="all">All Branches</button>
+                    {% for branch in branches %}
+                    <button type="button" class="branch-btn {% if branch_filter == branch %}active{% endif %}" data-branch="{{ branch }}">{{ branch|upper }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- stats cards -->
+        <div class="stats-row">
+            <div class="stat-card total">
+                <i class="fas fa-users"></i>
+                <div class="count">{{ total_participants }}</div>
+                <div class="label">Total Participants</div>
+            </div>
+            <div class="stat-card present">
+                <i class="fas fa-user-check"></i>
+                <div class="count">{{ present_today }}</div>
+                <div class="label">Present Today</div>
+            </div>
+            <div class="stat-card meal">
+                <i class="fas fa-coffee"></i>
+                <div class="count">{{ breakfast_count }}</div>
+                <div class="label">Breakfast</div>
+            </div>
+            <div class="stat-card meal">
+                <i class="fas fa-utensils"></i>
+                <div class="count">{{ lunch_count }}</div>
+                <div class="label">Lunch</div>
+            </div>
+        </div>
+
+        <!-- export card -->
+        <div class="glass-card">
+            <div class="card-header">
+                <i class="fas fa-download"></i>
+                <span>Export Options</span>
+            </div>
+            <div class="card-body">
+                <form id="exportForm" class="row g-3">
+                    <input type="hidden" id="branch" name="branch" value="{{ branch_filter }}">
+
+                    <div class="col-md-3">
+                        <label class="form-label"><i class="fas fa-file-export"></i> Format</label>
+                        <select class="form-select" name="export_type" required>
+                            <option value="csv">📊 CSV</option>
+                            <option value="pdf">📑 PDF</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label"><i class="fas fa-users"></i> Coordinators</label>
+                        <select class="form-select" name="coordinator_email" multiple size="4">
+                            {% for branch, email in branch_emails.items() %}
+                                {% if branch != 'all' %}
+                                <option value="{{ email }}" {% if branch == branch_filter %}selected{% endif %}>📧 {{ branch|upper }} ({{ email }})</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted"><i class="fas fa-info-circle"></i> ⌘/Ctrl to multi‑select</small>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label"><i class="fas fa-envelope"></i> Custom emails</label>
+                        <input type="text" class="form-control" name="custom_email" placeholder="extra@example.com, other@mail.com">
+                        <small class="text-muted"><i class="fas fa-info-circle"></i> Separate with commas</small>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label"><i class="fas fa-tags"></i> Include in report</label>
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="categories" value="all" id="catAll" checked>
+                                <label class="form-check-label" for="catAll">All participants</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="categories" value="present" id="catPresent">
+                                <label class="form-check-label" for="catPresent">Present today</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="categories" value="absent" id="catAbsent">
+                                <label class="form-check-label" for="catAbsent">Absent today</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="categories" value="meals" id="catMeals">
+                                <label class="form-check-label" for="catMeals">Meal attendance</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label"><i class="fas fa-pen"></i> Message (optional)</label>
+                        <textarea class="form-control" name="message" rows="2" placeholder="Add a note to the email..."></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn-primary w-100">
+                            <i class="fas fa-file-export me-2"></i>Export & Send Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- attendance table card -->
+        <div class="glass-card">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span><i class="fas fa-table me-2"></i> Attendance – {{ branch_filter|upper }}</span>
+                <div class="input-group search-box">
+                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-primary"></i></span>
+                    <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Search by name, roll, email...">
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="attendanceTable">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Member</th>
+                            <th><i class="fas fa-calendar me-2"></i>Year</th>
+                            <th><i class="fas fa-id-card me-2"></i>Roll No</th>
+                            <th class="text-center"><i class="fas fa-door-open me-2"></i>Entry</th>
+                            <th class="text-center"><i class="fas fa-coffee me-2"></i>Breakfast</th>
+                            <th class="text-center"><i class="fas fa-utensils me-2"></i>Lunch</th>
+                            <th class="text-center"><i class="fas fa-moon me-2"></i>Dinner</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attendee in attendance_data %}
+                        <tr>
+                            <td>
+                                <strong>{{ attendee.member_name }}</strong><br>
+                                <small class="text-muted"><i class="fas fa-envelope me-1"></i>{{ attendee.email }}</small>
+                            </td>
+                            <td><span class="year-badge">{{ attendee.year }}</span></td>
+                            <td><code>{{ attendee.rule_number }}</code></td>
+                            <td class="text-center {% if attendee.entry_scans > 0 %}table-success{% else %}table-danger{% endif %}">
+                                <span class="fw-bold">{{ attendee.entry_scans }}</span>
+                            </td>
+                            <td class="text-center {% if attendee.breakfast_scans > 0 %}table-warning{% endif %}">
+                                {{ attendee.breakfast_scans }}
+                            </td>
+                            <td class="text-center {% if attendee.lunch_scans > 0 %}table-warning{% endif %}">
+                                {{ attendee.lunch_scans }}
+                            </td>
+                            <td class="text-center {% if attendee.dinner_scans > 0 %}table-warning{% endif %}">
+                                {{ attendee.dinner_scans }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- suggestion modal stub -->
+    <div class="modal fade" id="suggestionsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suggestions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">No new suggestions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        (function() {
+            // branch filter buttons
+            document.querySelectorAll('.branch-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const branch = this.dataset.branch;
+                    document.querySelectorAll('.branch-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById('branch').value = branch;
+                    
+                    // Show loading toast
+                    Swal.fire({
+                        title: 'Loading...',
+                        text: `Filtering ${branch === 'all' ? 'all branches' : branch + ' branch'}`,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    window.location.href = `/attendance?branch=${branch}`;
+                });
+            });
+
+            // search functionality
+            document.getElementById('searchInput').addEventListener('input', function() {
+                const term = this.value.toLowerCase();
+                document.querySelectorAll('#attendanceTable tbody tr').forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(term) ? '' : 'none';
+                });
+                
+                // Show no results message
+                const visibleRows = document.querySelectorAll('#attendanceTable tbody tr:not([style*="display: none"])').length;
+                if (visibleRows === 0 && term.length > 0) {
+                    const tbody = document.querySelector('#attendanceTable tbody');
+                    if (!document.getElementById('noResults')) {
+                        const noResults = document.createElement('tr');
+                        noResults.id = 'noResults';
+                        noResults.innerHTML = '<td colspan="7" class="text-center py-4"><i class="fas fa-search fa-2x text-muted mb-2"></i><br><span class="text-muted">No matching records found</span></td>';
+                        tbody.appendChild(noResults);
+                    }
+                } else {
+                    const noResults = document.getElementById('noResults');
+                    if (noResults) noResults.remove();
+                }
+            });
+
+            // export form
+            document.getElementById('exportForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const btn = this.querySelector('button[type="submit"]');
+                const original = btn.innerHTML;
+                
+                // Show confirmation dialog
+                Swal.fire({
+                    title: 'Generate Report?',
+                    html: `
+                        <p>This will generate a ${formData.get('export_type').toUpperCase()} report.</p>
+                        <p class="text-muted small">Include in report: ${Array.from(formData.getAll('categories')).join(', ')}</p>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#c41e3a',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-check me-2"></i>Yes, generate',
+                    cancelButtonText: '<i class="fas fa-times me-2"></i>Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading state
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+                        btn.disabled = true;
+
+                        // gather recipients
+                        const coordinator = Array.from(document.querySelectorAll('select[name="coordinator_email"] option:checked')).map(o => o.value);
+                        const custom = formData.get('custom_email') ? formData.get('custom_email').split(',').map(e => e.trim()).filter(e => e) : [];
+                        const allRecipients = [...coordinator, ...custom];
+
+                        // categories
+                        const categories = Array.from(document.querySelectorAll('input[name="categories"]:checked')).map(c => c.value);
+                        formData.delete('categories');
+                        categories.forEach(c => formData.append('categories', c));
+
+                        // recipients
+                        formData.delete('coordinator_email');
+                        formData.delete('custom_email');
+                        allRecipients.forEach(email => formData.append('recipients', email));
+
+                        fetch('/attendance/export', { method: 'POST', body: formData })
+                            .then(res => {
+                                if (!res.ok) throw new Error('Export failed');
+                                const contentType = res.headers.get('content-type');
+                                if (contentType && contentType.includes('application/json')) return res.json();
+                                else return res.blob();
+                            })
+                            .then(data => {
+                                if (data instanceof Blob) {
+                                    // download
+                                    const url = window.URL.createObjectURL(data);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = `attendance_${formData.get('branch')}_${new Date().toISOString().slice(0,10)}.${formData.get('export_type')}`;
+                                    a.click();
+                                    window.URL.revokeObjectURL(url);
+                                    
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Downloaded!',
+                                        text: 'Report generated successfully',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+                                } else if (data.success) {
+                                    Swal.fire({ 
+                                        icon: 'success', 
+                                        title: 'Sent!', 
+                                        text: data.message, 
+                                        timer: 2000, 
+                                        showConfirmButton: false 
+                                    });
+                                }
+                            })
+                            .catch(err => {
+                                Swal.fire({ 
+                                    icon: 'error', 
+                                    title: 'Error', 
+                                    text: err.message 
+                                });
+                            })
+                            .finally(() => { 
+                                btn.innerHTML = original; 
+                                btn.disabled = false; 
+                            });
+                    }
+                });
+            });
+
+            // Auto-dismiss flash messages if any
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    alert.classList.add('fade-out');
+                    setTimeout(() => alert.remove(), 300);
+                });
+            }, 5000);
+        })();
+    </script>
+</body>
+</html>

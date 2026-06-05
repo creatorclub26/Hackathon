@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Club</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png"
+        href="https://res.cloudinary.com/dvfqvqbkn/image/upload/v1752482876/cc_lbohfd.png">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        /* Header/Navbar - Matching SAMISTI style */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -1px;
+        }
+
+        .club-badge {
+            background: #c41e3a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            color: #1a1a1a;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #c41e3a;
+            transform: translateY(-3px);
+        }
+
+        /* Hero Section - Matching SAMISTI aesthetic */
+        .hero-section {
+            max-width: 1200px;
+            margin: 100px auto 0;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .tagline {
+            color: #c41e3a;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        .main-title .highlight {
+            display: block;
+        }
+
+        /* College Logo */
+        .college-logo-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .college-logo {
+            max-width: 350px;
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Cards - Matching SAMISTI style */
+        .cards-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background: #1a1a1a;
+            color: white;
+            padding: 1.5rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+            border-bottom: none;
+        }
+
+        .card-header i {
+            color: #c41e3a;
+            margin-right: 10px;
+        }
+
+        .card-body {
+            padding: 2rem;
+            background: white;
+        }
+
+        .about-event-content {
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        .about-event-content p {
+            margin-bottom: 1rem;
+        }
+
+        .about-event-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-event-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* List Group */
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            background: transparent;
+            border-color: #eaeaea;
+            color: #4a4a4a;
+        }
+
+        .list-group-item:hover {
+            transform: translateX(10px);
+            background: rgba(196, 30, 58, 0.05);
+        }
+
+        .list-group-item i {
+            color: #c41e3a;
+        }
+
+        /* CTA Button - Matching SAMISTI style */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #1a1a1a;
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background: #333;
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-button i {
+            font-size: 1.2rem;
+        }
+
+        /* Floating Contact Button */
+        .floating-contact-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .floating-contact-btn {
+            width: 60px;
+            height: 60px;
+            background: #c41e3a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 50%;
+        }
+
+        .floating-contact-btn:hover {
+            transform: scale(1.1);
+            background: #a01830;
+        }
+
+        .contact-options {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            width: 280px;
+        }
+
+        .contact-options.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .contact-toast {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border: none;
+            overflow: hidden;
+        }
+
+        .contact-toast .toast-header {
+            background: #1a1a1a;
+            color: white;
+            border-bottom: none;
+            padding: 1rem;
+        }
+
+        .contact-toast .toast-body {
+            padding: 1rem;
+        }
+
+        .contact-btn {
+            margin: 5px;
+            width: 100%;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+            border-radius: 50px;
+            padding: 8px 15px;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: #1a1a1a;
+            color: white;
+            padding: 1.5rem;
+            border-bottom: none;
+        }
+
+        .modal-title {
+            font-weight: 600;
+        }
+
+        .modal-title i {
+            color: #c41e3a;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #eaeaea;
+            padding: 1rem 2rem;
+        }
+
+        /* Form Elements */
+        .form-label {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #eaeaea;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #c41e3a;
+            box-shadow: 0 0 0 0.25rem rgba(196, 30, 58, 0.25);
+        }
+
+        /* Footer - Matching SAMISTI style */
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .developer-section {
+            margin-bottom: 30px;
+        }
+
+        .developer-info p {
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+
+        .developer-info strong {
+            color: white;
+        }
+
+        .footer-logo {
+            height: auto;
+            max-height: 50px;
+            width: auto;
+            max-width: 200px;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+
+        .footer-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .developer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .dev-social-link {
+            color: #ccc;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .dev-social-link:hover {
+            color: #c41e3a;
+            transform: translateY(-3px);
+        }
+
+        .org-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .org-logo {
+            height: auto;
+            max-height: 60px;
+            width: auto;
+            max-width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .org-logo:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        .club-name {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .club-name a {
+            color: #c41e3a;
+            text-decoration: none;
+        }
+
+        .club-name a:hover {
+            text-decoration: underline;
+        }
+
+        .club-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .club-social-link {
+            color: #ccc;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .club-social-link:hover {
+            color: #c41e3a;
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        /* Thank You Message */
+        #thankYouMessage {
+            display: none;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        #thankYouMessage i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #c41e3a;
+        }
+
+        #thankYouMessage h4 {
+            color: #c41e3a;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes heartBeat {
+            0% {
+                transform: scale(1);
+            }
+
+            14% {
+                transform: scale(1.3);
+            }
+
+            28% {
+                transform: scale(1);
+            }
+
+            42% {
+                transform: scale(1.3);
+            }
+
+            70% {
+                transform: scale(1);
+            }
+        }
+
+        .animate__fadeInDown {
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .animate__fadeIn {
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .animate__fadeInLeft {
+            animation: fadeInLeft 1s ease-out;
+        }
+
+        .animate__fadeInRight {
+            animation: fadeInRight 1s ease-out;
+        }
+
+        .animate__pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .heart-beat {
+            animation: heartBeat 1.3s ease-in-out infinite;
+        }
+
+        .animate-delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .animate-delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .animate-delay-3 {
+            animation-delay: 0.6s;
+        }
+
+        .animate-delay-4 {
+            animation-delay: 0.8s;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .main-title {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .logo-container {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-section {
+                margin-top: 120px;
+                padding: 2rem 1.5rem;
+            }
+
+            .cards-container {
+                padding: 0 1.5rem;
+            }
+
+            .org-logos {
+                gap: 20px;
+            }
+
+            .org-logo {
+                max-height: 50px;
+                max-width: 120px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .club-badge {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+
+            .social-links {
+                gap: 15px;
+            }
+
+            .social-links a {
+                font-size: 1.1rem;
+            }
+
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .main-title .highlight {
+                display: inline;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            .hero-section {
+                margin-top: 140px;
+                padding: 2rem 1rem;
+            }
+
+            .cards-container {
+                padding: 0 1rem;
+            }
+
+            .card-header {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .about-event-content {
+                font-size: 0.95rem;
+            }
+
+            .list-group-item {
+                padding: 0.75rem 0;
+                font-size: 0.95rem;
+            }
+
+            .cta-button {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+
+            .floating-contact-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .contact-options {
+                width: 260px;
+            }
+
+            .org-logos {
+                gap: 15px;
+            }
+
+            .org-logo {
+                max-height: 40px;
+                max-width: 100px;
+            }
+
+            .club-name {
+                font-size: 1.1rem;
+            }
+
+            .developer-info p {
+                font-size: 0.95rem;
+            }
+
+            .developer-info p strong {
+                display: block;
+            }
+
+            .copyright {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hero-section {
+                margin-top: 160px;
+            }
+
+            .org-logos {
+                flex-direction: column;
+            }
+
+            .club-links {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header - Matching SAMISTI style -->
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo">CREATOR CLUB</div>
+            <div class="club-badge">SEC</div>
+        </div>
+        <div class="social-links">
+            <a href="https://instagram.com/creator_club_official" target="_blank" title="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="mailto:creator_club@sphoorthyengg.ac.in" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <!-- College Logo -->
+        <div class="college-logo-wrapper">
+            <img src="{{ url_for('static', filename='images/logo/clglogo.png') }}" alt="College Logo"
+                class="college-logo">
+        </div>
+
+        <p class="tagline animate__fadeInDown" style="font-size: 30px;"> {{ homepage_config.hero_title | replace('
+            Registration', '') }}</p>
+
+        <h1 class="main-title animate__fadeIn">
+            <span class="highlight">REGISTER YOUR TEAM,</span><br>
+            <span class="highlight">SHOW YOUR TALENT.</span>
+        </h1>
+
+        <!-- CTA Button -->
+        <div style="margin-top: 40px;">
+            <a href="/register" class="cta-button animate__pulse">
+                <i class="fas fa-user-plus"></i>
+                REGISTER NOW
+            </a>
+        </div>
+        <!-- In index.html, add this after the main CTA button in the hero section -->
+        <div style="margin-top: 20px;">
+            <a href="/retrieve-qr" class="btn btn-outline-dark" style="
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: transparent;
+        color: #1a1a1a;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        border: 2px solid #1a1a1a;
+    ">
+                <i class="fas fa-qrcode"></i>
+                Lost Your QR Code?
+            </a>
+        </div>
+
+        {% if config.get('evaluation_enabled', False) or config.get('submissions_enabled', False) %}
+        <div style="
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+">
+
+            {% if config.get('evaluation_enabled', False) %}
+            <a href="{{ url_for('evaluator_login') }}" style="
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        background: transparent;
+        color: #1a1a1a;
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        border: 2px solid #1a1a1a;
+        white-space: nowrap;
+    ">
+                <i class="fas fa-clipboard-check"></i>
+                Evaluator Login
+            </a>
+            {% endif %}
+
+            {% if config.get('submissions_enabled', False) %}
+            <a href="{{ url_for('submit_project') }}" style="
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        background: transparent;
+        color: #1a1a1a;
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        border: 2px solid #1a1a1a;
+        white-space: nowrap;
+    ">
+                <i class="fas fa-cloud-upload-alt"></i>
+                Submit Your Project
+            </a>
+            {% endif %}
+
+        </div>
+        {% endif %}
+    </section>
+
+
+
+    <!-- Cards Section -->
+    <div class="cards-container">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card animate__fadeInLeft">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> About the Event
+                    </div>
+                    <div class="card-body">
+                        <div class="about-event-content">
+                            {{ config.about_event|safe }}
+                        </div>
+                        <div class="d-flex align-items-center mt-4">
+                            <i class="fas fa-calendar-alt me-2" style="color: #c41e3a;"></i>
+                            <span class="text-muted">{{ config.event_date }}</span>
+                        </div>
+                        <div class="d-flex align-items-center mt-2">
+                            <i class="fas fa-map-marker-alt me-2" style="color: #c41e3a;"></i>
+                            <span class="text-muted">{{ config.event_location }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card animate__fadeInRight">
+                    <div class="card-header">
+                        <i class="fas fa-clipboard-list"></i> Registration Requirements
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for requirement in config.requirements %}
+                            {% if requirement %}
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check-circle me-3"></i>
+                                {{ requirement }}
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Contact Button -->
+    <div class="floating-contact-container">
+        <div class="floating-contact-btn" id="contactButton">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="contact-options" id="contactOptions">
+            <div class="contact-toast">
+                <div class="toast-header">
+                    <strong class="me-auto">Need help?</strong>
+                    <small>We're here</small>
+                    <button type="button" class="btn-close btn-close-white" onclick="closeContactOptions()"
+                        aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    <button class="btn btn-success contact-btn animate__pulse"
+                        onclick="window.open('https://wa.me/919059160424?text=Hello%20Creator%20Club,%20I%20have%20a%20question...', '_blank')">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </button>
+                    <button class="btn btn-primary contact-btn" onclick="window.location.href='tel:+919059160424'">
+                        <i class="fas fa-phone"></i> Call Us
+                    </button>
+                    <button class="btn btn-outline-primary contact-btn" data-bs-toggle="modal"
+                        data-bs-target="#feedbackModal">
+                        <i class="fas fa-comment"></i> Feedback
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-comment-dots me-2"></i>Send Feedback
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Feedback Form -->
+                    <form id="feedbackForm" class="needs-validation" novalidate>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <div class="mb-3">
+                            <label for="feedbackName" class="form-label">
+                                <i class="fas fa-user me-2"></i>Your Name
+                            </label>
+                            <input type="text" class="form-control" id="feedbackName" required>
+                            <div class="invalid-feedback">
+                                Please provide your name.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="feedbackDesignation" class="form-label">
+                                <i class="fas fa-id-card me-2"></i>Your Designation
+                            </label>
+                            <select class="form-select" id="feedbackDesignation" required>
+                                <option value="" selected disabled>Select your designation</option>
+                                <option value="Student">Student</option>
+                                <option value="Professor">Professor</option>
+                                <option value="Industry Professional">Industry Professional</option>
+                                <option value="Other">Other (please specify)</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select your designation.
+                            </div>
+                        </div>
+
+                        <!-- Other Profession Specification -->
+                        <div class="mb-3" id="otherProfessionContainer" style="display: none;">
+                            <label for="otherProfession" class="form-label">
+                                <i class="fas fa-pen me-2"></i>Please specify
+                            </label>
+                            <input type="text" class="form-control" id="otherProfession">
+                            <div class="invalid-feedback">
+                                Please specify your profession.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="feedbackMessage" class="form-label">
+                                <i class="fas fa-comment me-2"></i>Your Message
+                            </label>
+                            <textarea class="form-control" id="feedbackMessage" rows="3" required></textarea>
+                            <div class="invalid-feedback">
+                                Please enter your feedback message.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contactInfo" class="form-label">
+                                <i class="fas fa-envelope me-2"></i>Contact Info (optional)
+                            </label>
+                            <input type="text" class="form-control" id="contactInfo"
+                                placeholder="Email/Phone if you want a reply">
+                        </div>
+                    </form>
+
+                    <!-- Thank You Message -->
+                    <div id="thankYouMessage">
+                        <div>
+                            <i class="fas fa-check-circle"></i>
+                            <h4>Thank You!</h4>
+                            <p class="text-muted">Your feedback has been submitted successfully.</p>
+                            <div class="heart-beat mt-3" style="font-size: 2rem; color: #c41e3a;">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="feedbackFooter">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Close
+                    </button>
+                    <button type="button" class="btn btn-primary" id="submitFeedback">
+                        <i class="fas fa-paper-plane me-1"></i> Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background: #1a1a1a; color: white; padding: 40px 20px 20px; margin-top: 60px;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+
+            <!-- Main Footer Content -->
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px;">
+
+
+                <!-- Event Info -->
+                <div style="text-align: left;">
+                    <h3 style="color: white; margin-bottom: 20px; font-size: 1.2rem;">Creator Club</h3>
+                    <p style="color: #ccc; margin-bottom: 10px;"> {{ homepage_config.hero_title | replace('
+                        Registration', '') }}</p>
+                    <p style="color: #ccc;">{{ config.event_date }}</p>
+                    <p style="color: #ccc;"> {{ config.event_location }}</p>
+
+                    <!-- College & Club Logos -->
+                    <div style="display:flex; gap:15px; align-items:center; margin-top:20px; flex-wrap:wrap;">
+
+                        <!-- College Logo -->
+                        <div style="
+                        width:60px;
+                        height:60px;
+                        background:white;
+                        border-radius:10px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        overflow:hidden;
+                        padding:5px;
+                    ">
+                            <img src="/static/images/logo/clglogo.png" alt="College Logo"
+                                style="width:100%; height:100%; object-fit:contain;">
+                        </div>
+
+                        <!-- Creators Club Logo -->
+                        <div style="
+                        width:60px;
+                        height:60px;
+                        background:white;
+                        border-radius:10px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        overflow:hidden;
+                        padding:5px;
+                    ">
+                            <img src="/static/images/logo/cc.png" alt="Creators Club Logo"
+                                style="width:100%; height:100%; object-fit:contain;">
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div style="text-align: left;">
+                    <h3 style="color: white; margin-bottom: 20px; font-size: 1.2rem;">Quick Links</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="/register" style="color: #ccc; text-decoration: none;">Register Now</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="{{ url_for('admin_login') }}" style="color: #ccc; text-decoration: none;">
+                                Admin Login
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Copyright -->
+            <div
+                style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <p style="color: #999; font-size: 0.9rem;">
+                    © 2026 Creator Club. All rights reserved.
+                </p>
+
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Floating Contact Button
+        document.getElementById('contactButton').addEventListener('click', function () {
+            document.getElementById('contactOptions').classList.toggle('show');
+        });
+
+        function closeContactOptions() {
+            document.getElementById('contactOptions').classList.remove('show');
+        }
+
+        // Close when clicking outside
+        document.addEventListener('click', function (event) {
+            const container = document.querySelector('.floating-contact-container');
+            if (!container.contains(event.target)) {
+                document.getElementById('contactOptions').classList.remove('show');
+            }
+        });
+
+        // Feedback Form Handling
+        document.addEventListener('DOMContentLoaded', function () {
+            // Show/hide other profession field
+            document.getElementById('feedbackDesignation').addEventListener('change', function () {
+                const otherContainer = document.getElementById('otherProfessionContainer');
+                if (this.value === 'Other') {
+                    otherContainer.style.display = 'block';
+                    document.getElementById('otherProfession').setAttribute('required', 'true');
+                } else {
+                    otherContainer.style.display = 'none';
+                    document.getElementById('otherProfession').removeAttribute('required');
+                }
+            });
+
+            // Form submission
+            document.getElementById('submitFeedback').addEventListener('click', function () {
+                const form = document.getElementById('feedbackForm');
+
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    return;
+                }
+
+                // Get form values
+                const name = document.getElementById('feedbackName').value.trim();
+                let designation = document.getElementById('feedbackDesignation').value;
+                const message = document.getElementById('feedbackMessage').value.trim();
+                const contactInfo = document.getElementById('contactInfo').value.trim();
+                const currentPage = window.location.href;
+                const csrfToken = document.querySelector('input[name="csrf_token"]')?.value;
+
+                // If "Other" was selected
+                if (designation === 'Other') {
+                    const otherProfession = document.getElementById('otherProfession').value.trim();
+                    if (!otherProfession) {
+                        alert('Please specify your profession');
+                        return;
+                    }
+                    designation = `Other (${otherProfession})`;
+                }
+
+                // Show loading state
+                const submitBtn = document.getElementById('submitFeedback');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Submitting...';
+
+                // Submit to server
+                fetch('/submit_suggestion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken || ''
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        designation: designation,
+                        text: message,
+                        contact_info: contactInfo,
+                        page: currentPage
+                    })
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Show thank you message
+                            form.style.display = 'none';
+                            document.getElementById('thankYouMessage').style.display = 'block';
+                            document.getElementById('feedbackFooter').style.display = 'none';
+
+                            // Close modal after 3 seconds
+                            setTimeout(() => {
+                                const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
+                                modal.hide();
+
+                                // Reset form
+                                form.reset();
+                                form.style.display = 'block';
+                                document.getElementById('thankYouMessage').style.display = 'none';
+                                document.getElementById('feedbackFooter').style.display = 'block';
+                                form.classList.remove('was-validated');
+                                document.getElementById('otherProfessionContainer').style.display = 'none';
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i> Submit';
+                            }, 3000);
+                        } else {
+                            throw new Error(data.message || 'Submission failed');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error submitting feedback: ' + error.message);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i> Submit';
+                    });
+            });
+
+            // Reset form when modal is closed
+            document.getElementById('feedbackModal').addEventListener('hidden.bs.modal', function () {
+                const form = document.getElementById('feedbackForm');
+                form.reset();
+                form.style.display = 'block';
+                document.getElementById('thankYouMessage').style.display = 'none';
+                document.getElementById('feedbackFooter').style.display = 'block';
+                form.classList.remove('was-validated');
+                document.getElementById('otherProfessionContainer').style.display = 'none';
+                const submitBtn = document.getElementById('submitFeedback');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i> Submit';
+            });
+        });
+
+        // Admin access shortcuts
+        let konamiIndex = 0;
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+        document.addEventListener('keydown', function (e) {
+            // Ctrl+E for admin
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                window.location.href = "{{ url_for('admin_login') }}";
+            }
+
+            // Konami code
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    window.location.href = "{{ url_for('admin_login') }}";
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+
+        // Double click on logo
+        document.querySelector('.club-name a')?.addEventListener('dblclick', function () {
+            window.location.href = "{{ url_for('admin_login') }}";
+        });
+    </script>
+</body>
+
+</html>

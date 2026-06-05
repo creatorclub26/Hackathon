@@ -1,0 +1,63 @@
+[
+    {
+        "id": "administration",
+        "name": "Administration Workspace",
+        "enabled": true,
+        "assigned_roles": [
+            "admin",
+            "teams"
+        ],
+        "modules": [
+            {
+                "name": "View Teams",
+                "url": "/admin/teams",
+                "icon": "fas fa-users-between-lines"
+            },
+            {
+                "name": "QR Scanner",
+                "url": "/admin/scan",
+                "icon": "fas fa-qrcode"
+            },
+            {
+                "name": "Evaluation Settings",
+                "url": "/admin/evaluation-settings",
+                "icon": "fas fa-cog"
+            },
+            {
+                "name": "Leaderboard",
+                "url": "/admin/leaderboard",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "name": "Evaluation Results",
+                "url": "/admin/evaluation-results",
+                "icon": "fas fa-chart-bar"
+            },
+            {
+                "name": "Edit Homepage",
+                "url": "/admin/homepage",
+                "icon": "fas fa-home"
+            },
+            {
+                "name": "Upload Student Data",
+                "url": "/admin/upload-students",
+                "icon": "fas fa-upload"
+            },
+            {
+                "name": "Attendance Management",
+                "url": "/attendance",
+                "icon": "fas fa-clipboard-check"
+            },
+            {
+                "name": "Suggestions Management",
+                "url": "/admin/suggestions",
+                "icon": "fas fa-comments"
+            },
+            {
+                "name": "Message Center",
+                "url": "/message-center",
+                "icon": "fas fa-envelope"
+            }
+        ]
+    }
+]

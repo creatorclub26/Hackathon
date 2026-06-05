@@ -1,0 +1,11 @@
+{
+    "reservations": [
+        {
+            "rollno": "23N81A62B1",
+            "team_lead_rollno": "23N81A62B1",
+            "start_time": "2026-06-05 12:12:24",
+            "expiry_time": "2026-06-05 12:17:24",
+            "status": "RESERVED"
+        }
+    ]
+}

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Settings</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #2e59d9;
+            --error-color: #e74a3b;
+            --success-color: #1cc88a;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        /* Mobile Header */
+        .mobile-header {
+            display: none;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            padding: 1rem;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-header .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .mobile-header .logo {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .hamburger {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Sidebar Styles */
+
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+            transition: all 0.3s;
+            margin-top: 0;
+        }
+        
+        /* Mobile Menu Overlay */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background: var(--primary-color);
+            padding: 1.5rem;
+            color: white;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.3) 0%,
+                rgba(255, 255, 255, 0) 60%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(30deg) translate(-30%, -30%); }
+            100% { transform: rotate(30deg) translate(30%, 30%); }
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        .form-control, .form-select {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d3e2;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            margin-top: 0.2em;
+        }
+        
+        .form-check-label {
+            margin-left: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.05rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .alert-success {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+
+            
+            .mobile-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-top: 70px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+                padding-top: 70px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .card-body {
+                padding: 1.25rem;
+            }
+            
+            .form-control, .form-select {
+                padding: 0.8rem;
+            }
+            
+            .btn-primary {
+                width: 100%;
+                padding: 0.9rem;
+            }
+            
+            .sidebar-header .logo {
+                max-height: 60px;
+                max-width: 100px;
+            }
+        }
+        
+        #fee-group {
+            transition: all 0.3s ease;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Logo styling */
+        .club-logo {
+            height: auto;
+            max-height: 80px;
+            width: auto;
+            max-width: 120px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <button class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo/cc.png') }}" 
+                 alt="Creators Club Logo" 
+                 class="logo">
+            <span class="d-none d-sm-inline">Admin Panel</span>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    {% include '_sidebar.html' %}
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container animate__animated animate__fadeIn">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                     <br>        <br>                 
+<button onclick="window.location.href='/admin'" class="back-btn" style="
+    background-color: #095feb;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    width: fit-content;
+    min-width: 100px;
+    text-align: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="flex-shrink: 0;">
+        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+    </svg>
+    <span style="white-space: nowrap;">Back</span>
+</button>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{% if category == 'error' %}danger{% elif category == 'success' %}success{% else %}info{% endif %} alert-dismissible fade show" role="alert">
+                                    {% if category == 'success' %}
+                                        <i class="fas fa-check-circle me-2"></i>
+                                    {% elif category == 'error' %}
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                    {% else %}
+                                        <i class="fas fa-info-circle me-2"></i>
+                                    {% endif %}
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <div class="card animate-form">
+                        <div class="card-header">
+                            
+                            <i class="fas fa-money-bill-wave me-2"></i>Payment & Reservation Settings
+                        </div>
+                        <div class="card-body">
+                            
+                            <form id="paymentSettingsForm" method="POST" action="{{ url_for('admin_settings') }}">
+                                <div class="form-check form-switch mb-4">
+                                    <input class="form-check-input" type="checkbox" 
+                                           id="payment_required" name="payment_required"
+                                           {% if config.payment_required %}checked{% endif %}>
+                                    <label class="form-check-label" for="payment_required">
+                                        Require Payment for Registration
+                                    </label>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="form-label">Current Status:</label>
+                                    <div class="alert {% if config.payment_required %}alert-warning{% else %}alert-info{% endif %}">
+                                        <i class="fas {% if config.payment_required %}fa-lock{% else %}fa-unlock{% endif %} me-2"></i>
+                                        {% if config.payment_required %}
+                                            Payment is <strong>required</strong> for registration 
+                                        {% else %}
+                                            Registration is <strong>free</strong> (no payment required)
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label" for="reservation_duration">
+                                        Member Reservation Duration (Minutes)
+                                    </label>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="reservation_duration" 
+                                           name="reservation_duration" 
+                                           min="1" 
+                                           max="60" 
+                                           required
+                                           value="{{ config.reservation_duration if config.reservation_duration else 5 }}">
+                                    <div class="form-text">
+                                        The time (in minutes) for which a verified student's slot is locked/reserved for a team.
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Save Settings
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentRequiredCheckbox = document.getElementById('payment_required');
+            const feeGroup = document.getElementById('fee-group');
+            
+            // Toggle fee field based on checkbox
+            if (paymentRequiredCheckbox && feeGroup) {
+                paymentRequiredCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        feeGroup.style.display = 'block';
+                        feeGroup.style.height = '0';
+                        setTimeout(() => {
+                            feeGroup.style.height = feeGroup.scrollHeight + 'px';
+                        }, 10);
+                    } else {
+                        feeGroup.style.height = feeGroup.scrollHeight + 'px';
+                        setTimeout(() => {
+                            feeGroup.style.height = '0';
+                            setTimeout(() => {
+                                feeGroup.style.display = 'none';
+                            }, 300);
+                        }, 10);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

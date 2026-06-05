@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            background-color: #f6f6f6;
+        }
+        
+        /* Email container */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* Header styles */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 30px 20px 20px;
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            color: white;
+        }
+        
+        .logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 15px;
+            filter: brightness(0) invert(1);
+        }
+        
+        .header h2 {
+            color: white;
+            margin: 0;
+            font-size: 26px;
+            line-height: 1.3;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 10px 0 0;
+            opacity: 0.9;
+            font-size: 15px;
+        }
+        
+        /* Content styles */
+        .content {
+            padding: 0 30px 20px;
+            font-size: 16px;
+        }
+        
+        .content p {
+            margin: 0 0 20px 0;
+        }
+        
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 25px !important;
+        }
+        
+        .message-content {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4e73df;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+            line-height: 1.7;
+        }
+        
+        .message-content a {
+            color: #4e73df;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .message-content a:hover {
+            text-decoration: underline;
+        }
+        
+        .team-info {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #f0f4ff;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 15px 0;
+        }
+        
+        /* Attachments styles */
+        .attachments {
+            margin: 25px 0;
+            padding: 0;
+        }
+        
+        .attachments h4 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .attachments h4 i {
+            margin-right: 10px;
+            color: #4e73df;
+        }
+        
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s ease;
+        }
+        
+        .attachment-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border-color: #4e73df;
+        }
+        
+        .attachment-icon {
+            margin-right: 12px;
+            color: #4e73df;
+            font-size: 22px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .attachment-link {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 500;
+            flex-grow: 1;
+        }
+        
+        .attachment-link:hover {
+            color: #4e73df;
+        }
+        
+        .attachment-size {
+            color: #777777;
+            font-size: 13px;
+            margin-left: 10px;
+        }
+        
+        /* Footer styles */
+        .footer {
+            margin-top: 30px;
+            font-size: 13px;
+            color: #777777;
+            text-align: center;
+            padding: 25px 30px;
+            background-color: #f9f9f9;
+        }
+        
+        .footer-links {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .footer-links a {
+            color: #4e73df;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-links a i {
+            margin-right: 6px;
+            font-size: 16px;
+        }
+        
+        .copyright {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #999999;
+        }
+        
+        /* Button styles */
+        .button {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #4e73df;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .button:hover {
+            background-color: #3a5ab6;
+            text-decoration: none;
+        }
+        
+        /* Responsive adjustments */
+        @media only screen and (max-width: 600px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .header {
+                padding: 25px 15px 15px;
+            }
+            
+            .header h2 {
+                font-size: 22px;
+            }
+            
+            .content {
+                padding: 0 20px 15px;
+                font-size: 15px;
+            }
+            
+            .logo {
+                max-width: 140px;
+            }
+            
+            .message-content {
+                padding: 15px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .button {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://i.postimg.cc/mZd7npmt/creator.png" alt="Creators Club Logo" class="logo">
+            <h2>{{ subject }}</h2>
+            <p>Message from Creators Club</p>
+        </div>
+        
+        <div class="content">
+            <p class="greeting">Hello {{ recipient.name }},</p>
+            
+            <div class="message-content">{{ message | safe }}</div>
+            
+            {% if call_to_action %}
+            <div style="text-align: center;">
+                <a href="{{ call_to_action.url }}" class="button">
+                    {{ call_to_action.text }}
+                </a>
+            </div>
+            {% endif %}
+            
+            {% if attachments %}
+            <div class="attachments">
+                <h4><i class="fas fa-paperclip"></i> Attachments</h4>
+                {% for attachment in attachments %}
+                <a href="{{ attachment.url }}" class="attachment-item" target="_blank">
+                    <div class="attachment-icon">
+                        {% if attachment.type == 'pdf' %}
+                            <i class="fas fa-file-pdf"></i>
+                        {% elif attachment.type == 'image' %}
+                            <i class="fas fa-file-image"></i>
+                        {% elif attachment.type == 'word' %}
+                            <i class="fas fa-file-word"></i>
+                        {% elif attachment.type == 'excel' %}
+                            <i class="fas fa-file-excel"></i>
+                        {% else %}
+                            <i class="fas fa-file"></i>
+                        {% endif %}
+                    </div>
+                    <span class="attachment-link">{{ attachment.name }}</span>
+                    <span class="attachment-size">{{ attachment.size }}</span>
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <div class="team-info">
+                <i class="fas fa-users" style="margin-right: 8px;"></i>
+                Team: {{ recipient.team }}
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>This message was sent to all participants by Creators Club.</p>
+            <div class="footer-links">
+                <a href="https://instagram.com/creatorsclub" target="_blank">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+                <a href="mailto:creatorsclub@spurty.edu">
+                    <i class="fas fa-envelope"></i> Email Us
+                </a>
+                <a href="https://creatorsclub.org" target="_blank">
+                    <i class="fas fa-globe"></i> Our Website
+                </a>
+            </div>
+            <div class="copyright">
+                &copy; <script>document.write(new Date().getFullYear())</script> Creators Club. All rights reserved.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

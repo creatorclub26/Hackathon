@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Results - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: white;
+            padding: 15px 20px;
+            border-bottom: 3px solid #c41e3a;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .header h1 i {
+            color: #c41e3a;
+            margin-right: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-header {
+            cursor: pointer;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team-header:hover {
+            background: #e9ecef;
+        }
+
+        .team-info h3 {
+            color: #c41e3a;
+            margin-bottom: 5px;
+        }
+
+        .team-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .evaluations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .evaluation-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 3px solid #c41e3a;
+        }
+
+        .evaluator-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .evaluator-name i {
+            color: #c41e3a;
+            margin-right: 5px;
+        }
+
+        .marks-list {
+            margin: 10px 0;
+        }
+
+        .mark-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #eaeaea;
+            font-size: 14px;
+        }
+
+        .total-mark {
+            font-weight: 700;
+            color: #c41e3a;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #eaeaea;
+        }
+
+        .timestamp {
+            color: #999;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .no-project {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .no-project i {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #c41e3a;
+            color: white;
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #c41e3a 0%, #a01830 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stat-box .label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1><i class="fas fa-chart-pie"></i> Detailed Evaluation Results</h1>
+            <a href="{{ url_for('admin') }}" style="color: white;">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if teams_data %}
+        <!-- Statistics Summary -->
+        <div class="stats-summary">
+            <div class="stat-box">
+                <div class="number">{{ teams_data|length }}</div>
+                <div class="label">Teams Evaluated</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">
+                    {% set ns = namespace(count=0) %}
+                    {% for team_id, data in teams_data.items() %}
+                    {% set ns.count = ns.count + (data.evaluations | length) %}
+                    {% endfor %}
+                    {{ ns.count }}
+                </div>
+                <div class="label">Total Evaluations</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">{{ evaluators|length }}</div>
+                <div class="label">Evaluators</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">
+                    {% set projects_count = 0 %}
+                    {% for team_id, data in teams_data.items() %}
+                    {% if data.project %}
+                    {% set projects_count = projects_count + 1 %}
+                    {% endif %}
+                    {% endfor %}
+                    {{ projects_count }}
+                </div>
+                <div class="label">Projects</div>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" class="filter-input" id="searchInput" placeholder="Search by team name or ID..."
+                onkeyup="filterTeams()">
+            <button class="btn btn-primary" onclick="exportData()"><i class="fas fa-download"></i> Export
+                Results</button>
+        </div>
+
+        {% for team_id, data in teams_data.items() %}
+        <div class="card team-card" data-team="{{ data.team_name }} {{ team_id }}">
+            <div class="team-header" onclick="toggleTeam('{{ team_id }}')">
+                <div class="team-info">
+                    <h3><i class="fas fa-users"></i> {{ data.team_name }}</h3>
+                    <p>{{ team_id }} • {{ data.evaluations|length }} evaluator(s)</p>
+                </div>
+                <div>
+                    {% if data.project %}
+                    <span
+                        style="background: #28a745; color: white; padding: 5px 10px; border-radius: 5px; margin-right: 10px;">
+                        <i class="fas fa-check"></i> Submitted
+                    </span>
+                    {% else %}
+                    <span
+                        style="background: #dc3545; color: white; padding: 5px 10px; border-radius: 5px; margin-right: 10px;">
+                        <i class="fas fa-times"></i> No Project
+                    </span>
+                    {% endif %}
+                    <i class="fas fa-chevron-down" id="chevron-{{ team_id }}"></i>
+                </div>
+            </div>
+
+            <div id="team-{{ team_id }}" style="display: none; margin-top: 20px;">
+                {% if data.project %}
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <h4 style="color: #28a745; margin-bottom: 10px;">
+                        <i class="fas fa-file-powerpoint"></i> {{ data.project.project_title }}
+                    </h4>
+                    <p style="color: #666; margin-bottom: 10px;">{{ data.project.project_description }}</p>
+                    <div style="margin-bottom: 10px;">
+                        <strong>Tech Stack:</strong>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px;">
+                            {% for tech in data.project.tech_stack.split(',') %}
+                            <span style="background: #e9ecef; padding: 3px 8px; border-radius: 4px; font-size: 12px;">{{
+                                tech.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <a href="{{ url_for('download_project', team_id=team_id) }}"
+                        style="display: inline-block; margin-top: 10px; color: #c41e3a;">
+                        <i class="fas fa-download"></i> Download Presentation
+                    </a>
+                </div>
+                {% endif %}
+
+                <!-- Average Score for this team -->
+
+                <!-- Average Score for this team -->
+                <div
+                    style="background: #fff3cd; padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <span><strong>Average Score:</strong></span>
+                    <span style="font-size: 24px; font-weight: 700; color: #c41e3a;">
+                        {{ data.avg_score }}
+                    </span>
+                </div>
+
+                <div class="evaluations-grid">
+                    {% for evaluation in data.evaluations %}
+                    <div class="evaluation-card">
+                        <div class="evaluator-name">
+                            <i class="fas fa-user-tie"></i> {{ evaluation.get('evaluator_name', 'Unknown') }}
+                        </div>
+
+                        <div class="marks-list">
+                            {% for criterion, mark in evaluation.get('marks', {}).items() %}
+                            <div class="mark-item">
+                                <span>{{ criterion }}</span>
+                                <span>{{ mark }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="total-mark">
+                            Total: {{ evaluation.get('total', 0) }}
+                        </div>
+
+                        {% if evaluation.get('comments') %}
+                        <div
+                            style="margin-top: 10px; padding: 8px; background: white; border-radius: 4px; font-style: italic; color: #666;">
+                            "{{ evaluation.get('comments', '') }}"
+                        </div>
+                        {% endif %}
+
+                        <div class="timestamp">
+                            <i class="far fa-clock"></i> {{ evaluation.get('timestamp', '') }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <div class="no-project">
+            <i class="fas fa-chart-bar"></i>
+            <h3>No Evaluations Yet</h3>
+            <p>Evaluations will appear here once evaluators start scoring projects.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleTeam(teamId) {
+            const content = document.getElementById('team-' + teamId);
+            const chevron = document.getElementById('chevron-' + teamId);
+
+            if (content && chevron) {
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    chevron.className = 'fas fa-chevron-up';
+                } else {
+                    content.style.display = 'none';
+                    chevron.className = 'fas fa-chevron-down';
+                }
+            }
+        }
+
+        function filterTeams() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.team-card');
+
+            cards.forEach(card => {
+                const teamData = card.getAttribute('data-team').toLowerCase();
+                if (teamData.includes(search)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function exportData() {
+            // Create CSV export
+            let csv = 'Team ID,Team Name,Evaluator,';
+
+            // Get all unique criteria from all evaluations
+            const criteriaSet = new Set();
+            {% for team_id, data in teams_data.items() %}
+            {% for evaluation in data.evaluations %}
+            {% for criterion in evaluation.get('marks', {}).keys() %}
+            criteriaSet.add('{{ criterion }}');
+            {% endfor %}
+            {% endfor %}
+            {% endfor %}
+
+            // Add criteria headers
+            const criteriaList = Array.from(criteriaSet);
+            criteriaList.forEach(criterion => {
+                csv += criterion + ',';
+            });
+
+            csv += 'Total,Comments,Timestamp\n';
+
+            {% for team_id, data in teams_data.items() %}
+            {% for evaluation in data.evaluations %}
+            csv += '{{ team_id }},{{ data.team_name }},{{ evaluation.get("evaluator_name", "") }},';
+
+            {% for criterion in criteriaList %}
+            {% if criterion in evaluation.get('marks', {}) %}
+            csv += '{{ evaluation.get("marks", {})[criterion] }},';
+            {% else %}
+            csv += '0,';
+            {% endif %}
+            {% endfor %}
+
+            csv += '{{ evaluation.get("total", 0) }},"{{ evaluation.get("comments", "")|replace("\"", "\"\"") }}",{{ evaluation.get("timestamp", "") }}\n';
+        {% endfor %}
+        {% endfor %}
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'evaluation_results.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+
+</html>

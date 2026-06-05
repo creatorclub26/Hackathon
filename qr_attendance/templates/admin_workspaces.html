@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Workspace Management · Creator Club</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #c41e3a;
+            --primary-dark: #a01830;
+            --primary-soft: #e03e5a;
+            --accent: #1a1a1a;
+            --danger: #e74a3b;
+            --success: #1cc88a;
+            --warning: #f6c23e;
+            --info: #36b9cc;
+            --light-bg: #f8f9fc;
+            --dark: #5a5c69;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.6);
+        }
+
+        body {
+            background: linear-gradient(145deg, #edf2fb 0%, #dde7f5 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== MOBILE HEADER ===== */
+        .mobile-header {
+            display: none;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0.8rem 1.2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            border-bottom: 1px solid rgba(196, 30, 58, 0.15);
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary);
+            padding: 0 0.5rem;
+        }
+
+        .mobile-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .mobile-title {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 2rem;
+            transition: margin 0.3s;
+            min-height: 100vh;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        /* Back button */
+        .back-btn {
+            background: white;
+            border: none;
+            padding: 0.6rem 1.8rem;
+            border-radius: 60px;
+            font-weight: 600;
+            color: #1e293b;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(196, 30, 58, 0.15);
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 16px 24px -8px rgba(196, 30, 58, 0.5);
+        }
+
+        .back-btn:hover svg {
+            transform: translateX(-4px);
+            fill: white;
+        }
+
+        .back-btn svg {
+            transition: all 0.2s;
+        }
+
+        /* Page title */
+        .page-title {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-title i {
+            color: var(--primary);
+            background: rgba(196, 30, 58, 0.1);
+            padding: 0.8rem;
+            border-radius: 16px;
+        }
+
+        /* Cards */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -10px rgba(60, 75, 125, 0.1);
+            transition: all 0.25s;
+            margin-bottom: 1.8rem;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 28px 45px -12px rgba(196, 30, 58, 0.2);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            padding: 1.2rem 2rem;
+            color: white;
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card-header span {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header i {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.4rem;
+            border-radius: 14px;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Form elements */
+        .form-label {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 60px;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #d9e1ef;
+            background: white;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.15);
+            outline: none;
+        }
+
+        .form-control-sm {
+            border-radius: 30px;
+            padding: 0.6rem 1rem;
+        }
+
+        .input-group .form-control {
+            border-radius: 60px 0 0 60px;
+        }
+
+        .input-group .btn {
+            border-radius: 0 60px 60px 0;
+            border: 1px solid #d9e1ef;
+            border-left: none;
+            background: white;
+            color: #64748b;
+        }
+
+        .input-group .btn:hover {
+            background: #f1f5fb;
+            color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(115deg, #1a1a1a, #2a2a2a);
+            border: none;
+            border-radius: 60px;
+            padding: 0.7rem 1.8rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s;
+            box-shadow: 0 8px 16px -6px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(115deg, #c41e3a, #a01830);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -8px rgba(196, 30, 58, 0.4);
+        }
+
+        .btn-primary-sm {
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger-pill {
+            background: rgba(231, 74, 59, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(231, 74, 59, 0.2);
+            border-radius: 30px;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-danger-pill:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Badges */
+        .badge {
+            border-radius: 60px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .badge-success {
+            background: rgba(28, 200, 138, 0.1);
+            color: #1cc88a;
+        }
+
+        .badge.bg-success {
+            background: #1cc88a !important;
+            color: white;
+        }
+
+        .badge.bg-danger {
+            background: #e74a3b !important;
+            color: white;
+        }
+
+        .badge.bg-info {
+            background: #36b9cc !important;
+            color: white;
+        }
+
+        .badge.bg-secondary {
+            background: #6c757d !important;
+            color: white;
+        }
+
+        /* Pills tabs */
+        .nav-pills {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 30px !important;
+            padding: 0.7rem 1.5rem !important;
+            font-weight: 600;
+            color: #334155;
+            transition: all 0.2s;
+            margin: 0;
+        }
+
+        .nav-pills .nav-link:hover {
+            background: rgba(196, 30, 58, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-pills .nav-link.active {
+            background: var(--primary) !important;
+            color: white !important;
+            box-shadow: 0 8px 16px rgba(196, 30, 58, 0.3);
+        }
+
+        /* Module items */
+        .module-item {
+            background: white;
+            border: 1px solid #d9e1ef;
+            border-radius: 16px;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .module-item:hover {
+            border-color: var(--primary-soft);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .module-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            flex-wrap: wrap;
+        }
+
+        .module-info i {
+            color: var(--primary);
+            font-size: 1.1rem;
+            background: rgba(196, 30, 58, 0.05);
+            padding: 6px;
+            border-radius: 10px;
+        }
+
+        .module-info code {
+            font-size: 0.8rem;
+            background: #f1f5fb;
+            padding: 2px 8px;
+            border-radius: 5px;
+            color: #475569;
+        }
+
+        /* Permission cards */
+        .perm-card {
+            background: white;
+            border: 1px solid #d9e1ef;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .perm-card-header {
+            background: #f8fafc;
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid #d9e1ef;
+        }
+
+        .perm-card-body {
+            padding: 0.8rem 1rem;
+        }
+
+        /* Credentials layout */
+        .credentials-container {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .credentials-list {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .credentials-sidebar {
+            width: 380px;
+            flex-shrink: 0;
+        }
+
+        .credentials-sidebar .glass-card {
+            position: sticky;
+            top: 2rem;
+        }
+
+        /* Flash messages */
+        .alert {
+            border-radius: 30px;
+            border: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .credentials-sidebar {
+                width: 340px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .mobile-header {
+                display: flex;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 5rem 1.2rem 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.6rem;
+            }
+
+            .credentials-container {
+                flex-direction: column;
+            }
+
+            .credentials-sidebar {
+                width: 100%;
+                order: -1;
+            }
+
+            .credentials-sidebar .glass-card {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .card-header {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .page-title {
+                font-size: 1.4rem;
+                flex-wrap: wrap;
+            }
+
+            .page-title i {
+                padding: 0.6rem;
+                border-radius: 12px;
+            }
+
+            .nav-pills {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-pills .nav-link {
+                padding: 0.6rem 1.2rem !important;
+                font-size: 0.9rem;
+                flex: 1;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .module-info {
+                font-size: 0.9rem;
+            }
+
+            .module-info code {
+                font-size: 0.75rem;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 0.7rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .btn-primary {
+                width: 100%;
+                justify-content: center;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .back-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .main-content {
+                padding: 4.5rem 0.8rem 1rem;
+            }
+
+            .card-body {
+                padding: 1.2rem;
+            }
+
+            .card-header {
+                padding: 0.8rem 1rem;
+            }
+
+            .page-title {
+                font-size: 1.2rem;
+            }
+
+            .nav-pills {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .nav-pills .nav-link {
+                width: 100%;
+                text-align: center;
+            }
+
+            .module-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0.7rem 1rem;
+            }
+
+            .module-info {
+                width: 100%;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .perm-card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .page-title {
+                font-size: 1.1rem;
+            }
+
+            .card-header {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5fb;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- mobile header -->
+    <div class="mobile-header">
+        <button class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="mobile-title">Workspaces</span>
+        <img src="{{ url_for('static', filename='images/logo/cc.png') }}" alt="Logo" class="mobile-logo">
+    </div>
+
+    <!-- overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- sidebar -->
+    {% include '_sidebar.html' %}
+
+    <!-- main content -->
+    <div class="main-content">
+        <!-- back to dashboard -->
+        <a href="/admin" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+            </svg>
+            <span>Dashboard</span>
+        </a>
+
+        <!-- flash messages -->
+        <div id="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show"
+                role="alert">
+                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <h1 class="page-title animate__animated animate__fadeInDown">
+            <i class="fas fa-cubes"></i>
+            Workspace & Access Manager
+        </h1>
+
+        <!-- Pills Tabs Navigation -->
+        <ul class="nav nav-pills mb-4 animate__animated animate__fadeIn" id="workspaceTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active px-4 py-2" id="workspaces-tab" data-bs-toggle="pill"
+                    data-bs-target="#workspaces-pane" type="button" role="tab" aria-selected="true">
+                    <i class="fas fa-cubes me-2"></i>Workspaces
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link px-4 py-2" id="credentials-tab" data-bs-toggle="pill"
+                    data-bs-target="#credentials-pane" type="button" role="tab" aria-selected="false">
+                    <i class="fas fa-user-lock me-2"></i>Credentials & Permissions
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="workspaceTabsContent">
+            <!-- Workspaces Tab -->
+            <div class="tab-pane fade show active" id="workspaces-pane" role="tabpanel"
+                aria-labelledby="workspaces-tab">
+                <div class="row">
+                    <div class="col-12">
+                        {% for ws in workspaces %}
+                        <div class="glass-card animate__animated animate__fadeInUp">
+                            <div class="card-header">
+                                <span>
+                                    <i class="fas fa-folder-open"></i>
+                                    {{ ws.name }}
+                                </span>
+                                <div class="d-flex align-items-center gap-2">
+                                    {% if ws.enabled %}
+                                    <span class="badge bg-success">Enabled</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Disabled</span>
+                                    {% endif %}
+
+                                    <form method="POST" action="/admin/workspaces" class="m-0">
+                                        <input type="hidden" name="id" value="{{ ws.id }}">
+                                        <input type="hidden" name="action" value="delete">
+                                        <button type="submit" class="btn btn-danger-pill"
+                                            onclick="return confirm('Are you sure you want to delete this workspace?')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Configurations Form -->
+                                <form method="POST" action="/admin/workspaces" class="row g-3 mb-4 border-bottom pb-4">
+                                    <input type="hidden" name="id" value="{{ ws.id }}">
+                                    <input type="hidden" name="action" value="edit">
+
+                                    <div class="col-md-7 col-lg-8">
+                                        <label class="form-label">Workspace Name</label>
+                                        <input type="text" class="form-control" name="name" value="{{ ws.name }}"
+                                            required>
+                                    </div>
+
+                                    <div class="col-md-3 col-lg-2">
+                                        <label class="form-label">Status</label>
+                                        <select class="form-select" name="enabled">
+                                            <option value="true" {% if ws.enabled %}selected{% endif %}>Enabled</option>
+                                            <option value="false" {% if not ws.enabled %}selected{% endif %}>Disabled
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2 col-lg-2 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-primary btn-primary-sm w-100">
+                                            <i class="fas fa-save me-1"></i> Update
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <!-- Workspace Modules list -->
+                                <h5 class="mb-3"><i class="fas fa-link me-2 text-primary"></i>Workspace Modules</h5>
+                                {% if ws.modules %}
+                                {% for mod in ws.modules %}
+                                <div class="module-item">
+                                    <div class="module-info">
+                                        <i class="{{ mod.icon }}"></i>
+                                        <span>{{ mod.name }}</span>
+                                        <code>{{ mod.url }}</code>
+                                    </div>
+                                    <form method="POST" action="/admin/workspaces" class="m-0">
+                                        <input type="hidden" name="id" value="{{ ws.id }}">
+                                        <input type="hidden" name="mod_name" value="{{ mod.name }}">
+                                        <input type="hidden" name="action" value="delete_module">
+                                        <button type="submit" class="btn btn-link text-danger p-0 border-0"
+                                            onclick="return confirm('Remove this module?')">
+                                            <i class="fas fa-times-circle fa-lg"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                <p class="text-muted small"><i class="fas fa-info-circle me-1"></i>No modules currently
+                                    assigned to this workspace.</p>
+                                {% endif %}
+
+                                <!-- Add Module Form -->
+                                <form method="POST" action="/admin/workspaces" class="mt-3 pt-3 border-top">
+                                    <input type="hidden" name="id" value="{{ ws.id }}">
+                                    <input type="hidden" name="action" value="add_module">
+                                    <h6 class="mb-3">Add New Module</h6>
+                                    <div class="row g-2">
+                                        <div class="col-md-4 col-sm-6">
+                                            <input type="text" class="form-control form-control-sm" name="mod_name"
+                                                placeholder="Module Name" required>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <input type="text" class="form-control form-control-sm" name="mod_url"
+                                                placeholder="Module Path" required>
+                                        </div>
+                                        <div class="col-md-3 col-sm-6">
+                                            <input type="text" class="form-control form-control-sm" name="mod_icon"
+                                                placeholder="Icon (fas fa-link)" value="fas fa-link">
+                                        </div>
+                                        <div class="col-md-1 col-sm-6">
+                                            <button type="submit" class="btn btn-primary btn-primary-sm w-100">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Credentials Tab -->
+            <div class="tab-pane fade" id="credentials-pane" role="tabpanel" aria-labelledby="credentials-tab">
+                <div class="credentials-container">
+                    <!-- Existing Credentials List -->
+                    <div class="credentials-list">
+                        {% for user in credentials %}
+                        <div class="glass-card animate__animated animate__fadeInUp">
+                            <div class="card-header">
+                                <span>
+                                    <i class="fas fa-user-lock"></i>
+                                    {{ user.username }}
+                                </span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span
+                                        class="badge {% if user.role == 'super_admin' %}bg-danger{% elif user.role == 'teams_viewer' %}bg-success{% else %}bg-info{% endif %}">
+                                        {{ 'Super Admin' if user.role == 'super_admin' else ('Teams Viewer' if user.role
+                                        == 'teams_viewer' else 'Custom Access') }}
+                                    </span>
+
+                                    <form method="POST" action="/admin/workspaces" class="m-0">
+                                        <input type="hidden" name="username" value="{{ user.username }}">
+                                        <input type="hidden" name="action" value="delete_credential">
+                                        <button type="submit" class="btn btn-danger-pill"
+                                            onclick="return confirm('Are you sure you want to delete this credential?')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form method="POST" action="/admin/workspaces" class="row g-3">
+                                    <input type="hidden" name="username" value="{{ user.username }}">
+                                    <input type="hidden" name="action" value="edit_credential">
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Password <small class="text-muted">(leave blank to
+                                                keep)</small></label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" name="password"
+                                                id="pass_{{ user.username }}" placeholder="••••••••">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                onclick="togglePasswordVisibility('pass_{{ user.username }}', this)">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Role Type</label>
+                                        <select class="form-select user-role-select" name="role"
+                                            data-user="{{ user.username }}" onchange="togglePermsDisplay(this)">
+                                            <option value="super_admin" {% if user.role=='super_admin' %}selected{%
+                                                endif %}>👑 Super Admin</option>
+                                            <option value="teams_viewer" {% if user.role=='teams_viewer' %}selected{%
+                                                endif %}>👁️ Teams Viewer</option>
+                                            <option value="custom" {% if user.role=='custom' %}selected{% endif %}>⚙️
+                                                Custom Access</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Permissions Block -->
+                                    <div class="col-12 mt-3 perm-selection-container" id="perms_{{ user.username }}"
+                                        style="{% if user.role != 'custom' %}display: none;{% endif %}">
+                                        <h6 class="mb-3 pb-2 border-bottom text-primary fw-bold">
+                                            <i class="fas fa-shield-alt me-1"></i> Select Workspace & Module Access
+                                        </h6>
+                                        <div class="row g-3">
+                                            {% for ws in workspaces %}
+                                            <div class="col-md-6 col-lg-4">
+                                                <div class="perm-card">
+                                                    <div class="perm-card-header">
+                                                        <div class="form-check mb-0">
+                                                            <input class="form-check-input ws-checkbox" type="checkbox"
+                                                                name="allowed_workspaces" value="{{ ws.id }}"
+                                                                id="ws_{{ user.username }}_{{ ws.id }}" {% if ws.id in
+                                                                user.allowed_workspaces %}checked{% endif %}
+                                                                data-user="{{ user.username }}" data-ws="{{ ws.id }}"
+                                                                onchange="toggleWsModules(this)">
+                                                            <label class="form-check-label fw-bold text-dark"
+                                                                for="ws_{{ user.username }}_{{ ws.id }}">
+                                                                {{ ws.name }}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="perm-card-body">
+                                                        {% if ws.modules %}
+                                                        {% for mod in ws.modules %}
+                                                        <div class="form-check mb-2">
+                                                            <input
+                                                                class="form-check-input mod-checkbox_{{ user.username }}_{{ ws.id }}"
+                                                                type="checkbox" name="allowed_modules_{{ ws.id }}"
+                                                                value="{{ mod.name }}"
+                                                                id="mod_{{ user.username }}_{{ ws.id }}_{{ loop.index }}"
+                                                                {% if ws.id in user.allowed_workspaces and mod.name in
+                                                                user.allowed_modules.get(ws.id, []) %}checked{% endif %}
+                                                                {% if ws.id not in user.allowed_workspaces %}disabled{%
+                                                                endif %}>
+                                                            <label class="form-check-label text-secondary small"
+                                                                for="mod_{{ user.username }}_{{ ws.id }}_{{ loop.index }}">
+                                                                <i class="{{ mod.icon }} me-1 text-primary"></i> {{
+                                                                mod.name }}
+                                                            </label>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% else %}
+                                                        <p class="text-muted small m-0">No modules</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 text-end mt-3">
+                                        <button type="submit" class="btn btn-primary btn-primary-sm">
+                                            <i class="fas fa-save me-1"></i> Save Permissions
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        {% if not credentials %}
+                        <div class="glass-card">
+                            <div class="card-body text-center py-5">
+                                <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No credentials created yet.</p>
+                                <p class="text-muted small">Use the form on the right to add new credentials.</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Add New Credential Sidebar -->
+                    <div class="credentials-sidebar">
+                        <div class="glass-card animate__animated animate__fadeInRight">
+                            <div class="card-header">
+                                <span>
+                                    <i class="fas fa-user-plus"></i>
+                                    Add New Credential
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <form method="POST" action="/admin/workspaces">
+                                    <input type="hidden" name="action" value="create_credential">
+
+                                    <div class="mb-3">
+                                        <label for="new_username" class="form-label">
+                                            <i class="fas fa-user me-1 text-primary"></i> Username
+                                        </label>
+                                        <input type="text" class="form-control" id="new_username" name="username"
+                                            placeholder="e.g. attendance_operator" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="new_password" class="form-label">
+                                            <i class="fas fa-lock me-1 text-primary"></i> Password
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="new_password"
+                                                name="password" placeholder="••••••••" required>
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                onclick="togglePasswordVisibility('new_password', this)">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="new_role" class="form-label">
+                                            <i class="fas fa-user-tag me-1 text-primary"></i> Role Type
+                                        </label>
+                                        <select class="form-select" id="new_role" name="role"
+                                            onchange="togglePermsDisplay(this)" data-user="new">
+                                            <option value="super_admin">👑 Super Admin</option>
+                                            <option value="teams_viewer">👁️ Teams Viewer</option>
+                                            <option value="custom" selected>⚙️ Custom Access</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Permissions Block -->
+                                    <div class="perm-selection-container mt-3 pt-3 border-top" id="perms_new">
+                                        <label class="form-label d-block mb-3 fw-bold">
+                                            <i class="fas fa-shield-alt me-1 text-primary"></i> Select Access
+                                        </label>
+
+                                        <div class="d-flex flex-column gap-2">
+                                            {% for ws in workspaces %}
+                                            <div class="perm-card">
+                                                <div class="perm-card-header">
+                                                    <div class="form-check mb-0">
+                                                        <input class="form-check-input ws-checkbox" type="checkbox"
+                                                            name="allowed_workspaces" value="{{ ws.id }}"
+                                                            id="new_ws_{{ ws.id }}" data-user="new"
+                                                            data-ws="{{ ws.id }}" onchange="toggleWsModules(this)">
+                                                        <label class="form-check-label fw-bold text-dark"
+                                                            for="new_ws_{{ ws.id }}">
+                                                            {{ ws.name }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="perm-card-body">
+                                                    {% if ws.modules %}
+                                                    {% for mod in ws.modules %}
+                                                    <div class="form-check mb-1">
+                                                        <input class="form-check-input mod-checkbox_new_{{ ws.id }}"
+                                                            type="checkbox" name="allowed_modules_{{ ws.id }}"
+                                                            value="{{ mod.name }}"
+                                                            id="new_mod_{{ ws.id }}_{{ loop.index }}" disabled>
+                                                        <label class="form-check-label text-secondary small"
+                                                            for="new_mod_{{ ws.id }}_{{ loop.index }}">
+                                                            <i class="{{ mod.icon }} me-1 text-primary"></i> {{ mod.name
+                                                            }}
+                                                        </label>
+                                                    </div>
+                                                    {% endfor %}
+                                                    {% else %}
+                                                    <p class="text-muted small m-0">No modules in this workspace.</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary w-100 mt-4">
+                                        <i class="fas fa-plus-circle me-1"></i> Add Credential
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle password visibility
+        function togglePasswordVisibility(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Toggle permissions display based on role selection
+        function togglePermsDisplay(selectEl) {
+            const username = selectEl.dataset.user;
+            const permsContainer = document.getElementById('perms_' + username);
+            if (permsContainer) {
+                if (selectEl.value === 'custom') {
+                    permsContainer.style.display = 'block';
+                    permsContainer.classList.add('animate__animated', 'animate__fadeIn');
+                } else {
+                    permsContainer.style.display = 'none';
+                }
+            }
+        }
+
+        // Toggle module checkboxes when workspace is selected/deselected
+        function toggleWsModules(checkboxEl) {
+            const username = checkboxEl.dataset.user;
+            const wsId = checkboxEl.dataset.ws;
+            const modulesCheckboxes = document.querySelectorAll('.mod-checkbox_' + username + '_' + wsId);
+            modulesCheckboxes.forEach(cb => {
+                cb.disabled = !checkboxEl.checked;
+                if (!checkboxEl.checked) {
+                    cb.checked = false;
+                }
+            });
+        }
+
+        // Auto-dismiss flash messages
+        setTimeout(() => {
+            document.querySelectorAll('.alert-dismissible').forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Active tab persistence
+        document.querySelectorAll('#workspaceTabs button[data-bs-toggle="pill"]').forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function (e) {
+                localStorage.setItem('workspaceActiveTab', e.target.id);
+            });
+        });
+
+        // Restore active tab
+        const activeTab = localStorage.getItem('workspaceActiveTab');
+        if (activeTab) {
+            const tab = document.getElementById(activeTab);
+            if (tab) {
+                const bsTab = new bootstrap.Tab(tab);
+                bsTab.show();
+            }
+        }
+    </script>
+</body>
+
+</html>

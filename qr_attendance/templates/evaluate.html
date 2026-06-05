@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluate Team – {{ team.team_name }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #c41e3a;
+            --primary-dark: #a01830;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #f0f2f5; font-family: 'Segoe UI', system-ui, sans-serif; color: var(--gray-800); min-height: 100vh; }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: white;
+            padding: 14px 24px;
+            border-bottom: 3px solid var(--primary);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .header-inner { max-width: 860px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .header h1 i { color: var(--primary); }
+        .back-link { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .back-link:hover { color: white; }
+
+        /* Container */
+        .container { max-width: 860px; margin: 28px auto; padding: 0 20px 60px; }
+
+        /* Locked banner */
+        .locked-banner {
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+            border: 2px solid #fecaca;
+            border-radius: 16px;
+            padding: 28px 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .locked-banner .lock-icon { font-size: 3rem; color: var(--danger); margin-bottom: 12px; }
+        .locked-banner h2 { font-size: 1.3rem; color: #991b1b; margin-bottom: 8px; }
+        .locked-banner p { color: #b91c1c; font-size: 0.95rem; }
+        .locked-banner .evaluator-chip {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: #fee2e2; border: 1px solid #fca5a5;
+            border-radius: 50px; padding: 6px 16px; margin-top: 12px;
+            font-weight: 700; color: #991b1b; font-size: 0.9rem;
+        }
+
+        /* Alert */
+        .alert { padding: 14px 18px; border-radius: 12px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; font-size: 0.92rem; }
+        .alert-warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+        .alert-info    { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        }
+        .card-title {
+            font-size: 1rem; font-weight: 700; color: var(--gray-800);
+            border-bottom: 2px solid var(--gray-100);
+            padding-bottom: 12px; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .card-title i { color: var(--primary); }
+
+        /* Team info grid */
+        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .info-item .label { font-size: 0.75rem; color: var(--gray-400); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .info-item .value { font-weight: 600; color: var(--gray-800); }
+        .member-row { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; padding: 6px 0; border-bottom: 1px solid var(--gray-100); }
+        .member-row:last-child { border-bottom: none; }
+        .member-row i { color: var(--primary); width: 18px; }
+
+        /* Project detail */
+        .detail-block { background: var(--gray-50); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+        .detail-block strong { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-400); display: block; margin-bottom: 4px; }
+        .detail-block span { font-size: 0.95rem; color: var(--gray-800); line-height: 1.5; }
+        .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+        .tech-tag { background: var(--gray-100); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; color: var(--gray-600); }
+        .file-btns { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+        .btn-file { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-size: 0.88rem; font-weight: 600; text-decoration: none; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-file-view { background: #e0f2fe; color: #0369a1; }
+        .btn-file-view:hover { background: #bae6fd; }
+        .btn-file-dl   { background: var(--gray-100); color: var(--gray-800); }
+        .btn-file-dl:hover { background: var(--gray-200); }
+
+        /* Progress steps */
+        .progress-bar {
+            display: flex; gap: 8px; align-items: center;
+            background: var(--gray-100); border-radius: 50px;
+            padding: 10px 16px; margin-bottom: 24px; flex-wrap: wrap;
+        }
+        .progress-step {
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 50px;
+            font-size: 0.82rem; font-weight: 600; color: var(--gray-600);
+            background: white; transition: all 0.3s;
+        }
+        .progress-step.active { background: var(--primary); color: white; }
+        .progress-step.done   { background: var(--success); color: white; }
+        .progress-sep { color: var(--gray-200); font-size: 1.1rem; }
+
+        /* Problem statement card */
+        .problem-card {
+            border: 2px solid var(--info);
+            background: #eff6ff;
+            border-radius: 16px;
+            padding: 22px 24px;
+            margin-bottom: 20px;
+        }
+        .problem-card h3 { font-size: 1rem; color: #1d4ed8; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .acceptance-row { display: flex; align-items: center; gap: 12px; }
+        .acceptance-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+        .acceptance-row label { font-weight: 600; font-size: 0.95rem; cursor: pointer; }
+
+        /* Round card */
+        .round-card {
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+            background: var(--gray-50);
+            transition: all 0.3s;
+        }
+        .round-card.hidden { display: none; }
+        .round-card.round-1 { border-left-color: var(--success); }
+        .round-card.round-2 { border-left-color: var(--warning); }
+        .round-card.round-3 { border-left-color: var(--danger); }
+        .round-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .round-header h3 { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .round-badge { padding: 4px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; }
+        .badge-done    { background: #dcfce7; color: #166534; }
+        .badge-pending { background: #fef9c3; color: #854d0e; }
+
+        /* Criteria slider */
+        .criteria-item { margin-bottom: 22px; }
+        .criteria-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .criteria-name { font-weight: 700; font-size: 0.92rem; }
+        .criteria-max  { font-size: 0.8rem; color: var(--gray-400); background: var(--gray-100); padding: 2px 10px; border-radius: 20px; }
+        .slider-row { display: flex; align-items: center; gap: 14px; }
+        .slider-wrap { flex: 1; position: relative; }
+        .slider {
+            width: 100%; height: 8px; border-radius: 4px;
+            background: linear-gradient(to right, var(--primary) 0%, var(--primary) 0%, #ddd 0%, #ddd 100%);
+            outline: none; -webkit-appearance: none; cursor: pointer;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 22px; height: 22px;
+            background: var(--primary); border-radius: 50%; cursor: pointer;
+            box-shadow: 0 2px 8px rgba(196,30,58,0.4); border: 2px solid white;
+        }
+        .slider::-moz-range-thumb {
+            width: 22px; height: 22px; background: var(--primary); border-radius: 50%;
+            cursor: pointer; border: 2px solid white;
+        }
+        .mark-input {
+            width: 72px; padding: 8px 10px;
+            border: 2px solid var(--gray-200); border-radius: 10px;
+            text-align: center; font-weight: 700; font-size: 1rem; color: var(--primary);
+            transition: border-color 0.2s;
+        }
+        .mark-input:focus { border-color: var(--primary); outline: none; }
+
+        /* Round score box */
+        .round-score-box {
+            background: white; border-radius: 12px; padding: 16px 20px;
+            margin-top: 18px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .round-score-box .label { font-weight: 600; font-size: 0.9rem; }
+        .round-score-box .score { font-size: 2rem; font-weight: 800; color: var(--primary); }
+        .pass-row { margin-top: 14px; display: flex; align-items: center; gap: 10px; }
+        .pass-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--success); cursor: pointer; }
+        .pass-row label { font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+
+        /* Final score */
+        .final-score-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 20px;
+        }
+        .final-score-box .fs-label { font-size: 0.85rem; opacity: 0.85; margin-bottom: 8px; }
+        .final-score-box .fs-value { font-size: 3.5rem; font-weight: 800; line-height: 1; }
+        .final-score-box .fs-sub { font-size: 0.8rem; opacity: 0.75; margin-top: 6px; }
+
+        /* Comments */
+        .comments-area {
+            width: 100%; padding: 14px 16px;
+            border: 2px solid var(--gray-200); border-radius: 12px;
+            font-size: 0.95rem; resize: vertical; min-height: 100px;
+            font-family: inherit; transition: border-color 0.2s;
+        }
+        .comments-area:focus { border-color: var(--primary); outline: none; }
+
+        /* Actions */
+        .actions { display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; }
+        .btn { padding: 12px 28px; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-cancel { background: var(--gray-100); color: var(--gray-800); }
+        .btn-cancel:hover { background: var(--gray-200); }
+        .btn-submit { background: var(--primary); color: white; }
+        .btn-submit:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(196,30,58,0.35); }
+        .btn-submit:disabled { background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container { padding: 0 12px 40px; }
+            .card { padding: 18px 16px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .slider-row { flex-direction: column; align-items: stretch; }
+            .mark-input { width: 100%; }
+            .actions { flex-direction: column; }
+            .btn { justify-content: center; }
+            .progress-bar { gap: 4px; padding: 8px 10px; }
+            .progress-step { font-size: 0.75rem; padding: 5px 10px; }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="header-inner">
+        <h1><i class="fas fa-star"></i> Evaluate Team</h1>
+        <a href="{{ url_for('evaluation_dashboard') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="container">
+
+    {% if existing %}
+    <div class="alert alert-warning">
+        <i class="fas fa-info-circle fa-lg"></i>
+        You have already evaluated this team. You can update your scores below.
+    </div>
+    {% endif %}
+
+    {% if already_evaluated_by %}
+    <!-- LOCKED BANNER — another evaluator already evaluated this team -->
+    <div class="locked-banner">
+        <div class="lock-icon"><i class="fas fa-lock"></i></div>
+        <h2>Team Already Evaluated</h2>
+        <p>This team has already been evaluated. Only one evaluator is allowed per team.</p>
+        <div class="evaluator-chip">
+            <i class="fas fa-user-check"></i>
+            Evaluated by: {{ already_evaluated_by }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Team Info -->
+    <div class="card">
+        <div class="card-title"><i class="fas fa-users"></i> {{ team.team_name }}</div>
+        <div class="info-grid" style="margin-bottom:18px;">
+            <div class="info-item">
+                <div class="label">Team ID</div>
+                <div class="value">{{ team.team_id }}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Members</div>
+                <div class="value">{{ team.members|length }}</div>
+            </div>
+        </div>
+        <div>
+            {% for member in team.members %}
+            <div class="member-row">
+                <i class="fas fa-user"></i>
+                <span>{{ member.name }} &mdash; {{ member.branch }} ({{ member.year }})</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Project Details -->
+    {% if project %}
+    <div class="card">
+        <div class="card-title"><i class="fas fa-file-powerpoint"></i> Project Details</div>
+        {% if project.project_title %}
+        <div class="detail-block">
+            <strong>Project Title</strong>
+            <span>{{ project.project_title }}</span>
+        </div>
+        {% endif %}
+        {% if project.problem_statement %}
+        <div class="detail-block">
+            <strong>Problem Statement</strong>
+            <span>{{ project.problem_statement }}</span>
+        </div>
+        {% endif %}
+        {% if project.solution %}
+        <div class="detail-block">
+            <strong>Solution / Approach</strong>
+            <span>{{ project.solution }}</span>
+        </div>
+        {% endif %}
+        {% if project.tech_stack %}
+        <div class="detail-block">
+            <strong>Tech Stack</strong>
+            <div class="tech-tags">
+                {% for tech in project.tech_stack.split(',') %}
+                {% if tech.strip() %}
+                <span class="tech-tag">{{ tech.strip() }}</span>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        <div class="file-btns">
+            <a href="{{ url_for('view_project', team_id=team.team_id) }}" class="btn-file btn-file-view" target="_blank">
+                <i class="fas fa-eye"></i> View Presentation
+            </a>
+            <a href="{{ url_for('download_project', team_id=team.team_id) }}" class="btn-file btn-file-dl">
+                <i class="fas fa-download"></i> Download
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if not already_evaluated_by %}
+    <!-- Progress steps -->
+    {% set rounds = config.get('rounds', {}) %}
+    <div class="progress-bar" id="progressBar">
+        <span class="progress-step" id="stepProblem"><i class="fas fa-clipboard-check"></i> Problem Review</span>
+        <span class="progress-sep">›</span>
+        <span class="progress-step" id="stepRound1"><i class="fas fa-flag"></i> {{ rounds.get('round1', {}).get('label', 'Round 1') }}</span>
+        {% if rounds.get('round2', {}).get('enabled') %}
+        <span class="progress-sep">›</span>
+        <span class="progress-step" id="stepRound2"><i class="fas fa-flag"></i> {{ rounds.get('round2', {}).get('label', 'Round 2') }}</span>
+        {% endif %}
+        {% if rounds.get('round3', {}).get('enabled') %}
+        <span class="progress-sep">›</span>
+        <span class="progress-step" id="stepRound3"><i class="fas fa-trophy"></i> {{ rounds.get('round3', {}).get('label', 'Round 3') }}</span>
+        {% endif %}
+    </div>
+
+    <!-- Evaluation Form -->
+    <form method="POST" id="eval-form">
+
+        <!-- Problem Statement Acceptance -->
+        <div class="problem-card">
+            <h3><i class="fas fa-clipboard-check"></i> Problem Statement Review</h3>
+            <div class="acceptance-row">
+                <input type="checkbox" id="accept_problem" name="accept_problem_statement" value="yes"
+                    {% if existing and existing.problem_statement_accepted %}checked{% endif %}
+                    onchange="onProblemChange()">
+                <label for="accept_problem">✓ I accept this problem statement and solution proposal</label>
+            </div>
+            <p style="font-size:0.85rem; color:#3b82f6; margin-top:12px;">
+                <i class="fas fa-info-circle"></i>
+                Accepting the problem statement will unlock Round 1 scoring below.
+            </p>
+        </div>
+
+        <!-- ===== ROUND 1 (always enabled) ===== -->
+        {% set r1_hidden = not (existing and existing.problem_statement_accepted) %}
+        <div class="round-card round-1 {% if r1_hidden %}hidden{% endif %}" id="round1">
+            <div class="round-header">
+                <h3><i class="fas fa-flag" style="color:var(--success);"></i>
+                    {{ rounds.get('round1', {}).get('label', 'Round 1 – Preliminary') }}</h3>
+                {% if existing and existing.get('round1', {}).get('completed') %}
+                <span class="round-badge badge-done"><i class="fas fa-check"></i> Completed</span>
+                {% else %}
+                <span class="round-badge badge-pending"><i class="fas fa-hourglass-half"></i> Pending</span>
+                {% endif %}
+            </div>
+
+            {% for criterion in criteria %}
+            {% set slug = criterion.name | lower | replace(' ', '_') | replace('/', '_') %}
+            {% set field_name = 'round1_' ~ slug %}
+            {% set saved_val = (existing.get('round1', {}).get(criterion.name, 0) if existing else 0) | int %}
+            <div class="criteria-item">
+                <div class="criteria-header">
+                    <span class="criteria-name">{{ criterion.name }}</span>
+                    <span class="criteria-max">Max {{ criterion.max_marks }}</span>
+                </div>
+                <div class="slider-row">
+                    <div class="slider-wrap">
+                        <input type="range" class="slider" id="r1_sl_{{ slug }}"
+                               min="0" max="{{ criterion.max_marks }}" value="{{ saved_val }}"
+                               oninput="syncSlider(this, 'r1_in_{{ slug }}'); updateRoundTotal(1)">
+                    </div>
+                    <input type="number" class="mark-input" id="r1_in_{{ slug }}" name="{{ field_name }}"
+                           min="0" max="{{ criterion.max_marks }}" value="{{ saved_val }}"
+                           oninput="syncInput(this, 'r1_sl_{{ slug }}'); updateRoundTotal(1)">
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="round-score-box">
+                <span class="label">Round 1 Total</span>
+                <span class="score" id="round1_total_display">0</span>
+            </div>
+            {% if rounds.get('round2', {}).get('enabled') %}
+            <div class="pass-row">
+                <input type="checkbox" id="round1_passed" name="round1_passed" value="yes"
+                    {% if existing and existing.get('round1', {}).get('passed') %}checked{% endif %}
+                    onchange="onRound1Pass()">
+                <label for="round1_passed">✓ Pass Round 1 — proceed to {{ rounds.get('round2', {}).get('label', 'Round 2') }}</label>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ===== ROUND 2 (admin toggle) ===== -->
+        {% if rounds.get('round2', {}).get('enabled') %}
+        {% set r2_hidden = not (existing and existing.get('round1', {}).get('passed')) %}
+        <div class="round-card round-2 {% if r2_hidden %}hidden{% endif %}" id="round2">
+            <div class="round-header">
+                <h3><i class="fas fa-flag" style="color:var(--warning);"></i>
+                    {{ rounds.get('round2', {}).get('label', 'Round 2 – Detailed') }}</h3>
+                {% if existing and existing.get('round2', {}).get('completed') %}
+                <span class="round-badge badge-done"><i class="fas fa-check"></i> Completed</span>
+                {% else %}
+                <span class="round-badge badge-pending"><i class="fas fa-hourglass-half"></i> Pending</span>
+                {% endif %}
+            </div>
+
+            {% for criterion in criteria %}
+            {% set slug = criterion.name | lower | replace(' ', '_') | replace('/', '_') %}
+            {% set field_name = 'round2_' ~ slug %}
+            {% set saved_val = (existing.get('round2', {}).get(criterion.name, 0) if existing else 0) | int %}
+            <div class="criteria-item">
+                <div class="criteria-header">
+                    <span class="criteria-name">{{ criterion.name }}</span>
+                    <span class="criteria-max">Max {{ criterion.max_marks }}</span>
+                </div>
+                <div class="slider-row">
+                    <div class="slider-wrap">
+                        <input type="range" class="slider" id="r2_sl_{{ slug }}"
+                               min="0" max="{{ criterion.max_marks }}" value="{{ saved_val }}"
+                               oninput="syncSlider(this, 'r2_in_{{ slug }}'); updateRoundTotal(2)">
+                    </div>
+                    <input type="number" class="mark-input" id="r2_in_{{ slug }}" name="{{ field_name }}"
+                           min="0" max="{{ criterion.max_marks }}" value="{{ saved_val }}"
+                           oninput="syncInput(this, 'r2_sl_{{ slug }}'); updateRoundTotal(2)">
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="round-score-box">
+                <span class="label">Round 2 Total</span>
+                <span class="score" id="round2_total_display">0</span>
+            </div>
+            {% if rounds.get('round3', {}).get('enabled') %}
+            <div class="pass-row">
+                <input type="checkbox" id="round2_passed" name="round2_passed" value="yes"
+                    {% if existing and existing.get('round2', {}).get('passed') %}checked{% endif %}
+                    onchange="onRound2Pass()">
+                <label for="round2_passed">✓ Pass Round 2 — proceed to {{ rounds.get('round3', {}).get('label', 'Round 3') }}</label>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- ===== ROUND 3 (admin toggle) ===== -->
+        {% if rounds.get('round3', {}).get('enabled') %}
+        {% set r3_hidden = not (existing and existing.get('round2', {}).get('passed')) %}
+        <div class="round-card round-3 {% if r3_hidden %}hidden{% endif %}" id="round3">
+            <div class="round-header">
+                <h3><i class="fas fa-trophy" style="color:var(--danger);"></i>
+                    {{ rounds.get('round3', {}).get('label', 'Round 3 – Final') }}</h3>
+                {% if existing and existing.get('round3', {}).get('completed') %}
+                <span class="round-badge badge-done"><i class="fas fa-check"></i> Completed</span>
+                {% else %}
+                <span class="round-badge badge-pending"><i class="fas fa-hourglass-half"></i> Pending</span>
+                {% endif %}
+            </div>
+
+            {% for criterion in criteria %}
+            {% set slug = criterion.name | lower | replace(' ', '_') | replace('/', '_') %}
+            {% set field_name = 'round3_' ~ slug %}
+            {% set saved_val = (existing.get('round3', {}).get(criterion.name, 0) if existing else 0) | int %}
+            <div class="criteria-item">
+                <div class="criteria-header">
+                    <span class="criteria-name">{{ criterion.name }}</span>
+                    <span class="criteria-max">Max {{ criterion.max_marks }}</span>
+                </div>
+                <div class="slider-row">
+                    <div class="slider-wrap">
+                        <input type="range" class="slider" id="r3_sl_{{ slug }}"
+                               min="0" max="{{ criterion.max_marks }}" value="{{ saved_val }}"
+                               oninput="syncSlider(this, 'r3_in_{{ slug }}'); updateRoundTotal(3)">
+                    </div>
+                    <input type="number" class="mark-input" id="r3_in_{{ slug }}" name="{{ field_name }}"
+                           min="0" max="{{ criterion.max_marks }}" value="{{ saved_val }}"
+                           oninput="syncInput(this, 'r3_sl_{{ slug }}'); updateRoundTotal(3)">
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="round-score-box">
+                <span class="label">Round 3 Total</span>
+                <span class="score" id="round3_total_display">0</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Final Average -->
+        <div class="final-score-box">
+            <div class="fs-label">Final Average Score</div>
+            <div class="fs-value" id="final_avg_display">
+                {% if existing and existing.final_average %}{{ "%.2f"|format(existing.final_average|float) }}{% else %}0.00{% endif %}
+            </div>
+            <div class="fs-sub">Average of all completed rounds</div>
+        </div>
+
+        <!-- Comments -->
+        <div class="card" style="padding-bottom:24px;">
+            <div class="card-title"><i class="fas fa-comment-alt"></i> Comments / Feedback</div>
+            <textarea class="comments-area" name="comments"
+                      placeholder="Add your observations, suggestions, or overall feedback about this project...">{{ existing.comments if existing and existing.comments else '' }}</textarea>
+        </div>
+
+        <!-- Submit -->
+        <div class="actions">
+            <button type="button" class="btn btn-cancel"
+                    onclick="window.location.href='{{ url_for('evaluation_dashboard') }}'">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button type="submit" class="btn btn-submit" id="submitBtn">
+                <i class="fas fa-save"></i>
+                {% if existing %}Update Evaluation{% else %}Submit Evaluation{% endif %}
+            </button>
+        </div>
+    </form>
+    {% else %}
+    <!-- If locked by another evaluator — show back button only -->
+    <div style="text-align:center; margin-top:24px;">
+        <a href="{{ url_for('evaluation_dashboard') }}"
+           style="display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:white;padding:12px 28px;border-radius:10px;text-decoration:none;font-weight:700;">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+// ===== Criteria config from server (for dynamic total calc) =====
+const CRITERIA = {{ criteria | tojson }};
+const ROUNDS_ENABLED = {
+    round1: true,
+    round2: {{ 'true' if config.get('rounds', {}).get('round2', {}).get('enabled') else 'false' }},
+    round3: {{ 'true' if config.get('rounds', {}).get('round3', {}).get('enabled') else 'false' }}
+};
+
+// ===== Slider ↔ Input sync =====
+function syncSlider(slider, inputId) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const max = parseInt(slider.max);
+    let val = Math.min(parseInt(slider.value) || 0, max);
+    input.value = val;
+    updateSliderFill(slider);
+}
+
+function syncInput(input, sliderId) {
+    const slider = document.getElementById(sliderId);
+    if (!slider) return;
+    const max = parseInt(input.max);
+    let val = Math.min(parseInt(input.value) || 0, max);
+    if (val < 0) val = 0;
+    input.value = val;
+    slider.value = val;
+    updateSliderFill(slider);
+}
+
+function updateSliderFill(slider) {
+    const min = parseInt(slider.min) || 0;
+    const max = parseInt(slider.max) || 1;
+    const val = parseInt(slider.value) || 0;
+    const pct = ((val - min) / (max - min)) * 100;
+    slider.style.background = `linear-gradient(to right, var(--primary) ${pct}%, #ddd ${pct}%)`;
+}
+
+// ===== Round total calculation =====
+function updateRoundTotal(roundNum) {
+    const prefix = `r${roundNum}_in_`;
+    let total = 0;
+    CRITERIA.forEach(c => {
+        const slug = c.name.toLowerCase().replace(/ /g, '_').replace(/\//g, '_');
+        const el = document.getElementById(prefix + slug);
+        if (el) total += parseInt(el.value) || 0;
+    });
+    const display = document.getElementById(`round${roundNum}_total_display`);
+    if (display) display.textContent = total;
+    updateFinalAverage();
+}
+
+function updateFinalAverage() {
+    let totalSum = 0, roundsCount = 0;
+    [1, 2, 3].forEach(n => {
+        const el = document.getElementById(`round${n}_total_display`);
+        const card = document.getElementById(`round${n}`);
+        if (el && card && !card.classList.contains('hidden')) {
+            totalSum += parseInt(el.textContent) || 0;
+            roundsCount++;
+        }
+    });
+    const avg = roundsCount > 0 ? (totalSum / roundsCount).toFixed(2) : '0.00';
+    const display = document.getElementById('final_avg_display');
+    if (display) display.textContent = avg;
+}
+
+// ===== Toggle logic =====
+function onProblemChange() {
+    const accepted = document.getElementById('accept_problem').checked;
+    const r1 = document.getElementById('round1');
+    const r2 = document.getElementById('round2');
+    const r3 = document.getElementById('round3');
+    if (accepted) {
+        r1 && r1.classList.remove('hidden');
+    } else {
+        r1 && r1.classList.add('hidden');
+        r2 && r2.classList.add('hidden');
+        r3 && r3.classList.add('hidden');
+        const p1 = document.getElementById('round1_passed');
+        const p2 = document.getElementById('round2_passed');
+        if (p1) p1.checked = false;
+        if (p2) p2.checked = false;
+    }
+    updateProgressSteps();
+    updateFinalAverage();
+}
+
+function onRound1Pass() {
+    const passed = document.getElementById('round1_passed')?.checked;
+    const r2 = document.getElementById('round2');
+    const r3 = document.getElementById('round3');
+    if (passed) {
+        r2 && r2.classList.remove('hidden');
+    } else {
+        r2 && r2.classList.add('hidden');
+        r3 && r3.classList.add('hidden');
+        const p2 = document.getElementById('round2_passed');
+        if (p2) p2.checked = false;
+    }
+    updateProgressSteps();
+    updateFinalAverage();
+}
+
+function onRound2Pass() {
+    const passed = document.getElementById('round2_passed')?.checked;
+    const r3 = document.getElementById('round3');
+    if (passed) {
+        r3 && r3.classList.remove('hidden');
+    } else {
+        r3 && r3.classList.add('hidden');
+    }
+    updateProgressSteps();
+    updateFinalAverage();
+}
+
+function updateProgressSteps() {
+    const problemOk = document.getElementById('accept_problem')?.checked;
+    const r1ok = document.getElementById('round1_passed')?.checked;
+    const r2ok = document.getElementById('round2_passed')?.checked;
+
+    const setStep = (id, state) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('active', 'done');
+        if (state === 'done') el.classList.add('done');
+        else if (state === 'active') el.classList.add('active');
+    };
+
+    setStep('stepProblem', problemOk ? 'done' : 'active');
+    if (problemOk) setStep('stepRound1', r1ok ? 'done' : 'active');
+    if (r1ok && ROUNDS_ENABLED.round2) setStep('stepRound2', r2ok ? 'done' : 'active');
+    if (r2ok && ROUNDS_ENABLED.round3) setStep('stepRound3', 'active');
+}
+
+// ===== Init: set slider fills and totals on page load =====
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slider').forEach(sl => updateSliderFill(sl));
+    [1, 2, 3].forEach(n => updateRoundTotal(n));
+    updateProgressSteps();
+});
+</script>
+</body>
+</html>

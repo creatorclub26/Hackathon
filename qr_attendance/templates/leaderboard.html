@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard · {{ homepage_config.hero_title | replace(' Registration', '') }} · Creator Club (SEC)</title>
+    <!-- Bootstrap 5 + Font Awesome 6 (consistent with other pages) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* === HEADER (SAMISTI inspired, fully responsive) === */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 2rem;
+            background: white;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 0.8rem 1.5rem;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo-text {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .club-badge {
+            background: #c41e3a;
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .social-links a {
+            color: #1a1a1a;
+            font-size: 1.4rem;
+            transition: all 0.25s ease;
+            display: inline-flex;
+        }
+
+        .social-links a:hover {
+            color: #c41e3a;
+            transform: translateY(-3px);
+        }
+
+        /* === LEADERBOARD SPECIFIC STYLING (blended with card style) === */
+        .leaderboard-section {
+            flex: 1;
+            max-width: 1300px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* stats grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 18px;
+            padding: 1.4rem 0.8rem;
+            text-align: center;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.03);
+            transition: 0.2s;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #c41e3a;
+            line-height: 1.2;
+        }
+
+        /* main card (podium & table container) */
+        .leaderboard-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-card:hover {
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+            background: #1a1a1a;
+            color: white;
+            padding: 1.6rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem 1.5rem;
+        }
+
+        .card-header h2 {
+            font-weight: 600;
+            font-size: 1.7rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header h2 i {
+            color: #c41e3a;
+        }
+
+        .card-header span {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 2rem 2rem;
+        }
+
+        /* podium */
+        .podium {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 2rem;
+            margin: 2rem 0 3rem;
+            flex-wrap: wrap;
+        }
+
+        .podium-item {
+            text-align: center;
+            width: 200px;
+        }
+
+        .podium-1 {
+            order: 2;
+        }
+
+        .podium-2 {
+            order: 1;
+        }
+
+        .podium-3 {
+            order: 3;
+        }
+
+        .podium-rank {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .rank-1 {
+            background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #CD7F32 0%, #B87333 100%);
+        }
+
+        .podium-bar {
+            width: 100%;
+            background: #f0f0f0;
+            border-radius: 20px 20px 0 0;
+            margin-top: 1.2rem;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .bar-1 {
+            height: 200px;
+            background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
+            width: 100%;
+        }
+
+        .bar-2 {
+            height: 150px;
+            background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
+            width: 100%;
+        }
+
+        .bar-3 {
+            height: 100px;
+            background: linear-gradient(135deg, #CD7F32 0%, #B87333 100%);
+            width: 100%;
+        }
+
+        .podium-team {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 0.8rem 0 0.2rem;
+        }
+
+        .podium-score {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #c41e3a;
+        }
+
+        /* table */
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard-table th {
+            background: #f8f9fa;
+            padding: 1rem 0.8rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .leaderboard-table td {
+            padding: 1.2rem 0.8rem;
+            border-bottom: 1px solid #eaeaea;
+            vertical-align: middle;
+        }
+
+        .leaderboard-table tr:hover {
+            background: #fafafa;
+        }
+
+        .rank-badge {
+            display: inline-flex;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .rank-1-badge {
+            background: #FFD700;
+            color: #1a1a1a;
+        }
+
+        .rank-2-badge {
+            background: #C0C0C0;
+            color: #1a1a1a;
+        }
+
+        .rank-3-badge {
+            background: #CD7F32;
+            color: white;
+        }
+
+        .score-cell {
+            font-weight: 700;
+            color: #c41e3a;
+            font-size: 1.2rem;
+        }
+
+        .progress-container {
+            width: 140px;
+        }
+
+        .progress-bar-custom {
+            width: 100%;
+            height: 8px;
+            background: #eaeaea;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #c41e3a;
+            border-radius: 20px;
+        }
+
+        .breakdown {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 6px;
+        }
+
+        .breakdown-item {
+            background: #f0f0f0;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* back link */
+        .back-link {
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+
+        .back-link:hover {
+            background: #c41e3a;
+            color: white;
+        }
+
+        /* footer (identical to evaluator/submit) */
+        .site-footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 2.5rem 1.5rem 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .copyright {
+            color: #aaa;
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 1.8rem;
+            margin-top: 1rem;
+        }
+
+        .dev-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .dev-link:hover {
+            color: #c41e3a;
+            text-decoration: underline;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .site-header {
+                padding: 1rem 1.5rem;
+            }
+
+            .logo-text {
+                font-size: 1.6rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .card-header h2 {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .site-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0.9rem 1.2rem;
+            }
+
+            .logo-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .social-links {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .podium-item {
+                width: 160px;
+            }
+
+            .podium-rank {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+
+            .leaderboard-table th,
+            .leaderboard-table td {
+                font-size: 0.85rem;
+                padding: 0.8rem 0.4rem;
+            }
+
+            .breakdown-item {
+                font-size: 0.65rem;
+                padding: 0.1rem 0.4rem;
+            }
+
+            .card-body {
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SITE HEADER (identical to evaluator/submit) -->
+    <header class="site-header">
+        <div class="logo-group">
+            <span class="logo-text">{{ homepage_config.hero_title | replace(' Registration', '') }}</span>
+            <span class="club-badge"><i class="fas fa-bolt me-1"></i> Creator Club SEC</span>
+        </div>
+
+    </header>
+
+    <!-- LEADERBOARD SECTION -->
+    <section class="leaderboard-section">
+        <!-- stats cards (using dummy data / template variables) -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="label">Teams Evaluated</div>
+                <div class="value">{{ leaderboard|length if leaderboard else '0' }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Max Possible</div>
+                <div class="value">{{ max_possible if max_possible else '0' }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Top Score</div>
+                <div class="value">
+                    {% if leaderboard and leaderboard|length > 0 %}
+                    {{ leaderboard[0].avg_score }}
+                    {% else %}
+                    0
+                    {% endif %}
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Average Score</div>
+                <div class="value">
+                    {% if leaderboard and leaderboard|length > 0 %}
+                    {{ (leaderboard|sum(attribute='avg_score') / leaderboard|length)|round(1) }}
+                    {% else %}
+                    0
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- main leaderboard card -->
+        <div class="leaderboard-card">
+            <div class="card-header">
+                <h2><i class="fas fa-trophy"></i> Evaluation Leaderboard</h2>
+                <a href="{{ url_for('admin') if url_for else '#' }}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Dashboard
+                </a>
+            </div>
+            <div class="card-body">
+
+                <!-- PODIUM (top 3) -->
+                {% if leaderboard and leaderboard|length >= 3 %}
+                <div class="podium">
+                    <!-- 2nd Place -->
+                    <div class="podium-item podium-2">
+                        <div class="podium-rank rank-2">2</div>
+                        <div class="podium-team">{{ leaderboard[1].team_name }}</div>
+                        <div class="podium-score">{{ leaderboard[1].avg_score }}</div>
+                        <div class="podium-bar">
+                            <div class="bar-2"></div>
+                        </div>
+                    </div>
+                    <!-- 1st Place -->
+                    <div class="podium-item podium-1">
+                        <div class="podium-rank rank-1">1</div>
+                        <div class="podium-team">{{ leaderboard[0].team_name }}</div>
+                        <div class="podium-score">{{ leaderboard[0].avg_score }}</div>
+                        <div class="podium-bar">
+                            <div class="bar-1"></div>
+                        </div>
+                    </div>
+                    <!-- 3rd Place -->
+                    <div class="podium-item podium-3">
+                        <div class="podium-rank rank-3">3</div>
+                        <div class="podium-team">{{ leaderboard[2].team_name }}</div>
+                        <div class="podium-score">{{ leaderboard[2].avg_score }}</div>
+                        <div class="podium-bar">
+                            <div class="bar-3"></div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+
+                {% endif %}
+
+                <!-- COMPLETE LEADERBOARD TABLE -->
+                <div style="overflow-x: auto;">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Team</th>
+                                <th>Project</th>
+                                <th>Score</th>
+                                <th>Progress</th>
+                                <th>Evaluators</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if leaderboard %}
+                            {% for team in leaderboard %}
+                            <tr>
+                                <td>
+                                    <span class="rank-badge 
+                                            {% if team.rank == 1 %}rank-1-badge
+                                            {% elif team.rank == 2 %}rank-2-badge
+                                            {% elif team.rank == 3 %}rank-3-badge
+                                            {% endif %}">
+                                        {{ team.rank }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <strong>{{ team.team_name }}</strong><br>
+                                    <small style="color: #666;">{{ team.team_id }}</small>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 600;">{{ team.project_title }}</div>
+                                    <div class="breakdown">
+                                        {% if team.avg_breakdown %}
+                                        {% for criterion, score in team.avg_breakdown.items() %}
+                                        <span class="breakdown-item">{{ criterion[:8] }}: {{ score|round(1) }}</span>
+                                        {% endfor %}
+                                        {% else %}
+                                        <span class="breakdown-item">—</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="score-cell">{{ team.avg_score }}</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar-custom">
+                                            <div class="progress-fill"
+                                                style="width: {{ (team.avg_score / (max_possible or 100) * 100)|round }}%">
+                                            </div>
+                                        </div>
+                                        <small>{{ (team.avg_score / (max_possible or 100) * 100)|round }}%</small>
+                                    </div>
+                                </td>
+                                <td>{{ team.total_evaluators }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <!-- dummy rows for demo -->
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 3rem;">No evaluation data yet. Check
+                                    back after evaluators have scored.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Bootstrap JS (optional, for any future interactive elements) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // small script to ensure back link works with url_for fallback
+        document.querySelectorAll('.back-link').forEach(link => {
+            if (link.getAttribute('href') === '#') {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Dashboard link would go to admin page.');
+                    // you could also redirect: window.location.href = '/admin';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

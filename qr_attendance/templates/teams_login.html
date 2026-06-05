@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Team Administration · Creator Club</title>
+    <!-- Bootstrap 5 + Font Awesome + Animate.css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #c41e3a;
+            --primary-dark: #a01830;
+            --primary-soft: #e03e5a;
+            --secondary: #1a1a1a;
+            --secondary-light: #2a2a2a;
+            --success: #1cc88a;
+            --danger: #e74a3b;
+            --warning: #f6c23e;
+            --light-bg: #f8f9fc;
+            --dark: #1e293b;
+            --card-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            --hover-shadow: 0 30px 60px -15px rgba(196,30,58,0.3);
+            --glass-bg: rgba(255,255,255,0.85);
+            --glass-border: rgba(255,255,255,0.6);
+        }
+
+        body {
+            background: linear-gradient(145deg, #f8fafc 0%, #eef2f6 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* main card – SAMISTI glassmorphism */
+        .auth-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-radius: 48px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .auth-card:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-6px) scale(1.01);
+            background: rgba(255,255,255,0.95);
+            border-color: rgba(196,30,58,0.3);
+        }
+
+        /* header with SAMISTI gradient */
+        .card-header {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            padding: 2.8rem 2rem 2.2rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 40%, rgba(196,30,58,0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .card-header::before {
+            content: "TEAMS";
+            position: absolute;
+            bottom: -20px;
+            right: 15px;
+            font-size: 5.5rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.03);
+            letter-spacing: 8px;
+            font-family: inherit;
+            transform: rotate(-2deg);
+        }
+
+        /* floating icon */
+        .float-icon {
+            animation: floatGentle 6s infinite ease-in-out;
+            display: inline-block;
+            background: var(--primary);
+            backdrop-filter: blur(4px);
+            padding: 1.2rem 1.6rem;
+            border-radius: 60px;
+            margin-bottom: 1.2rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 15px 25px -8px rgba(196,30,58,0.5);
+        }
+
+        .float-icon i {
+            font-size: 3.5rem;
+            color: white;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
+        }
+
+        @keyframes floatGentle {
+            0% { transform: translateY(0); }
+            45% { transform: translateY(-8px); }
+            55% { transform: translateY(-8px); }
+            100% { transform: translateY(0); }
+        }
+
+        .card-header h3 {
+            color: white;
+            font-weight: 700;
+            font-size: 2.2rem;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-header h3 i {
+            background: var(--primary);
+            padding: 0.5rem;
+            border-radius: 20px;
+            font-size: 1.8rem;
+            box-shadow: 0 10px 15px rgba(196,30,58,0.3);
+        }
+
+        .card-header p {
+            color: rgba(255,255,255,0.7);
+            font-size: 1rem;
+            margin-top: 0.6rem;
+            position: relative;
+            z-index: 2;
+            font-weight: 500;
+        }
+
+        /* card body */
+        .card-body {
+            padding: 2.5rem 2.2rem;
+        }
+
+        /* flash messages – elegant */
+        .flash-message {
+            border-radius: 60px !important;
+            border: none;
+            font-weight: 500;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 2.2rem;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(8px);
+            border-left: 6px solid transparent;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            animation: slideDown 0.4s;
+        }
+
+        .flash-message.alert-danger {
+            background: rgba(231, 76, 60, 0.1);
+            border-left-color: var(--danger);
+            color: #b33c2e;
+        }
+
+        .flash-message.alert-success {
+            background: rgba(28, 200, 138, 0.08);
+            border-left-color: var(--success);
+            color: #1a6e4b;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* form elements */
+        .form-label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: var(--primary);
+            width: 1.2rem;
+        }
+
+        .input-group {
+            border-radius: 60px;
+            overflow: hidden;
+            background: white;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(196,30,58,0.15);
+        }
+
+        .input-group-text {
+            background: white;
+            border: none;
+            color: var(--primary);
+            font-size: 1rem;
+            padding-left: 1.4rem;
+            padding-right: 0.5rem;
+        }
+
+        .form-control {
+            border: none;
+            padding: 0.95rem 0.8rem 0.95rem 0.2rem;
+            font-size: 1rem;
+            background: white;
+            box-shadow: none !important;
+        }
+
+        .form-control:focus {
+            background: white;
+        }
+
+        .form-control::placeholder {
+            color: #a0aec0;
+            font-size: 0.95rem;
+        }
+
+        .toggle-password {
+            border: none;
+            background: white;
+            color: #718096;
+            border-radius: 0 60px 60px 0 !important;
+            padding-right: 1.4rem;
+            transition: all 0.2s;
+        }
+
+        .toggle-password:hover {
+            background: white;
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* login button – premium SAMISTI gradient */
+        .btn-login {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+            width: 100%;
+            transition: all 0.4s;
+            box-shadow: 0 15px 25px -10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 2.2rem;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(196,30,58,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: 0;
+        }
+
+        .btn-login:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn-login i, .btn-login span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-login i {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .btn-login:hover {
+            background: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 25px 35px -12px rgba(196,30,58,0.5);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .btn-login:hover i {
+            transform: translateX(6px);
+        }
+
+        /* back link */
+        .back-link {
+            text-align: center;
+            margin-top: 1.8rem;
+        }
+
+        .back-link a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .back-link a:hover {
+            color: var(--primary);
+            background: white;
+            transform: translateX(-4px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .back-link a i {
+            transition: transform 0.3s;
+        }
+
+        .back-link a:hover i {
+            transform: translateX(-4px);
+        }
+
+        /* validation */
+        .invalid-feedback {
+            font-size: 0.85rem;
+            background: white;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            margin-top: 0.4rem;
+            color: var(--danger);
+            font-weight: 500;
+            border-left: 3px solid var(--danger);
+        }
+
+        /* responsive */
+        @media (max-width: 576px) {
+            body { padding: 1rem; }
+            
+            .card-header { padding: 2.2rem 1.5rem 1.8rem; }
+            .card-header h3 { font-size: 1.8rem; }
+            .card-header h3 i { font-size: 1.5rem; padding: 0.4rem; }
+            .card-header::before { font-size: 4rem; bottom: -15px; }
+            
+            .float-icon { padding: 1rem 1.4rem; }
+            .float-icon i { font-size: 2.8rem; }
+            
+            .card-body { padding: 2rem 1.5rem; }
+            
+            .form-control { padding: 0.8rem 0.2rem; }
+            .btn-login { font-size: 1.1rem; padding: 0.9rem; }
+        }
+
+        @media (max-width: 380px) {
+            .card-header h3 { font-size: 1.5rem; }
+            .card-header::before { font-size: 3.2rem; }
+            .float-icon i { font-size: 2.4rem; }
+            .btn-login { font-size: 1rem; }
+            .back-link a { font-size: 0.85rem; }
+        }
+
+        /* fade-out animation */
+        .fade-out {
+            animation: fadeRemove 0.3s forwards;
+        }
+
+        @keyframes fadeRemove {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-8px); }
+        }
+
+        /* custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-card animate__animated animate__fadeInUp">
+        <!-- header -->
+        <div class="card-header">
+            <div class="float-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3>
+                <i class="fas fa-user-shield"></i> 
+                Team Admin
+            </h3>
+            <p>manage team registrations</p>
+        </div>
+
+        <!-- body -->
+        <div class="card-body">
+            <!-- flash messages (dynamic) -->
+            <div id="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- login form -->
+            <form method="POST" action="{{ url_for('teams_login') }}" class="needs-validation" novalidate>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                <div class="mb-4">
+                    <label for="username" class="form-label">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               placeholder="Enter username" required autofocus>
+                        <div class="invalid-feedback">Username is required</div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-key"></i> Password
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" 
+                               placeholder="••••••••" required>
+                        <button class="btn btn-outline-secondary toggle-password" type="button">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <div class="invalid-feedback">Password is required</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> 
+                    <span>Access Team Panel</span>
+                </button>
+
+                <div class="back-link">
+                    <a href="/">
+                        <i class="fas fa-arrow-left"></i> 
+                        Back to home
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // Bootstrap validation
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+
+            // toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const input = this.closest('.input-group').querySelector('input');
+                    const icon = this.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+
+            // auto-dismiss flash messages after 5 sec
+            const flashContainer = document.getElementById('flash-messages');
+            if (flashContainer.children.length > 0) {
+                setTimeout(() => {
+                    const alerts = flashContainer.querySelectorAll('.flash-message');
+                    alerts.forEach(alert => {
+                        alert.classList.add('fade-out');
+                        setTimeout(() => {
+                            if (alert.parentNode) alert.remove();
+                        }, 300);
+                    });
+                }, 4800);
+            }
+
+            // Add floating label effect
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.closest('.input-group').style.borderColor = '#c41e3a';
+                });
+                input.addEventListener('blur', () => {
+                    input.closest('.input-group').style.borderColor = '#e2e8f0';
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

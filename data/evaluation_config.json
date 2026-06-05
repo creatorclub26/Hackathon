@@ -1,0 +1,38 @@
+{
+    "evaluation_enabled": true,
+    "submissions_enabled": true,
+    "rounds": {
+        "round1": {
+            "enabled": true,
+            "label": "Round 1 \u2013 Preliminary"
+        },
+        "round2": {
+            "enabled": false,
+            "label": "Round 2 \u2013 Detailed"
+        },
+        "round3": {
+            "enabled": false,
+            "label": "Round 3 \u2013 Final"
+        }
+    },
+    "evaluators": [],
+    "criteria": [
+        {
+            "name": "Problem Statement",
+            "max_marks": 10
+        },
+        {
+            "name": "Innovation/Creativity",
+            "max_marks": 10
+        },
+        {
+            "name": "Technical Implementation",
+            "max_marks": 20
+        },
+        {
+            "name": "Feasibility",
+            "max_marks": 10
+        }
+    ],
+    "presentation_template_link": "https://drive.google.com/drive/folders/1Os0CYtRiS8y0s91R8SDDfZgh7FK2__PF?usp=sharing"
+}

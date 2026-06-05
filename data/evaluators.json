@@ -1,0 +1,18 @@
+{
+    "evaluators": [
+        {
+            "id": "4a4e072d",
+            "username": "admin",
+            "password": "scrypt:32768:8:1$xDFH04Jlc9ahJ2tN$ba2364ba0273ea7bf72bab7900acfb81a293d9517ec5bbd133181ad639a6956bd84de9699d2db4590cdd1f7677fdcf7c91874b03afa20f618bb0400a13da8f5c",
+            "name": "Laxmi Nivas Morishetty",
+            "created_at": "2026-06-03 23:53:54"
+        },
+        {
+            "id": "6117ec29",
+            "username": "raghava",
+            "password": "scrypt:32768:8:1$tmjlFpl4cYgtGVys$a3c5fe47aa418fc9a73df55cca3abcb33b00015d8f6b1fe39562648af669488d45ccdea4d8140fc851fc6da581d6c6fee688a1b06120a0076eaac1e299b1a2e4",
+            "name": "raghava",
+            "created_at": "2026-06-04 19:46:41"
+        }
+    ]
+}

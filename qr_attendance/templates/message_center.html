@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Message Center · Creator Club</title>
+    <!-- Bootstrap 5 + Font Awesome + Quill + Animate -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #c41e3a;
+            --primary-dark: #a01830;
+            --primary-soft: #e03e5a;
+            --accent: #1a1a1a;
+            --danger: #e74a3b;
+            --success: #1cc88a;
+            --warning: #f6c23e;
+            --info: #36b9cc;
+            --light-bg: #f8f9fc;
+            --dark: #5a5c69;
+        }
+
+        body {
+            background: linear-gradient(145deg, #edf2fb 0%, #dde7f5 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== MOBILE HEADER (glass) ===== */
+        .mobile-header {
+            display: none;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0.8rem 1.2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            border-bottom: 1px solid rgba(196, 30, 58, 0.15);
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary);
+            padding: 0 0.5rem;
+        }
+
+        .mobile-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .mobile-title {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 2rem;
+            transition: margin 0.3s;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* back button – sleek pill */
+        .back-btn {
+            background: white;
+            border: none;
+            padding: 0.6rem 1.8rem;
+            border-radius: 60px;
+            font-weight: 600;
+            color: #1e293b;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(196, 30, 58, 0.15);
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 16px 24px -8px rgba(196, 30, 58, 0.5);
+        }
+
+        .back-btn:hover svg {
+            transform: translateX(-4px);
+            fill: white;
+        }
+
+        /* cards – glassmorphic */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -10px rgba(60, 75, 125, 0.1);
+            transition: all 0.25s;
+            margin-bottom: 1.8rem;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 28px 45px -12px rgba(196, 30, 58, 0.2);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            padding: 1.2rem 2rem;
+            color: white;
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header i {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.4rem;
+            border-radius: 14px;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* QR Code Send Button */
+        .qr-send-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 32px;
+            padding: 2rem;
+            margin-bottom: 1.8rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+        }
+
+        .qr-send-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.05);
+            transform: rotate(30deg);
+        }
+
+        .qr-send-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+
+        .qr-send-text h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .qr-send-text p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0;
+        }
+
+        .qr-send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(196, 30, 58, 0.3);
+        }
+
+        .qr-send-btn:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(196, 30, 58, 0.4);
+        }
+
+        .qr-send-btn i {
+            font-size: 1.3rem;
+        }
+
+        .stats-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        /* form elements */
+        .form-label {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 60px;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #d9e1ef;
+            background: white;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.2);
+            outline: none;
+        }
+
+        /* quill editor */
+        #message-editor {
+            height: 250px;
+            background: white;
+            border-radius: 28px;
+            border: 1px solid #d9e1ef;
+        }
+
+        .ql-toolbar {
+            border-radius: 28px 28px 0 0 !important;
+            border: 1px solid #d9e1ef !important;
+            border-bottom: none !important;
+        }
+
+        .ql-container {
+            border-radius: 0 0 28px 28px !important;
+            border: 1px solid #d9e1ef !important;
+            border-top: none !important;
+        }
+
+        /* file upload */
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 0.8rem;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 1.2rem;
+            border: 2px dashed #b7c3d7;
+            border-radius: 60px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .file-upload-label:hover {
+            background: rgba(196, 30, 58, 0.05);
+        }
+
+        .file-upload-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .file-preview {
+            position: relative;
+            width: 100px;
+            height: 120px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(4px);
+            border: 1px solid #dee6f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+        }
+
+        .file-preview img {
+            max-width: 70px;
+            max-height: 70px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .file-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .file-name {
+            font-size: 0.7rem;
+            text-align: center;
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .remove-file {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        /* send button */
+        .btn-send {
+            background: linear-gradient(115deg, #1a1a1a, #2a2a2a);
+            border: none;
+            border-radius: 60px;
+            padding: 0.9rem 2rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 16px 24px -10px #1e3a8a;
+            margin-top: 0.8rem;
+        }
+
+        .btn-send:hover {
+            background: linear-gradient(115deg, #c41e3a, #a01830);
+            transform: translateY(-3px);
+        }
+
+        /* table */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: #f1f5fb;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: none;
+        }
+
+        .badge {
+            border-radius: 60px;
+            padding: 0.5rem 1rem;
+        }
+
+        .badge-success {
+            background: rgba(28, 200, 138, 0.1);
+            color: #1cc88a;
+        }
+
+        .badge-warning {
+            background: rgba(246, 194, 62, 0.1);
+            color: #f6c23e;
+        }
+
+        .badge-primary {
+            background: rgba(196, 30, 58, 0.1);
+            color: var(--primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .action-btn.view {
+            background: rgba(196, 30, 58, 0.1);
+            color: var(--primary);
+        }
+
+        .action-btn.resend {
+            background: rgba(28, 200, 138, 0.1);
+            color: #1cc88a;
+        }
+
+        /* search + sort */
+        .search-sort-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* floating alert */
+        .alert-floating {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1200;
+            border-radius: 60px;
+            padding: 1rem 1.8rem;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(8px);
+            background: white;
+            border-left: 4px solid var(--primary);
+        }
+
+        @media (max-width: 992px) {
+            .mobile-header {
+                display: flex;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 5rem 1.2rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .search-sort-container {
+                flex-direction: column;
+            }
+
+            #message-editor {
+                height: 200px;
+            }
+
+            .qr-send-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .qr-send-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .back-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .card-header {
+                font-size: 1.1rem;
+                padding: 1rem 1.2rem;
+            }
+
+            .qr-send-text h3 {
+                font-size: 1.4rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.2rem;
+            padding: 0.8rem 0;
+        }
+
+        .pagination-info {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .page-btn {
+            min-width: 36px;
+            height: 36px;
+            border: 1.5px solid #d9e1ef;
+            background: white;
+            border-radius: 50px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #1e293b;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0.6rem;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .per-page-select {
+            border: 1.5px solid #d9e1ef;
+            border-radius: 50px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.88rem;
+            color: #1e293b;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* Responsive table on small screens */
+        @media (max-width: 600px) {
+            .table thead {
+                display: none;
+            }
+
+            .table tr {
+                display: block;
+                border: 1px solid #e2e8f0;
+                border-radius: 16px;
+                margin-bottom: 0.8rem;
+                padding: 0.8rem;
+                background: white;
+            }
+
+            .table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border: none;
+                padding: 0.35rem 0;
+                font-size: 0.9rem;
+                gap: 0.5rem;
+            }
+
+            .table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #64748b;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                flex-shrink: 0;
+            }
+        }
+
+        /* File size warning */
+        .file-size-error {
+            color: #e74a3b;
+            font-size: 0.82rem;
+            margin-top: 0.4rem;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- mobile header -->
+    <div class="mobile-header">
+        <button class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="mobile-title">Message Center</span>
+        <img src="{{ url_for('static', filename='images/logo/cc.png') }}" alt="Logo" class="mobile-logo">
+    </div>
+
+    <!-- overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- sidebar -->
+    {% include '_sidebar.html' %}
+
+    <!-- main content -->
+    <div class="main-content">
+        <!-- back to dashboard -->
+        <button onclick="window.location.href='/admin'" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+            </svg>
+            <span>Dashboard</span>
+        </button>
+
+        <!-- QR Code Send Card - NEW FEATURE -->
+        <div class="qr-send-card animate__animated animate__fadeInDown">
+            <div class="qr-send-content">
+                <div class="qr-send-text">
+                    <h3><i class="fas fa-qrcode me-2"></i>Send QR Code Reminders</h3>
+                    <p>Resend event QR codes to all payment-verified participants</p>
+                    <div class="stats-badge" id="verifiedCount">
+                        <i class="fas fa-check-circle me-1"></i> Loading verified count...
+                    </div>
+                </div>
+                <button class="qr-send-btn" id="sendQrReminderBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Send QR Codes</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- compose card -->
+        <div class="glass-card">
+            <div class="card-header">
+                <i class="fas fa-pen-fancy"></i> Compose new message
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" id="composeForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="subject" name="subject" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="message-editor" class="form-label">Message</label>
+                        <div id="message-editor"></div>
+                        <input type="hidden" id="message" name="message">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Recipients</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="recipients_type" id="all" value="all"
+                                checked>
+                            <label class="form-check-label" for="all">All participants</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="recipients_type" id="paid" value="paid">
+                            <label class="form-check-label" for="paid">Paid/verified teams</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="recipients_type" id="unpaid"
+                                value="unpaid">
+                            <label class="form-check-label" for="unpaid">Unpaid/unverified</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Attachments <small class="text-muted">(Max 100 KB per
+                                file)</small></label>
+                        <div class="file-upload-wrapper">
+                            <label for="file-upload" class="file-upload-label">
+                                <i class="fas fa-cloud-upload-alt me-2"></i> Click to upload files
+                                <span style="font-size:0.82rem;color:#94a3b8;display:block;margin-top:3px;">Max 100 KB
+                                    per file &bull; Images, PDF, DOC, XLS</span>
+                                <input type="file" id="file-upload" name="attachments" class="file-upload-input"
+                                    multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx">
+                            </label>
+                            <div class="file-size-error" id="file-size-error">
+                                <i class="fas fa-exclamation-triangle me-1"></i> Some files exceed the 100 KB limit and
+                                were removed.
+                            </div>
+                            <div class="file-preview-container" id="file-preview-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Schedule</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="schedule_type" id="send_now" value="now"
+                                checked>
+                            <label class="form-check-label" for="send_now">Send immediately</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="schedule_type" id="schedule_later"
+                                value="later">
+                            <label class="form-check-label" for="schedule_later">Schedule later</label>
+                        </div>
+                        <div id="schedule-date-container" class="mt-2" style="display: none;">
+                            <input type="datetime-local" class="form-control" id="schedule_date" name="schedule_date">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-send">
+                        <i class="fas fa-paper-plane me-2"></i>Send message
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- history card -->
+        <div class="glass-card mt-4">
+            <div class="card-header">
+                <i class="fas fa-history"></i> Message history
+            </div>
+            <div class="card-body">
+                <div class="search-sort-container">
+                    <div class="input-group" style="max-width: 300px;">
+                        <span class="input-group-text bg-white border-end-0"><i
+                                class="fas fa-search text-primary"></i></span>
+                        <input type="text" class="form-control border-start-0" id="search-input"
+                            placeholder="Search...">
+                    </div>
+                    <select class="form-select" id="sort-select" style="max-width: 200px;">
+                        <option value="newest">Newest first</option>
+                        <option value="oldest">Oldest first</option>
+                        <option value="subject-asc">Subject (A-Z)</option>
+                        <option value="subject-desc">Subject (Z-A)</option>
+                    </select>
+                </div>
+
+                {% if email_history %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle" id="messages-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Subject</th>
+                                <th>Recipients</th>
+                                <th>Type</th>
+                                <th>Attachments</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for email in email_history %}
+                            <tr>
+                                <td data-label="Date">
+                                    {% if email.timestamp %}
+                                    {% if email.timestamp is string %}
+                                    {{ email.timestamp[:19] }}
+                                    {% else %}
+                                    {{ email.timestamp.strftime('%d %b %Y, %I:%M %p') }}
+                                    {% endif %}
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </td>
+                                <td data-label="Subject">
+                                    <strong>{{ email.subject }}</strong>
+                                    {% if 'qr_reminder' in email.subject %}
+                                    <span class="badge badge-primary ms-2">QR</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Recipients">
+                                    <span class="badge badge-success">
+                                        {{ email.actually_sent if 'actually_sent' in email else email.total_recipients
+                                        }} sent
+                                    </span>
+                                    {% if email.success_rate %}
+                                    <br><small class="text-muted">{{ email.success_rate }}</small>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Type">
+                                    <span class="badge 
+                                        {% if email.recipients_type == 'all' %}badge-success
+                                        {% elif email.recipients_type == 'paid' %}badge-primary
+                                        {% else %}badge-warning{% endif %}">
+                                        {{ email.recipients_type }}
+                                    </span>
+                                </td>
+                                <td data-label="Attachments">
+                                    {% if email.attachments and email.attachments|length > 0 %}
+                                    <span class="badge badge-primary">
+                                        <i class="fas fa-paperclip me-1"></i>{{ email.attachments|length }}
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-light text-dark">none</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Actions">
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewMessage('{{ email.id }}')"
+                                            title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn resend" onclick="resendEmail('{{ email.id }}')"
+                                            title="Resend">
+                                            <i class="fas fa-redo"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination -->
+                <div class="pagination-container" id="pagination-container">
+                    <div class="pagination-info" id="pagination-info"></div>
+                    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                        <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.88rem;color:#64748b;">
+                            Rows per page:
+                            <select class="per-page-select" id="per-page-select">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                        <div class="pagination-controls" id="pagination-controls"></div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No messages yet</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Message View Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Message details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="messageModalContent">
+                    Loading...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Suggestions Modal -->
+    <div class="modal fade" id="suggestionsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User suggestions</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="suggestionsTableBody"></div>
+                    <div id="noSuggestions" class="text-center py-4 d-none">
+                        <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No suggestions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="alert-floating" id="successToast" style="display: none;">
+        <i class="fas fa-check-circle me-2" style="color: #1cc88a;"></i>
+        <span id="toastMessage">Message sent successfully!</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        (function () {
+            // ===== QUILL EDITOR =====
+            const quill = new Quill('#message-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        ['link']
+                    ]
+                },
+                placeholder: 'Write your message here...'
+            });
+
+            document.getElementById('composeForm').onsubmit = function () {
+                document.getElementById('message').value = quill.root.innerHTML;
+                return true;
+            };
+
+            // ===== SCHEDULE TOGGLE =====
+            document.querySelectorAll('input[name="schedule_type"]').forEach(r => {
+                r.addEventListener('change', function () {
+                    document.getElementById('schedule-date-container').style.display =
+                        this.value === 'later' ? 'block' : 'none';
+                });
+            });
+
+            // ===== FILE UPLOAD — 100 KB LIMIT =====
+            const MAX_FILE_SIZE = 100 * 1024; // 100 KB in bytes
+
+            document.getElementById('file-upload').addEventListener('change', function (e) {
+                const container = document.getElementById('file-preview-container');
+                const errorDiv = document.getElementById('file-size-error');
+                container.innerHTML = '';
+                errorDiv.style.display = 'none';
+
+                let hasOversized = false;
+                const validFiles = [];
+
+                for (const file of e.target.files) {
+                    if (file.size > MAX_FILE_SIZE) {
+                        hasOversized = true;
+                        continue; // Skip oversized files
+                    }
+                    validFiles.push(file);
+                }
+
+                if (hasOversized) {
+                    errorDiv.style.display = 'block';
+                }
+
+                for (const file of validFiles) {
+                    const preview = document.createElement('div');
+                    preview.className = 'file-preview';
+
+                    let icon = 'fa-file';
+                    if (file.type.includes('image')) icon = 'fa-file-image';
+                    else if (file.type.includes('pdf')) icon = 'fa-file-pdf';
+                    else if (file.type.includes('word')) icon = 'fa-file-word';
+                    else if (file.type.includes('excel') || file.type.includes('sheet')) icon = 'fa-file-excel';
+
+                    const sizeKB = (file.size / 1024).toFixed(1);
+                    preview.innerHTML = `
+                        <div class="file-icon"><i class="fas ${icon}"></i></div>
+                        <div class="file-name">${file.name}</div>
+                        <div style="font-size:0.65rem;color:#94a3b8;">${sizeKB} KB</div>
+                        <button class="remove-file" type="button" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    container.appendChild(preview);
+                }
+            });
+
+            // ===== PAGINATION ENGINE =====
+            const tbody = document.querySelector('#messages-table tbody');
+            if (tbody) {
+                const allRows = Array.from(tbody.querySelectorAll('tr'));
+                let filteredRows = [...allRows];
+                let currentPage = 1;
+                let perPage = 10;
+
+                function renderTable() {
+                    const totalRows = filteredRows.length;
+                    const totalPages = Math.max(1, Math.ceil(totalRows / perPage));
+                    currentPage = Math.min(currentPage, totalPages);
+
+                    const start = (currentPage - 1) * perPage;
+                    const end = start + perPage;
+
+                    // Show/hide rows
+                    allRows.forEach(r => r.style.display = 'none');
+                    filteredRows.slice(start, end).forEach(r => r.style.display = '');
+
+                    // Update info text
+                    const infoEl = document.getElementById('pagination-info');
+                    if (totalRows === 0) {
+                        infoEl.textContent = 'No messages found';
+                    } else {
+                        infoEl.textContent = `Showing ${start + 1}–${Math.min(end, totalRows)} of ${totalRows} messages`;
+                    }
+
+                    // Build page buttons
+                    const controlsEl = document.getElementById('pagination-controls');
+                    controlsEl.innerHTML = '';
+
+                    const prevBtn = document.createElement('button');
+                    prevBtn.className = 'page-btn';
+                    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                    prevBtn.disabled = currentPage === 1;
+                    prevBtn.addEventListener('click', () => { currentPage--; renderTable(); });
+                    controlsEl.appendChild(prevBtn);
+
+                    // Smart page number display
+                    const pages = getPageRange(currentPage, totalPages);
+                    pages.forEach(p => {
+                        if (p === '...') {
+                            const dots = document.createElement('span');
+                            dots.textContent = '…';
+                            dots.style.cssText = 'padding:0 4px;color:#94a3b8;font-weight:600;';
+                            controlsEl.appendChild(dots);
+                        } else {
+                            const btn = document.createElement('button');
+                            btn.className = 'page-btn' + (p === currentPage ? ' active' : '');
+                            btn.textContent = p;
+                            btn.addEventListener('click', () => { currentPage = p; renderTable(); });
+                            controlsEl.appendChild(btn);
+                        }
+                    });
+
+                    const nextBtn = document.createElement('button');
+                    nextBtn.className = 'page-btn';
+                    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                    nextBtn.disabled = currentPage === totalPages;
+                    nextBtn.addEventListener('click', () => { currentPage++; renderTable(); });
+                    controlsEl.appendChild(nextBtn);
+                }
+
+                function getPageRange(current, total) {
+                    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+                    if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
+                    if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+                    return [1, '...', current - 1, current, current + 1, '...', total];
+                }
+
+                // ===== SEARCH =====
+                document.getElementById('search-input')?.addEventListener('input', function () {
+                    const term = this.value.toLowerCase();
+                    filteredRows = allRows.filter(row => row.textContent.toLowerCase().includes(term));
+                    currentPage = 1;
+                    renderTable();
+                });
+
+                // ===== SORT =====
+                document.getElementById('sort-select')?.addEventListener('change', function () {
+                    const sortBy = this.value;
+                    filteredRows.sort((a, b) => {
+                        switch (sortBy) {
+                            case 'newest':
+                                return new Date(b.cells[0].textContent.trim()) - new Date(a.cells[0].textContent.trim());
+                            case 'oldest':
+                                return new Date(a.cells[0].textContent.trim()) - new Date(b.cells[0].textContent.trim());
+                            case 'subject-asc':
+                                return a.cells[1].textContent.trim().localeCompare(b.cells[1].textContent.trim());
+                            case 'subject-desc':
+                                return b.cells[1].textContent.trim().localeCompare(a.cells[1].textContent.trim());
+                            default: return 0;
+                        }
+                    });
+                    currentPage = 1;
+                    renderTable();
+                });
+
+                // ===== PER PAGE =====
+                document.getElementById('per-page-select')?.addEventListener('change', function () {
+                    perPage = parseInt(this.value);
+                    currentPage = 1;
+                    renderTable();
+                });
+
+                // Initial render
+                renderTable();
+            }
+
+            // ===== LOAD VERIFIED COUNT =====
+            function loadVerifiedCount() {
+                fetch('/api/verified-count')
+                    .then(response => response.json())
+                    .then(data => {
+                        const countElement = document.getElementById('verifiedCount');
+                        if (data.success) {
+                            countElement.innerHTML = `
+                                <i class="fas fa-check-circle me-1"></i> 
+                                ${data.count} verified participants · ${data.teams} teams
+                            `;
+                        }
+                    })
+                    .catch(error => console.error('Error loading verified count:', error));
+            }
+            loadVerifiedCount();
+
+            // ===== SEND QR REMINDER =====
+            document.getElementById('sendQrReminderBtn').addEventListener('click', function () {
+                Swal.fire({
+                    title: 'Send QR Code Reminders?',
+                    html: `
+                        <p>This will send event QR codes to all payment-verified participants.</p>
+                        <p class="text-muted small">Each participant will receive their team's QR code with event details.</p>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#c41e3a',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-paper-plane me-2"></i>Yes, send now',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const btn = this;
+                        const originalHtml = btn.innerHTML;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+                        btn.disabled = true;
+
+                        fetch('/send-qr-reminders', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token() }}'
+                            }
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'QR Codes Sent!',
+                                        html: `
+                                        <p>${data.message}</p>
+                                        <p class="text-muted small">Sent to ${data.sent_count} recipients</p>
+                                    `,
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    });
+                                    setTimeout(() => location.reload(), 2000);
+                                } else {
+                                    throw new Error(data.message);
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: error.message || 'Failed to send QR reminders'
+                                });
+                            })
+                            .finally(() => {
+                                btn.innerHTML = originalHtml;
+                                btn.disabled = false;
+                            });
+                    }
+                });
+            });
+
+            // ===== VIEW MESSAGE =====
+            window.viewMessage = function (id) {
+                fetch(`/get-message/${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const modalContent = document.getElementById('messageModalContent');
+                        if (data.success) {
+                            modalContent.innerHTML = `
+                                <div class="mb-3">
+                                    <strong>Subject:</strong> ${data.message.subject}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>From:</strong> ${data.message.sent_by}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Date:</strong> ${data.message.timestamp}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Recipients:</strong> ${data.message.total_recipients}
+                                </div>
+                                <hr>
+                                <div class="message-body p-3 bg-light rounded">
+                                    ${data.message.message}
+                                </div>
+                            `;
+                        } else {
+                            modalContent.innerHTML = '<p class="text-danger">Failed to load message</p>';
+                        }
+                        new bootstrap.Modal(document.getElementById('messageModal')).show();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to load message details');
+                    });
+            };
+
+            // ===== RESEND EMAIL =====
+            window.resendEmail = function (id) {
+                Swal.fire({
+                    title: 'Resend Email?',
+                    text: 'This will send the same message again to all original recipients.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#c41e3a',
+                    confirmButtonText: 'Yes, resend'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/resend-email/${id}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token() }}'
+                            }
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Resent!',
+                                        text: data.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    throw new Error(data.message);
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: error.message
+                                });
+                            });
+                    }
+                });
+            };
+
+            // ===== SHOW TOAST =====
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('successToast');
+                document.getElementById('toastMessage').textContent = message;
+                toast.style.display = 'block';
+                toast.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da';
+                toast.style.borderLeftColor = type === 'success' ? '#1cc88a' : '#e74a3b';
+
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 3000);
+            }
+
+            // Check for flash messages
+            {% with messages = get_flashed_messages(with_categories = true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            showToast('{{ message }}', '{{ category }}');
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        })();
+    </script>
+</body>
+
+</html>

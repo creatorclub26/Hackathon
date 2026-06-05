@@ -1,0 +1,58 @@
+{
+    "teams": [
+        {
+            "gender": "Male",
+            "members": [
+                {
+                    "branch": "CSE(CS)",
+                    "college": "Sphoorthy Engineering College",
+                    "contact": "9059395995",
+                    "email": "morishettylaxminivas@gmail.com",
+                    "gender": "Male",
+                    "id": "mem_65f7a63a",
+                    "name": "Morishetty Laxmi Nivas",
+                    "rollno": "23N81A62B0",
+                    "section": "",
+                    "year": "3rd"
+                },
+                {
+                    "branch": "CSE(CS)",
+                    "college": "Sphoorthy Engineering College",
+                    "contact": "1321321332",
+                    "email": "creator_club@sphoorthyengg.ac.in",
+                    "gender": "Male",
+                    "id": "mem_2b6a7ffd",
+                    "name": "Teki Achary",
+                    "rollno": "23N81A62A9",
+                    "section": "",
+                    "year": "3rd"
+                },
+                {
+                    "branch": "CSE(CS)",
+                    "college": "Sphoorthy Engineering College",
+                    "contact": "3442321245",
+                    "email": "creator_club@sphoorthyengg.ac.in",
+                    "gender": "Female",
+                    "id": "mem_259b4cb3",
+                    "name": "Gaddam Raghava ",
+                    "rollno": "23N81A62A3",
+                    "section": "",
+                    "year": "3rd"
+                }
+            ],
+            "payment_date": "2026-06-04 19:40:59",
+            "payment_id": "12321321312312312312312",
+            "payment_method": "online",
+            "payment_verified": false,
+            "registration_complete": false,
+            "registration_date": "2026-06-04 19:40:30",
+            "team_id": "CC60326005",
+            "team_name": "NIVAS1111",
+            "payment_screenshot": "static/uploads/payment_CC60326005.png",
+            "payment_status": "rejected",
+            "payment_review_date": "2026-06-04 23:34:55",
+            "payment_review_by": "unknown",
+            "payment_rejection_reason": ""
+        }
+    ]
+}

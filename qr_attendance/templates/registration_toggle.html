@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Registration Control · Creator Club</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        /* Header/Navbar */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -1px;
+        }
+
+        .club-badge {
+            background: #c41e3a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 600px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Card */
+        .control-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 4px solid #c41e3a;
+        }
+
+        .card-header h2 {
+            margin: 1rem 0 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .card-header i {
+            font-size: 3rem;
+            color: #c41e3a;
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-open {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 2px solid #28a745;
+        }
+
+        .status-closed {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 2px solid #dc3545;
+        }
+
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .toggle-info h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .toggle-info p {
+            margin: 0.5rem 0 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #dc3545;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #28a745;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Message Input */
+        .message-section {
+            margin-bottom: 2rem;
+        }
+
+        .message-section label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: #1a1a1a;
+        }
+
+        .message-section textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #eaeaea;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .message-section textarea:focus {
+            border-color: #c41e3a;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(196,30,58,0.1);
+        }
+
+        .message-section .hint {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #c41e3a 0%, #a01830 100%);
+            color: white;
+            width: 100%;
+            box-shadow: 0 10px 20px rgba(196,30,58,0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(196,30,58,0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #1a1a1a;
+            color: white;
+            width: 100%;
+            margin-top: 1rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px dashed #eaeaea;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #c41e3a;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 2px solid #28a745;
+        }
+
+        .alert-error {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 2px solid #dc3545;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 2rem;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 1rem;
+            }
+            
+            .card-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .toggle-container {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo">CREATOR CLUB</div>
+            <div class="club-badge">SEC</div>
+        </div>
+        <div class="social-links">
+            <a href="https://instagram.com/creator_club_official" target="_blank" style="color: #1a1a1a; font-size: 1.3rem; margin: 0 0.5rem;">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="mailto:creator_club@sphoorthyengg.ac.in" style="color: #1a1a1a; font-size: 1.3rem; margin: 0 0.5rem;">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="control-card">
+            <div class="card-header">
+                <i class="fas fa-toggle-on"></i>
+                <h2>Registration Control Panel</h2>
+            </div>
+            
+            <div class="card-body">
+                <!-- Alert Messages -->
+                <div id="alertContainer"></div>
+
+                <!-- Current Status Display -->
+                <div class="text-center">
+                    <span id="statusBadge" class="status-badge status-open">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span id="statusText">Loading...</span>
+                    </span>
+                </div>
+
+                <!-- Toggle Switch -->
+                <div class="toggle-container">
+                    <div class="toggle-info">
+                        <h4 id="toggleTitle">Registration Status</h4>
+                        <p id="toggleDescription">Toggle to open/close registrations</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="registrationToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <!-- Custom Message Input -->
+                <div class="message-section">
+                    <label for="closeMessage">
+                        <i class="fas fa-comment me-2"></i>Custom Message (for closed registrations)
+                    </label>
+                    <textarea 
+                        id="closeMessage" 
+                        placeholder="Enter a message to display when registrations are closed..."
+                    ></textarea>
+                    <div class="hint">
+                        <i class="fas fa-info-circle"></i>
+                        This message will be shown to users when they try to access the registration page.
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <button id="saveSettings" class="btn btn-primary" onclick="saveSettings()">
+                    <i class="fas fa-save me-2"></i>Save Settings
+                </button>
+
+                <!-- Statistics Section -->
+                <div class="stats-section">
+                    <h5 class="mb-3">Quick Statistics</h5>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalRegistrations">-</div>
+                            <div class="stat-label">Total Registrations</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="todayRegistrations">-</div>
+                            <div class="stat-label">Today's Registrations</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="verifiedCount">-</div>
+                            <div class="stat-label">Verified Payments</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="pendingCount">-</div>
+                            <div class="stat-label">Pending Payments</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back to Dashboard Button -->
+                <button onclick="window.location.href='/admin'" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentStatus();
+            loadStatistics();
+        });
+
+        // Load current registration status
+        async function loadCurrentStatus() {
+            try {
+                const response = await fetch('/admin/registration-status');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateUI(data);
+                } else {
+                    showAlert('error', data.message || 'Failed to load status');
+                }
+            } catch (error) {
+                console.error('Error loading status:', error);
+                showAlert('error', 'Network error while loading status');
+            }
+        }
+
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/api/teams');
+                const data = await response.json();
+                
+                const teams = data.teams || [];
+                const totalRegistrations = teams.length;
+                
+                const today = new Date().toDateString();
+                const todayRegistrations = teams.filter(team => {
+                    const regDate = new Date(team.registration_date).toDateString();
+                    return regDate === today;
+                }).length;
+                
+                const verifiedCount = teams.filter(team => team.payment_verified).length;
+                const pendingCount = teams.filter(team => !team.payment_verified).length;
+                
+                document.getElementById('totalRegistrations').textContent = totalRegistrations;
+                document.getElementById('todayRegistrations').textContent = todayRegistrations;
+                document.getElementById('verifiedCount').textContent = verifiedCount;
+                document.getElementById('pendingCount').textContent = pendingCount;
+                
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+                document.getElementById('totalRegistrations').textContent = 'Error';
+                document.getElementById('todayRegistrations').textContent = 'Error';
+                document.getElementById('verifiedCount').textContent = 'Error';
+                document.getElementById('pendingCount').textContent = 'Error';
+            }
+        }
+
+        // Update UI based on status
+        function updateUI(data) {
+            const isOpen = data.registration_open;
+            const message = data.registration_message || '';
+            
+            // Update toggle
+            document.getElementById('registrationToggle').checked = isOpen;
+            
+            // Update status badge
+            const badge = document.getElementById('statusBadge');
+            const statusText = document.getElementById('statusText');
+            
+            if (isOpen) {
+                badge.className = 'status-badge status-open';
+                statusText.innerHTML = '<i class="fas fa-check-circle me-2"></i>Registrations OPEN';
+            } else {
+                badge.className = 'status-badge status-closed';
+                statusText.innerHTML = '<i class="fas fa-times-circle me-2"></i>Registrations CLOSED';
+            }
+            
+            // Update message
+            document.getElementById('closeMessage').value = message;
+            
+            // Update toggle description
+            const toggleDesc = document.getElementById('toggleDescription');
+            if (isOpen) {
+                toggleDesc.innerHTML = '<i class="fas fa-unlock me-1"></i>Registrations are currently OPEN. Toggle to close.';
+            } else {
+                toggleDesc.innerHTML = '<i class="fas fa-lock me-1"></i>Registrations are currently CLOSED. Toggle to open.';
+            }
+        }
+
+        // Save settings
+        async function saveSettings() {
+            const button = document.getElementById('saveSettings');
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.innerHTML = '<span class="spinner me-2"></span>Saving...';
+            button.disabled = true;
+            
+            const isOpen = document.getElementById('registrationToggle').checked;
+            const message = document.getElementById('closeMessage').value.trim();
+            
+            try {
+                const response = await fetch('/admin/toggle-registration', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        open: isOpen,
+                        message: message
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('success', data.message);
+                    updateUI(data);
+                    
+                    // Reload statistics
+                    loadStatistics();
+                } else {
+                    showAlert('error', data.message || 'Failed to save settings');
+                    
+                    // Revert toggle if failed
+                    document.getElementById('registrationToggle').checked = !isOpen;
+                }
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showAlert('error', 'Network error while saving settings');
+                
+                // Revert toggle if failed
+                document.getElementById('registrationToggle').checked = !isOpen;
+            } finally {
+                // Restore button
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        }
+
+        // Show alert message
+        function showAlert(type, message) {
+            const alertContainer = document.getElementById('alertContainer');
+            
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass} animate__animated animate__fadeInDown">
+                    <i class="fas ${icon}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // Auto dismiss after 5 seconds
+            setTimeout(() => {
+                const alert = alertContainer.querySelector('.alert');
+                if (alert) {
+                    alert.classList.add('animate__fadeOutUp');
+                    setTimeout(() => {
+                        alertContainer.innerHTML = '';
+                    }, 500);
+                }
+            }, 5000);
+        }
+
+        // Warn before leaving if changes were made
+        let hasChanges = false;
+        
+        document.getElementById('registrationToggle').addEventListener('change', function() {
+            hasChanges = true;
+        });
+        
+        document.getElementById('closeMessage').addEventListener('input', function() {
+            hasChanges = true;
+        });
+        
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+            }
+        });
+        
+        // Reset changes flag after save
+        document.getElementById('saveSettings').addEventListener('click', function() {
+            hasChanges = false;
+        });
+    </script>
+</body>
+</html>

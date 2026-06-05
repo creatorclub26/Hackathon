@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Panel · Creator Club</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #c41e3a;
+            --primary-dark: #a01830;
+            --primary-soft: #e03e5a;
+            --secondary: #1a1a1a;
+            --success: #1cc88a;
+            --dark: #1e293b;
+            --gray-100: #f8f9fc;
+            --gray-200: #eaeef5;
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --sidebar-w: 300px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(145deg, #f0f4f8 0%, #e8edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            color: var(--dark);
+        }
+
+        /* ====== MOBILE HEADER ====== */
+        .mobile-header {
+            display: none;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0.85rem 1.2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            border-bottom: 3px solid var(--primary);
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary);
+            padding: 0 0.4rem;
+            cursor: pointer;
+        }
+
+        .mobile-logo {
+            height: 38px;
+            width: auto;
+        }
+
+        .mobile-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1035;
+            display: none;
+        }
+
+        /* ====== SIDEBAR ====== */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-right: 2px solid rgba(255, 255, 255, 0.5);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1040;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 6px 0 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 1.8rem 1.5rem 1.4rem;
+            text-align: center;
+            border-bottom: 4px solid var(--primary);
+            flex-shrink: 0;
+        }
+
+        .sidebar-header img {
+            max-width: 90px;
+            margin-bottom: 0.7rem;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+        }
+
+        .sidebar-header h4 {
+            color: white;
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin: 0;
+        }
+
+        .sidebar-header small {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.75rem;
+        }
+
+        /* Workspace Selector Dropdown */
+        .ws-selector-wrap {
+            padding: 1rem 1rem 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .ws-selector-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .ws-selector {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 0.7rem 1.2rem;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(196, 30, 58, 0.3);
+        }
+
+        .ws-selector:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(196, 30, 58, 0.4);
+        }
+
+        .ws-selector i.fa-chevron-down {
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .ws-selector.open i.fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .ws-dropdown {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 20px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .ws-dropdown.open {
+            display: block;
+        }
+
+        .ws-option {
+            padding: 0.75rem 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--dark);
+            transition: all 0.2s;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .ws-option:last-child {
+            border-bottom: none;
+        }
+
+        .ws-option:hover {
+            background: rgba(196, 30, 58, 0.06);
+            color: var(--primary);
+        }
+
+        .ws-option.active {
+            background: rgba(196, 30, 58, 0.1);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .ws-option i {
+            width: 1.4rem;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .ws-badge {
+            margin-left: auto;
+            background: rgba(196, 30, 58, 0.1);
+            color: var(--primary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+        }
+
+        /* Sidebar Menu (modules) */
+        .sidebar-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.8rem 0.6rem 1rem;
+        }
+
+        .sidebar-menu::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-menu::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-menu::-webkit-scrollbar-thumb {
+            background: rgba(196, 30, 58, 0.2);
+            border-radius: 4px;
+        }
+
+        .ws-modules-title {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: #94a3b8;
+            padding: 0.4rem 0.8rem 0.3rem;
+            margin-top: 0.3rem;
+        }
+
+        .nav-link {
+            color: var(--dark);
+            padding: 0.72rem 1.1rem;
+            margin: 0.15rem 0;
+            border-radius: 50px;
+            transition: all 0.25s;
+            font-weight: 500;
+            font-size: 0.92rem;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-decoration: none;
+        }
+
+        .nav-link i {
+            width: 1.6rem;
+            text-align: center;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(196, 30, 58, 0.07);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 6px 18px rgba(196, 30, 58, 0.45);
+        }
+
+        .nav-link.active i {
+            color: white;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 0.6rem 0.8rem;
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding: 0.8rem 1rem;
+            border-top: 1px solid var(--gray-200);
+            flex-shrink: 0;
+        }
+
+        .btn-logout-sidebar {
+            width: 100%;
+            background: rgba(196, 30, 58, 0.07);
+            border: 1px solid rgba(196, 30, 58, 0.15);
+            color: var(--primary);
+            border-radius: 50px;
+            padding: 0.65rem 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-logout-sidebar:hover {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 6px 18px rgba(196, 30, 58, 0.3);
+        }
+
+        /* ====== MAIN CONTENT ====== */
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            min-height: 100vh;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Top bar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .topbar-title h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin: 0;
+        }
+
+        .topbar-title p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-pill {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 0.6rem 1.4rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-pill:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(196, 30, 58, 0.3);
+        }
+
+        .btn-pill i {
+            color: var(--primary);
+            transition: color 0.3s;
+        }
+
+        .btn-pill:hover i {
+            color: white;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2rem;
+            margin-bottom: 2.2rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 1.4rem 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(196, 30, 58, 0.12);
+            border-color: rgba(196, 30, 58, 0.2);
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.red {
+            background: rgba(196, 30, 58, 0.1);
+            color: var(--primary);
+        }
+
+        .stat-icon.green {
+            background: rgba(28, 200, 138, 0.1);
+            color: var(--success);
+        }
+
+        .stat-icon.blue {
+            background: rgba(54, 185, 204, 0.1);
+            color: #36b9cc;
+        }
+
+        .stat-icon.yellow {
+            background: rgba(246, 194, 62, 0.1);
+            color: #f6c23e;
+        }
+
+        .stat-value {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--secondary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.82rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 0.2rem;
+        }
+
+        /* Workspace Overview Section */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+        }
+
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        /* Workspace Cards Grid */
+        .ws-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .ws-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            cursor: default;
+        }
+
+        .ws-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(196, 30, 58, 0.15);
+            border-color: rgba(196, 30, 58, 0.25);
+        }
+
+        .ws-card-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ws-card-title {
+            font-weight: 700;
+            color: white;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ws-card-title i {
+            color: var(--primary);
+        }
+
+        .ws-card-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            background: rgba(28, 200, 138, 0.2);
+            color: #1cc88a;
+        }
+
+        .ws-card-badge.disabled-badge {
+            background: rgba(100, 116, 139, 0.2);
+            color: #94a3b8;
+        }
+
+        .ws-card-body {
+            padding: 1.2rem 1.5rem;
+        }
+
+        .ws-module-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.6rem 0.9rem;
+            border-radius: 50px;
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.88rem;
+            transition: all 0.2s;
+            margin-bottom: 0.3rem;
+        }
+
+        .ws-module-link i {
+            width: 1.5rem;
+            text-align: center;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .ws-module-link:hover {
+            background: rgba(196, 30, 58, 0.07);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .ws-card-footer {
+            padding: 0.8rem 1.5rem 1.2rem;
+        }
+
+        .btn-open-ws {
+            display: block;
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.7rem 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 14px rgba(196, 30, 58, 0.35);
+        }
+
+        .btn-open-ws:hover {
+            background: var(--primary-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(196, 30, 58, 0.45);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .qa-btn {
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            border-radius: 20px;
+            padding: 1rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.25s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .qa-btn i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: transform 0.25s;
+        }
+
+        .qa-btn span {
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .qa-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(196, 30, 58, 0.3);
+        }
+
+        .qa-btn:hover i {
+            color: white;
+            transform: scale(1.15);
+        }
+
+        /* Footer */
+        .dashboard-footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.82rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            margin-top: 1rem;
+        }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-header {
+                display: flex;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 5rem;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 5rem 1rem 1.5rem;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+
+            .ws-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .topbar-title h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .quick-actions-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mobile Header -->
+    <div class="mobile-header" id="mobileHeader">
+        <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+        <span class="mobile-title">Admin Panel</span>
+        <img src="{{ url_for('static', filename='images/logo/cc.png') }}" alt="Logo" class="mobile-logo">
+    </div>
+
+    <!-- Mobile overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="{{ url_for('static', filename='images/logo/cc.png') }}" alt="Creator Club">
+            <h4>Admin Panel</h4>
+            <small>Creator Club</small>
+        </div>
+
+        <!-- Workspace Selector -->
+        <div class="ws-selector-wrap">
+            <div class="ws-selector-label">Active Workspace</div>
+            <button class="ws-selector" id="wsSelectorBtn">
+                <span id="activatedWsName">
+                    {% if workspaces %}
+                    <i class="fas fa-folder-open me-2"></i>{{ workspaces[0].name if workspaces[0].enabled else 'Select
+                    Workspace' }}
+                    {% else %}
+                    <i class="fas fa-folder-open me-2"></i>No Workspaces
+                    {% endif %}
+                </span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+
+            <!-- Workspace Dropdown -->
+            <div class="ws-dropdown" id="wsDropdown">
+                {% for ws in workspaces %}
+                {% if ws.enabled %}
+                <div class="ws-option {% if loop.first %}active{% endif %}" data-ws-id="{{ ws.id }}"
+                    data-ws-name="{{ ws.name }}" onclick="switchWorkspace(this)">
+                    <i class="fas fa-folder{% if loop.first %}-open{% endif %}"></i>
+                    {{ ws.name }}
+                    <span class="ws-badge">{{ ws.modules|length }}</span>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% if session.get('admin_logged_in') %}
+                <div class="ws-option" data-ws-id="__system__" data-ws-name="System Admin"
+                    onclick="switchWorkspace(this)">
+                    <i class="fas fa-shield-halved"></i>
+                    System Admin
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar Menu (modules change per workspace) -->
+        <div class="sidebar-menu" id="sidebarMenu">
+            <!-- Populated by JS based on active workspace -->
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+            <button class="btn-logout-sidebar" onclick="window.location.href='/logout'">
+                <i class="fas fa-sign-out-alt"></i> Log Out
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
+
+        <!-- Top Bar -->
+        <div class="topbar animate__animated animate__fadeIn">
+            <div class="topbar-title">
+                <h1><i class="fas fa-tachometer-alt me-2" style="color:var(--primary);font-size:1.6rem;"></i>Admin
+                    Dashboard</h1>
+                <p>Welcome back, Administrator · Creator Club</p>
+            </div>
+            <div class="topbar-actions">
+                {% if session.get('role') == 'super_admin' or session.get('username') == 'AD2025' %}
+                <a href="/admin/workspaces" class="btn-pill">
+                    <i class="fas fa-cubes"></i> Manage Workspaces
+                </a>
+                {% endif %}
+                <a href="/admin/teams" class="btn-pill">
+                    <i class="fas fa-users"></i> View Teams
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row animate__animated animate__fadeInUp">
+            <div class="stat-card">
+                <div class="stat-icon red"><i class="fas fa-users"></i></div>
+                <div>
+                    <div class="stat-value" id="totalTeams">—</div>
+                    <div class="stat-label">Total Teams</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fas fa-user-friends"></i></div>
+                <div>
+                    <div class="stat-value" id="totalMembers">—</div>
+                    <div class="stat-label">Total Members</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                <div>
+                    <div class="stat-value" id="verifiedCount">—</div>
+                    <div class="stat-label">Verified Teams</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon yellow"><i class="fas fa-clock"></i></div>
+                <div>
+                    <div class="stat-value" id="pendingCount">—</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions animate__animated animate__fadeInUp">
+            <div class="section-title"><i class="fas fa-bolt"></i> Quick Actions</div>
+            <div class="quick-actions-grid" id="quickActionsGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- All Workspaces Overview -->
+        <div class="animate__animated animate__fadeInUp">
+            <div class="section-header">
+                <div class="section-title"><i class="fas fa-layer-group"></i> All Workspaces</div>
+                {% if session.get('role') == 'super_admin' or session.get('username') == 'AD2025' %}
+                <a href="/admin/workspaces" class="btn-pill" style="font-size:0.82rem;padding:0.4rem 1rem;">
+                    <i class="fas fa-cog"></i> Configure
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="ws-cards-grid">
+                {% for ws in workspaces %}
+                {% if ws.enabled %}
+                <div class="ws-card animate__animated animate__fadeInUp"
+                    style="animation-delay:{{ loop.index0 * 0.08 }}s">
+                    <div class="ws-card-header">
+                        <div class="ws-card-title">
+                            <i class="fas fa-folder-open"></i>
+                            {{ ws.name }}
+                        </div>
+                        <span class="ws-card-badge">Active</span>
+                    </div>
+                    <div class="ws-card-body">
+                        {% if ws.modules %}
+                        {% for mod in ws.modules %}
+                        <a href="{{ mod.url }}" class="ws-module-link">
+                            <i class="{{ mod.icon }}"></i>
+                            {{ mod.name }}
+                        </a>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-muted small text-center py-2"><i class="fas fa-info-circle me-1"></i>No modules
+                            configured.</p>
+                        {% endif %}
+                    </div>
+                    {% if ws.modules %}
+                    <div class="ws-card-footer">
+                        <a href="{{ ws.modules[0].url }}" class="btn-open-ws">
+                            <i class="fas fa-arrow-right me-2"></i>Open Workspace
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endfor %}
+
+                {% if session.get('role') == 'super_admin' or session.get('username') == 'AD2025' %}
+                <div class="ws-card animate__animated animate__fadeInUp">
+                    <div class="ws-card-header">
+                        <div class="ws-card-title"><i class="fas fa-cubes"></i> Workspace Manager</div>
+                        <span class="ws-card-badge" style="background:rgba(196,30,58,0.2);color:var(--primary);">Super
+                            Admin</span>
+                    </div>
+                    <div class="ws-card-body">
+                        <a href="/admin/workspaces" class="ws-module-link">
+                            <i class="fas fa-plus-circle"></i> Create Workspace
+                        </a>
+                        <a href="/admin/workspaces" class="ws-module-link">
+                            <i class="fas fa-toggle-on"></i> Enable / Disable
+                        </a>
+                        <a href="/admin/workspaces" class="ws-module-link">
+                            <i class="fas fa-users-cog"></i> Assign Roles
+                        </a>
+                        <a href="/admin/workspaces" class="ws-module-link">
+                            <i class="fas fa-link"></i> Manage Modules
+                        </a>
+                    </div>
+                    <div class="ws-card-footer">
+                        <a href="/admin/workspaces" class="btn-open-ws">
+                            <i class="fas fa-arrow-right me-2"></i>Manage Workspaces
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="dashboard-footer">
+            © 2025 Creator Club · Sphoorthy Engineering College
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            // ===== WORKSPACE DATA from Flask =====
+            const WORKSPACES = {{ workspaces | tojson
+        }};
+        const isAdmin = {{ 'true' if (session.get('role') == 'super_admin' or session.get('username') == 'AD2025') else 'false' }};
+
+        const SYSTEM_WS = {
+            id: '__system__',
+            name: 'System Admin',
+            enabled: true,
+            modules: [
+                { name: 'Workspace Manager', url: '/admin/workspaces', icon: 'fas fa-cubes' }
+            ]
+        };
+
+        let activeWsId = null;
+
+        // ===== MOBILE SIDEBAR =====
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobileMenuOverlay');
+
+        function toggleSidebar(show) {
+            sidebar.classList.toggle('active', show);
+            overlay.style.display = show ? 'block' : 'none';
+        }
+
+        hamburger?.addEventListener('click', () => toggleSidebar(!sidebar.classList.contains('active')));
+        overlay?.addEventListener('click', () => toggleSidebar(false));
+        window.addEventListener('resize', () => { if (window.innerWidth > 992) toggleSidebar(false); });
+
+        // ===== WORKSPACE SELECTOR DROPDOWN =====
+        const wsSelectorBtn = document.getElementById('wsSelectorBtn');
+        const wsDropdown = document.getElementById('wsDropdown');
+
+        wsSelectorBtn?.addEventListener('click', () => {
+            wsDropdown.classList.toggle('open');
+            wsSelectorBtn.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!wsSelectorBtn?.contains(e.target) && !wsDropdown?.contains(e.target)) {
+                wsDropdown?.classList.remove('open');
+                wsSelectorBtn?.classList.remove('open');
+            }
+        });
+
+        // ===== SWITCH WORKSPACE =====
+        window.switchWorkspace = function (el) {
+            const wsId = el.dataset.wsId;
+            const wsName = el.dataset.wsName;
+
+            // Update active state in dropdown
+            document.querySelectorAll('.ws-option').forEach(o => o.classList.remove('active'));
+            el.classList.add('active');
+
+            // Update button label
+            document.getElementById('activatedWsName').innerHTML =
+                `<i class="fas fa-folder-open me-2"></i>${wsName}`;
+
+            // Close dropdown
+            wsDropdown.classList.remove('open');
+            wsSelectorBtn.classList.remove('open');
+
+            // Render sidebar modules
+            renderSidebarModules(wsId);
+            activeWsId = wsId;
+
+            // Render quick actions
+            renderQuickActions(wsId);
+        };
+
+        function getWsById(wsId) {
+            if (wsId === '__system__') return SYSTEM_WS;
+            return WORKSPACES.find(w => w.id === wsId) || null;
+        }
+
+        function renderSidebarModules(wsId) {
+            const menu = document.getElementById('sidebarMenu');
+            const ws = getWsById(wsId);
+            if (!ws) { menu.innerHTML = ''; return; }
+
+            let html = `<div class="ws-modules-title">${ws.name}</div>`;
+
+            if (ws.modules && ws.modules.length > 0) {
+                ws.modules.forEach(mod => {
+                    const isActive = window.location.pathname === mod.url;
+                    html += `
+                        <a class="nav-link${isActive ? ' active' : ''}" href="${mod.url}">
+                            <i class="${mod.icon}"></i>${mod.name}
+                        </a>`;
+                });
+            } else {
+                html += `<p class="text-muted small px-3 py-2"><i class="fas fa-info-circle me-1"></i>No modules in this workspace.</p>`;
+            }
+
+            // Always show System Admin link at bottom for admins
+            if (isAdmin) {
+                html += `
+                    <div class="sidebar-divider"></div>
+                    <div class="ws-modules-title">System</div>
+                    <a class="nav-link${window.location.pathname === '/admin/workspaces' ? ' active' : ''}" href="/admin/workspaces">
+                        <i class="fas fa-cubes"></i>Workspace Manager
+                    </a>
+                    <a class="nav-link${window.location.pathname === '/admin' ? ' active' : ''}" href="/admin">
+                        <i class="fas fa-home"></i>Dashboard
+                    </a>`;
+            }
+
+            menu.innerHTML = html;
+        }
+
+        function renderQuickActions(wsId) {
+            const ws = getWsById(wsId);
+            const grid = document.getElementById('quickActionsGrid');
+            if (!ws || !ws.modules || ws.modules.length === 0) {
+                grid.innerHTML = `<p class="text-muted small col-span-all" style="grid-column:1/-1;">No modules in this workspace.</p>`;
+                return;
+            }
+
+            let html = '';
+            ws.modules.forEach(mod => {
+                html += `
+                    <a href="${mod.url}" class="qa-btn">
+                        <i class="${mod.icon}"></i>
+                        <span>${mod.name}</span>
+                    </a>`;
+            });
+
+            // Add workspace manager for admins
+            if (isAdmin) {
+                html += `
+                    <a href="/admin/workspaces" class="qa-btn">
+                        <i class="fas fa-cubes"></i>
+                        <span>Workspaces</span>
+                    </a>`;
+            }
+
+            grid.innerHTML = html;
+        }
+
+        // ===== INITIAL RENDER =====
+        function initDashboard() {
+            const enabledWs = WORKSPACES.filter(w => w.enabled);
+            if (enabledWs.length > 0) {
+                activeWsId = enabledWs[0].id;
+                renderSidebarModules(activeWsId);
+                renderQuickActions(activeWsId);
+            } else if (isAdmin) {
+                activeWsId = '__system__';
+                renderSidebarModules('__system__');
+                renderQuickActions('__system__');
+            }
+        }
+
+        initDashboard();
+
+        // ===== LOAD STATS =====
+        function loadStats() {
+            fetch('/api/dashboard-stats')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('totalTeams').textContent = data.total_teams ?? '—';
+                        document.getElementById('totalMembers').textContent = data.total_members ?? '—';
+                        document.getElementById('verifiedCount').textContent = data.verified_count ?? '—';
+                        document.getElementById('pendingCount').textContent = data.pending_count ?? '—';
+                    }
+                })
+                .catch(() => {
+                    ['totalTeams', 'totalMembers', 'verifiedCount', 'pendingCount']
+                        .forEach(id => document.getElementById(id).textContent = '—');
+                });
+        }
+
+        loadStats();
+        setInterval(loadStats, 30000);
+
+        // ===== CARD HOVER GLOW =====
+        document.querySelectorAll('.ws-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const r = card.getBoundingClientRect();
+                card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+                card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+            });
+        });
+
+    }) ();
+    </script>
+</body>
+
+</html>

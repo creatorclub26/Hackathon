@@ -1,0 +1,536 @@
+{#
+================================================================
+_sidebar.html — Unified Admin Sidebar Include
+Usage: {% include '_sidebar.html' %}
+Requires: workspaces (via context_processor), session, request
+================================================================
+#}
+
+{# ===== CSS overrides — applied after page styles ===== #}
+<style id="unified-sidebar-css">
+    /* Force the unified 300-px sidebar on every module page */
+    :root {
+        --sidebar-w: 300px;
+    }
+
+    #sidebar.sidebar {
+        width: 300px !important;
+        background: rgba(255, 255, 255, 0.92) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        border-right: 2px solid rgba(255, 255, 255, 0.5) !important;
+        height: 100vh !important;
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        z-index: 1040 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        box-shadow: 6px 0 30px rgba(0, 0, 0, 0.08) !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        overflow: visible !important;
+    }
+
+    /* header */
+    #sidebar .sidebar-header {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+        padding: 1.6rem 1.5rem 1.3rem !important;
+        text-align: center !important;
+        border-bottom: 4px solid #c41e3a !important;
+        flex-shrink: 0 !important;
+        overflow: hidden !important;
+    }
+
+    #sidebar .sidebar-header img {
+        max-width: 80px !important;
+        margin-bottom: 0.6rem !important;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4)) !important;
+        display: block !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    #sidebar .sidebar-header h4 {
+        color: white !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+        margin: 0 !important;
+    }
+
+    #sidebar .sidebar-header small {
+        color: rgba(255, 255, 255, 0.55) !important;
+        font-size: 0.72rem !important;
+    }
+
+    /* workspace selector */
+    .ws-selector-wrap {
+        padding: 1rem 1rem 0.5rem;
+        flex-shrink: 0;
+    }
+
+    .ws-selector-label {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        color: #94a3b8;
+        margin-bottom: 0.5rem;
+    }
+
+    .ws-selector {
+        width: 100%;
+        background: linear-gradient(135deg, #c41e3a 0%, #a01830 100%);
+        border: none;
+        border-radius: 50px;
+        padding: 0.65rem 1.1rem;
+        color: white;
+        font-weight: 600;
+        font-size: 0.88rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s;
+        box-shadow: 0 6px 20px rgba(196, 30, 58, 0.3);
+    }
+
+    .ws-selector:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(196, 30, 58, 0.4);
+    }
+
+    .ws-selector .fa-chevron-down {
+        transition: transform 0.3s;
+        font-size: 0.8rem;
+    }
+
+    .ws-selector.open .fa-chevron-down {
+        transform: rotate(180deg);
+    }
+
+    .ws-dropdown {
+        background: white;
+        border: 1px solid #eaeef5;
+        border-radius: 18px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+        display: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 1050;
+    }
+
+    .ws-dropdown.open {
+        display: block;
+    }
+
+    .ws-option {
+        padding: 0.7rem 1.1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        font-size: 0.88rem;
+        color: #1e293b;
+        transition: all 0.2s;
+        border-bottom: 1px solid #eaeef5;
+    }
+
+    .ws-option:last-child {
+        border-bottom: none;
+    }
+
+    .ws-option:hover {
+        background: rgba(196, 30, 58, 0.06);
+        color: #c41e3a;
+    }
+
+    .ws-option.active {
+        background: rgba(196, 30, 58, 0.1);
+        color: #c41e3a;
+        font-weight: 700;
+    }
+
+    .ws-option i {
+        width: 1.3rem;
+        text-align: center;
+        color: #c41e3a;
+    }
+
+    .ws-badge {
+        margin-left: auto;
+        background: rgba(196, 30, 58, 0.1);
+        color: #c41e3a;
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 0.12rem 0.45rem;
+        border-radius: 20px;
+    }
+
+    /* sidebar menu */
+    #sidebar .sidebar-menu {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        padding: 0.6rem 0.5rem 0.8rem !important;
+        height: auto !important;
+    }
+
+    #sidebar .sidebar-menu::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    #sidebar .sidebar-menu::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #sidebar .sidebar-menu::-webkit-scrollbar-thumb {
+        background: rgba(196, 30, 58, 0.2);
+        border-radius: 4px;
+    }
+
+    .ws-modules-title {
+        font-size: 0.66rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        color: #94a3b8;
+        padding: 0.4rem 0.8rem 0.2rem;
+        margin-top: 0.2rem;
+    }
+
+    /* nav links inside unified sidebar */
+    #sidebar .nav-link,
+    #sidebar a.nav-link {
+        color: #1e293b !important;
+        padding: 0.68rem 1rem !important;
+        margin: 0.12rem 0 !important;
+        border-radius: 50px !important;
+        transition: all 0.25s !important;
+        font-weight: 500 !important;
+        font-size: 0.9rem !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        text-decoration: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
+    #sidebar .nav-link i,
+    #sidebar a.nav-link i {
+        width: 1.5rem !important;
+        text-align: center !important;
+        color: #c41e3a !important;
+        font-size: 0.95rem !important;
+        transition: none !important;
+        transform: none !important;
+    }
+
+    #sidebar .nav-link:hover,
+    #sidebar a.nav-link:hover {
+        background: rgba(196, 30, 58, 0.07) !important;
+        color: #c41e3a !important;
+        transform: translateX(4px) !important;
+    }
+
+    #sidebar .nav-link.active,
+    #sidebar a.nav-link.active {
+        background: #c41e3a !important;
+        color: white !important;
+        box-shadow: 0 6px 18px rgba(196, 30, 58, 0.45) !important;
+        transform: none !important;
+    }
+
+    #sidebar .nav-link.active i,
+    #sidebar a.nav-link.active i {
+        color: white !important;
+    }
+
+    .sidebar-divider {
+        height: 1px;
+        background: #eaeef5;
+        margin: 0.5rem 0.7rem;
+    }
+
+    /* sidebar footer – logout button */
+    #sidebar .sidebar-footer {
+        padding: 0.8rem 1rem !important;
+        border-top: 1px solid #eaeef5 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .btn-logout-sidebar {
+        width: 100%;
+        background: rgba(196, 30, 58, 0.07);
+        border: 1px solid rgba(196, 30, 58, 0.15);
+        color: #c41e3a;
+        border-radius: 50px;
+        padding: 0.6rem 1rem;
+        font-weight: 600;
+        font-size: 0.88rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-logout-sidebar:hover {
+        background: #c41e3a;
+        color: white;
+        box-shadow: 0 6px 18px rgba(196, 30, 58, 0.3);
+    }
+
+    /* ensure main-content/main-container respects 300px sidebar on desktop */
+    @media (min-width: 993px) {
+        .main-content {
+            margin-left: 300px !important;
+            max-width: calc(100% - 300px) !important;
+        }
+
+        .main-container {
+            margin-left: 300px !important;
+            max-width: calc(100% - 300px) !important;
+        }
+    }
+
+    @media (max-width: 992px) {
+        #sidebar.sidebar {
+            transform: translateX(-100%);
+        }
+
+        #sidebar.sidebar.active {
+            transform: translateX(0) !important;
+        }
+    }
+
+    /* mobile overlay styling fallback */
+    #mobileMenuOverlay,
+    .mobile-menu-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        background: rgba(0, 0, 0, 0.3) !important;
+        backdrop-filter: blur(3px) !important;
+        -webkit-backdrop-filter: blur(3px) !important;
+        z-index: 1035 !important;
+        display: none;
+    }
+</style>
+
+{# ===== SIDEBAR HTML ===== #}
+<div class="sidebar" id="sidebar">
+
+    {# ── Header ── #}
+    <div class="sidebar-header">
+        <img src="{{ url_for('static', filename='images/logo/cc.png') }}" alt="Creator Club">
+        <h4>Admin Panel</h4>
+        <small>{{ homepage_config.hero_title | replace('Registration', '') }}</small>
+    </div>
+
+    {# ── Workspace Selector ── #}
+    <div class="ws-selector-wrap">
+        <div class="ws-selector-label">Active Workspace</div>
+        <button class="ws-selector" id="wsSelectorBtn" type="button">
+            <span id="activatedWsName">
+                {% if workspaces %}
+                <i class="fas fa-folder-open"></i>&nbsp;{{ workspaces[0].name if workspaces[0].enabled else 'No
+                Workspaces' }}
+                {% else %}
+                <i class="fas fa-folder-open"></i>&nbsp;No Workspaces
+                {% endif %}
+            </span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+
+        <div class="ws-dropdown" id="wsDropdown">
+            {% for ws in workspaces %}
+            {% if ws.enabled %}
+            <div class="ws-option {% if loop.first %}active{% endif %}" data-ws-id="{{ ws.id }}"
+                data-ws-name="{{ ws.name }}" onclick="usbSwitchWs(this)">
+                <i class="fas fa-folder{% if loop.first %}-open{% endif %}"></i>
+                {{ ws.name }}
+                <span class="ws-badge">{{ ws.modules|length }}</span>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% if session.get('role') == 'super_admin' or session.get('username') == 'AD2025' %}
+            <div class="ws-option" data-ws-id="__system__" data-ws-name="System Admin" onclick="usbSwitchWs(this)">
+                <i class="fas fa-shield-halved"></i>
+                System Admin
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# ── Module Menu (JS-rendered) ── #}
+    <div class="sidebar-menu" id="sidebarMenu">
+        {# populated by usbInit() below #}
+    </div>
+
+    {# ── Footer logout ── #}
+    <div class="sidebar-footer">
+        <button class="btn-logout-sidebar" onclick="window.location.href='/logout'" type="button">
+            <i class="fas fa-sign-out-alt"></i> Log Out
+        </button>
+    </div>
+</div>
+
+{# ===== SIDEBAR JAVASCRIPT ===== #}
+<script>
+    (function () {
+        /* ── guard: run only once ── */
+        if (window._unifiedSidebarReady) return;
+        window._unifiedSidebarReady = true;
+
+        /* ── data from Jinja ── */
+        var WORKSPACES = {{ workspaces | tojson | safe
+    }};
+    var IS_ADMIN = {{ ('true' if (session.get('role') == 'super_admin' or session.get('username') == 'AD2025') else 'false') }};
+    var CURRENT = {{ request.path | tojson | safe }};
+
+    var SYSTEM_WS = {
+        id: '__system__', name: 'System Admin',
+        modules: [
+            { name: 'Dashboard', url: '/admin', icon: 'fas fa-home' },
+            { name: 'Workspace Manager', url: '/admin/workspaces', icon: 'fas fa-cubes' },
+            { name: 'Settings', url: '/admin/settings', icon: 'fas fa-cog' }
+        ]
+    };
+
+    /* ── helpers ── */
+    function getWs(id) {
+        if (id === '__system__') return SYSTEM_WS;
+        return WORKSPACES.find(function (w) { return w.id === id; }) || null;
+    }
+
+    function findActiveWs() {
+        for (var i = 0; i < WORKSPACES.length; i++) {
+            var ws = WORKSPACES[i];
+            if (!ws.enabled) continue;
+            for (var j = 0; j < ws.modules.length; j++) {
+                if (ws.modules[j].url === CURRENT) return ws.id;
+            }
+        }
+        if (IS_ADMIN) {
+            for (var k = 0; k < SYSTEM_WS.modules.length; k++) {
+                if (SYSTEM_WS.modules[k].url === CURRENT) return '__system__';
+            }
+            var first = WORKSPACES.find(function (w) { return w.enabled; });
+            return first ? first.id : '__system__';
+        }
+        return WORKSPACES.length > 0 ? WORKSPACES[0].id : null;
+    }
+
+    /* ── render sidebar modules ── */
+    function renderMenu(wsId) {
+        var menu = document.getElementById('sidebarMenu');
+        var ws = getWs(wsId);
+        if (!ws || !menu) return;
+
+        var html = '<div class="ws-modules-title">' + ws.name + '</div>';
+
+        if (ws.modules && ws.modules.length) {
+            ws.modules.forEach(function (mod) {
+                var active = CURRENT === mod.url ? ' active' : '';
+                html += '<a class="nav-link' + active + '" href="' + mod.url + '">' +
+                    '<i class="' + mod.icon + '"></i>' + mod.name + '</a>';
+            });
+        } else {
+            html += '<p class="text-muted small px-3 py-2"><i class="fas fa-info-circle me-1"></i>No modules.</p>';
+        }
+
+        if (IS_ADMIN && wsId !== '__system__') {
+            html += '<div class="sidebar-divider"></div>' +
+                '<div class="ws-modules-title">System</div>' +
+                '<a class="nav-link' + (CURRENT === '/admin/workspaces' ? ' active' : '') + '" href="/admin/workspaces">' +
+                '<i class="fas fa-cubes"></i>Workspace Manager</a>' +
+                '<a class="nav-link' + (CURRENT === '/admin' ? ' active' : '') + '" href="/admin">' +
+                '<i class="fas fa-home"></i>Dashboard</a>';
+        }
+
+        menu.innerHTML = html;
+    }
+
+    /* ── update selector display ── */
+    function updateSelector(wsId) {
+        var ws = getWs(wsId);
+        if (!ws) return;
+        var el = document.getElementById('activatedWsName');
+        if (el) el.innerHTML = '<i class="fas fa-folder-open"></i>&nbsp;' + ws.name;
+        document.querySelectorAll('.ws-option').forEach(function (opt) {
+            opt.classList.toggle('active', opt.dataset.wsId === wsId);
+        });
+    }
+
+    /* ── public: switch workspace from dropdown ── */
+    window.usbSwitchWs = function (el) {
+        var id = el.dataset.wsId;
+        updateSelector(id);
+        renderMenu(id);
+        var dd = document.getElementById('wsDropdown');
+        var btn = document.getElementById('wsSelectorBtn');
+        if (dd) dd.classList.remove('open');
+        if (btn) btn.classList.remove('open');
+    };
+
+    /* ── workspace selector dropdown toggle ── */
+    var wsBtn = document.getElementById('wsSelectorBtn');
+    var wsDd = document.getElementById('wsDropdown');
+    if (wsBtn && wsDd) {
+        wsBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            wsDd.classList.toggle('open');
+            wsBtn.classList.toggle('open');
+        });
+        document.addEventListener('click', function () {
+            wsDd.classList.remove('open');
+            wsBtn.classList.remove('open');
+        });
+    }
+
+    /* ── mobile hamburger ── */
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobileMenuOverlay');
+
+    function toggleSidebar(show) {
+        if (!sidebar) return;
+        sidebar.classList.toggle('active', show);
+        if (overlay) overlay.style.display = show ? 'block' : 'none';
+        document.body.style.overflow = show ? 'hidden' : '';
+    }
+
+    /* attach to any hamburger button on the page */
+    ['hamburger', 'abHamburger', 'mobileHamburger'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('click', function () {
+                toggleSidebar(!sidebar.classList.contains('active'));
+            });
+        }
+    });
+
+    if (overlay) {
+        overlay.addEventListener('click', function () { toggleSidebar(false); });
+    }
+
+    /* close on ESC */
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') toggleSidebar(false);
+    });
+
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 992) toggleSidebar(false);
+    });
+
+    /* ── init ── */
+    var activeWsId = findActiveWs();
+    if (activeWsId) {
+        updateSelector(activeWsId);
+        renderMenu(activeWsId);
+    }
+
+}) ();
+</script>

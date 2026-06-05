@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Presentation - {{ project.team_name }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+        body { background: #1a1a1a; height: 100vh; display: flex; flex-direction: column; }
+        .header { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); color: white; padding: 10px 20px; border-bottom: 2px solid #c41e3a; display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .header-left h2 { font-size: 18px; }
+        .header-left h2 i { color: #c41e3a; margin-right: 8px; }
+        .team-badge { background: #c41e3a; padding: 4px 12px; border-radius: 20px; font-size: 14px; }
+        .header-right { display: flex; gap: 10px; }
+        .btn { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: #c41e3a; color: white; }
+        .btn-primary:hover { background: #a01830; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { background: #545b62; }
+        .viewer-container { flex: 1; background: #f5f5f5; position: relative; overflow: hidden; }
+        
+        /* PDF Viewer */
+        .pdf-viewer { width: 100%; height: 100%; border: none; }
+        
+        /* Image Viewer */
+        .image-viewer { display: flex; justify-content: center; align-items: center; height: 100%; overflow: auto; }
+        .image-viewer img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        /* Office Viewer - using Google Docs Viewer */
+        .office-viewer { width: 100%; height: 100%; border: none; }
+        
+        /* Fallback for unsupported formats */
+        .fallback-viewer { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 20px; }
+        .fallback-icon { font-size: 80px; color: #c41e3a; margin-bottom: 20px; }
+        .fallback-title { font-size: 24px; color: #333; margin-bottom: 10px; }
+        .fallback-text { color: #666; margin-bottom: 30px; max-width: 400px; }
+        .file-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .file-info p { margin: 5px 0; color: #666; }
+        .file-info strong { color: #333; }
+        
+        /* Loading indicator */
+        .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .spinner { width: 50px; height: 50px; border: 3px solid #f3f3f3; border-top: 3px solid #c41e3a; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Error message */
+        .error-message { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin: 20px; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <h2><i class="fas fa-file-powerpoint"></i> {{ project.project_title }}</h2>
+            <span class="team-badge"><i class="fas fa-users"></i> {{ project.team_name }}</span>
+            <span class="team-badge" style="background: #28a745;"><i class="fas fa-tag"></i> {{ file_ext|upper }}</span>
+        </div>
+        <div class="header-right">
+            <a href="{{ url_for('download_project', team_id=team_id) }}" class="btn btn-primary">
+                <i class="fas fa-download"></i> Download
+            </a>
+            <a href="{{ request.referrer or url_for('evaluation_dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+    
+    <div class="viewer-container" id="viewerContainer">
+        <!-- Loading indicator -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="color: #666;">Loading presentation...</p>
+        </div>
+        
+        <!-- Viewer will be loaded here -->
+        <div id="viewer" style="display: none;"></div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileExt = '{{ file_ext }}'.toLowerCase();
+            const viewerContainer = document.getElementById('viewerContainer');
+            const loadingEl = document.getElementById('loading');
+            const viewerEl = document.getElementById('viewer');
+            
+            // Function to load viewer
+            function loadViewer() {
+                // Hide loading, show viewer
+                loadingEl.style.display = 'none';
+                viewerEl.style.display = 'block';
+                
+                // Handle different file types
+                if (fileExt === 'pdf') {
+                    // PDF - use iframe with PDF viewer
+                    viewerEl.innerHTML = `
+                        <iframe class="pdf-viewer" src="{{ url_for('view_project', team_id=team_id) }}?raw=1"></iframe>
+                    `;
+                }
+                else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExt)) {
+                    // Images - display inline
+                    viewerEl.innerHTML = `
+                        <div class="image-viewer">
+                            <img src="{{ url_for('view_project', team_id=team_id) }}?raw=1" alt="{{ project.filename }}">
+                        </div>
+                    `;
+                }
+                else if (fileExt === 'txt') {
+                    // Text files - fetch and display
+                    fetch('{{ url_for('view_project', team_id=team_id) }}?raw=1')
+                        .then(response => response.text())
+                        .then(text => {
+                            viewerEl.innerHTML = `
+                                <div style="padding: 20px; background: white; height: 100%; overflow: auto; font-family: monospace; white-space: pre-wrap;">
+                                    ${escapeHtml(text)}
+                                </div>
+                            `;
+                        })
+                        .catch(error => {
+                            showError('Failed to load text file');
+                        });
+                }
+                else if (['ppt', 'pptx', 'doc', 'docx'].includes(fileExt)) {
+                    // Office files - use Google Docs Viewer
+                    const fileUrl = encodeURIComponent('{{ url_for('view_project', team_id=team_id, _external=True) }}?raw=1');
+                    viewerEl.innerHTML = `
+                        <iframe class="office-viewer" src="https://docs.google.com/gview?url=${fileUrl}&embedded=true"></iframe>
+                    `;
+                }
+                else {
+                    // Unsupported format - show fallback
+                    viewerEl.innerHTML = `
+                        <div class="fallback-viewer">
+                            <div class="fallback-icon">
+                                <i class="fas fa-file"></i>
+                            </div>
+                            <h3 class="fallback-title">Preview Not Available</h3>
+                            <p class="fallback-text">This file type cannot be previewed directly. Please download the file to view it.</p>
+                            <div class="file-info">
+                                <p><strong>Filename:</strong> {{ project.filename }}</p>
+                                <p><strong>Format:</strong> {{ file_ext|upper }}</p>
+                                <p><strong>Size:</strong> {{ project.file_size if project.file_size else 'Unknown' }}</p>
+                            </div>
+                            <a href="{{ url_for('download_project', team_id=team_id) }}" class="btn btn-primary">
+                                <i class="fas fa-download"></i> Download File
+                            </a>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Helper function to escape HTML
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+            
+            function showError(message) {
+                loadingEl.style.display = 'none';
+                viewerEl.style.display = 'block';
+                viewerEl.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-triangle"></i> ${message}</div>`;
+            }
+            
+            // Load the viewer
+            loadViewer();
+        });
+    </script>
+</body>
+</html>

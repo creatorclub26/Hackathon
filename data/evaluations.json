@@ -1,0 +1,29 @@
+{
+    "evaluations": [
+        {
+            "id": "ee3d9db1-136d-4c72-a119-9a73b2836c9f",
+            "team_id": "CC60326005",
+            "team_name": "NIVAS1111",
+            "evaluator_id": "6117ec29",
+            "evaluator_name": "raghava",
+            "problem_statement_accepted": true,
+            "round1": {
+                "problem_statement": 0,
+                "solution_approach": 0,
+                "presentation": 0,
+                "social_impact": 0,
+                "commercial_feasibility": 0,
+                "passed": false,
+                "completed": true
+            },
+            "round2": {},
+            "round3": {},
+            "comments": "",
+            "timestamp": "2026-06-04 19:47:48",
+            "round1_total": 0,
+            "round2_total": 0,
+            "round3_total": 0,
+            "final_average": 0.0
+        }
+    ]
+}
